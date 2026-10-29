@@ -53,7 +53,7 @@
     $('ftr').innerHTML =
       '<footer><div class="wrap"><div class="col"><span style="font-family:var(--display);font-weight:800;font-size:22px;color:var(--fg)">zug<span style="color:var(--red)">.</span>now</span>' +
       '<span>Unabhängig. Automatisch aktualisiert. Jede Meldung mit Quelle und Link zum Original.</span>' +
-      '<span>In Vorbereitung: Vereinsanlässe (städtisches Vereinsportal) und preisgünstiges Wohnen.</span></div>' +
+      '</div>' +
       '<div class="col"><span style="font-weight:600;color:var(--fg)">Quellen</span><span>stadtzug.ch · veranstaltungen.zug.ch · amtsblatt.zg.ch · Open-Meteo</span><span id="srcState"></span></div></div></footer>';
   }
 
@@ -63,7 +63,7 @@
     $('cnt').innerHTML = '<a href="agenda.html#heute" style="color:inherit">Heute <strong>' + n + ' Anlässe</strong></a>';
     $('sunT').textContent = sunset(new Date(), 47.166, 8.516);
     var st = D.meta.sources || {}, bad = Object.keys(st).filter(function (k) { return !st[k].ok });
-    $('srcState').innerHTML = bad.length ? '<span class="err">Quelle gestört: ' + esc(bad.join(', ')) + ' (letzter Stand wird angezeigt)</span>' : 'Alle Quellen aktuell';
+    $('srcState').innerHTML = bad.length ? '<span class="err">Quelle gestört: ' + esc(bad.join(', ')) + ' (letzter Stand wird angezeigt)</span>' : '';
     fetch('https://api.open-meteo.com/v1/forecast?latitude=47.166&longitude=8.516&current=temperature_2m&timezone=Europe%2FZurich')
       .then(function (r) { return r.json() }).then(function (j) { var t = j && j.current && j.current.temperature_2m; if (t != null) { $('wxT').textContent = Math.round(t) + ' °C'; $('wx').hidden = false } }).catch(function () { });
   }
