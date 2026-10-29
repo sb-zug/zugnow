@@ -103,6 +103,32 @@ section.block{margin-top:72px}
 .tag{font-size:13px;font-weight:600;padding:4px 10px;border-radius:12px;background:var(--tint-2);color:var(--muted)}
 .tag.off{background:var(--red);color:var(--bg)}
 .evside small{font-size:12px;color:var(--soft)}
+.filters{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.filters .chips{margin-bottom:0}
+.chips.time .chip{border-radius:6px}
+details.ev{display:block;padding:0}
+details.ev>summary{list-style:none;display:flex;flex-wrap:wrap;align-items:center;gap:16px 24px;padding:18px 0;cursor:pointer}
+details.ev>summary::-webkit-details-marker{display:none}
+details.ev>summary:hover .ttl{text-decoration:underline}
+.evmain .ttl{font-family:var(--display);font-weight:700;font-size:20px;line-height:1.25}
+.chev{flex-shrink:0;width:28px;height:28px;color:var(--soft);transition:transform .15s}
+details[open] .chev{transform:rotate(180deg)}
+.panel{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;padding:0 0 24px 96px}
+@media (min-width:760px){.panel.withimg{grid-template-columns:minmax(0,1fr) 280px}}
+@media (max-width:560px){.panel{padding-left:0}}
+.panel p{margin:0;white-space:pre-line;font-size:15px;line-height:1.6;color:var(--muted);max-width:68ch}
+.panel .pimg{border-radius:6px;overflow:hidden;background:var(--ph);aspect-ratio:4/3;max-width:100%}
+.panel .pimg img{width:100%;height:100%;object-fit:cover;display:block}
+.panel .facts{font-size:14px;color:var(--soft)}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border-radius:22px;font:600 15px var(--body);text-decoration:none;cursor:pointer;border:1px solid var(--line-strong);background:var(--bg);color:var(--fg)}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:var(--bg)}
+.lauf{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(260px,100%),1fr));gap:20px}
+.lauf a{display:flex;flex-direction:column;gap:8px;text-decoration:none;color:var(--fg);min-width:0}
+.lauf .ph{aspect-ratio:16/10}
+.lauf strong{font-family:var(--display);font-size:19px;line-height:1.25}
+.lauf a:hover strong{text-decoration:underline}
+.lauf span{font-size:14px;color:var(--soft)}
 .showmore{margin-top:20px;min-height:44px;padding:0 22px;border-radius:22px;border:1px solid var(--line-strong);background:var(--bg);color:var(--fg);font:600 15px var(--body);cursor:pointer}
 
 .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:28px}
@@ -135,14 +161,14 @@ footer .col{display:flex;flex-direction:column;gap:6px;max-width:560px}
   <div class="wrap">
     <a class="logo" href="#top" aria-label="zug.now Startseite">zug<span class="dot">.</span><span class="now">now</span></a>
     <nav aria-label="Hauptnavigation">
-      <a href="#heute">Heute</a><a href="#news">News</a><a href="#agenda">Agenda</a><a href="#institutionen">Institutionen</a><a href="#amtlich">Amtlich</a><a href="#vereine">Vereine</a>
+      <a href="#heute">Heute</a><a href="#news">News</a><a href="#agenda">Agenda</a><a href="#laufend">Laufend</a><a href="#institutionen">Institutionen</a><a href="#amtlich">Amtlich</a><a href="#vereine">Vereine</a>
     </nav>
   </div>
 </header>
 
 <div class="band" role="status">
   <div class="wrap">
-    <span class="live"><span class="pulse" aria-hidden="true"></span><span id="liveDate">Live</span></span>
+    <span class="live"><span id="liveDate"></span></span>
     <span id="wx" hidden>Luft <strong id="wxT"></strong></span>
     <span id="sun">Sonnenuntergang <strong id="sunT">–</strong></span>
     <span id="cnt"></span>
@@ -171,9 +197,17 @@ footer .col{display:flex;flex-direction:column;gap:6px;max-width:560px}
 
   <section id="agenda" class="block">
     <div class="shead"><h2>Agenda Stadt Zug</h2><span id="agCount"></span></div>
-    <div class="chips" role="group" aria-label="Agenda filtern" id="chips"></div>
+    <div class="filters">
+      <div class="chips time" role="group" aria-label="Zeitraum" id="timeChips"></div>
+      <div class="chips" role="group" aria-label="Kategorie" id="chips"></div>
+    </div>
     <div class="agenda" id="agList"></div>
     <button type="button" class="showmore" id="more" hidden>Mehr anzeigen</button>
+  </section>
+
+  <section id="laufend" class="block">
+    <div class="shead"><h2>Laufend</h2><span>Ausstellungen und Angebote, die über Wochen offen sind</span></div>
+    <div class="lauf" id="laufGrid"></div>
   </section>
 
   <section id="institutionen" class="block">
@@ -221,7 +255,8 @@ footer .col{display:flex;flex-direction:column;gap:6px;max-width:560px}
   var WD=['SO','MO','DI','MI','DO','FR','SA'], MO=['JAN','FEB','MÄR','APR','MAI','JUN','JUL','AUG','SEP','OKT','NOV','DEZ'];
   var INST={bibliothek:['Bibliothek Zug','https://www.bibliothekzug.ch'],burg:['Museum Burg Zug','https://www.burgzug.ch'],kunsthaus:['Kunsthaus Zug','https://www.kunsthauszug.ch'],musikschule:['Musikschule Zug','https://veranstaltungen.zug.ch/events?filter_keywords=&page=0&tags=Musikschule']};
   var CATS=[['alle','Alle'],['kinder','Kinder & Familie'],['kultur','Kultur & Musik'],['maerkte','Märkte & Feste'],['treff','Treffpunkte'],['sport','Sport & Natur'],['weitere','Weitere']];
-  var state={cat:'alle',limit:20}, D={};
+  var TIMES=[['alle','Alle Termine'],['heute','Heute'],['wochenende','Wochenende'],['woche','Diese Woche']];
+  var state={cat:'alle',time:'alle',limit:20}, D={};
   try{var s=localStorage.getItem('zugnow-cat'); if(s) state.cat=s}catch(e){}
 
   function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
@@ -236,13 +271,15 @@ footer .col{display:flex;flex-direction:column;gap:6px;max-width:560px}
 
   Promise.all(['news','agenda','amtlich','meta'].map(function(n){return get(n).catch(function(){return null})})).then(function(r){
     D={news:r[0]||[],agenda:r[1]||[],amtlich:r[2]||[],meta:r[3]||{}};
-    renderBand(); renderLead(); renderToday(); renderNews(); renderChips(); renderAgenda(); renderInst(); renderAmt();
+    D.events=D.agenda.filter(function(e){return !e.ongoing});
+    D.ongoing=D.agenda.filter(function(e){return e.ongoing});
+    renderBand(); renderLead(); renderToday(); renderNews(); renderChips(); renderAgenda(); renderLauf(); renderInst(); renderAmt();
   });
 
   function renderBand(){
-    document.getElementById('liveDate').textContent='Live · '+new Intl.DateTimeFormat('de-CH',{timeZone:TZ,weekday:'long',day:'numeric',month:'long'}).format(new Date());
+    document.getElementById('liveDate').textContent=new Intl.DateTimeFormat('de-CH',{timeZone:TZ,weekday:'long',day:'numeric',month:'long'}).format(new Date());
     var g=D.meta.generated; document.getElementById('upd').textContent=g?'Aktualisiert '+parts(g).hm+(parts(g).key!==todayKey()?' ('+dLabel(parts(g).key)+')':''):'Keine Daten';
-    var tk=todayKey(), n=D.agenda.filter(function(e){return parts(e.start).key===tk && !e.cancelled}).length;
+    var tk=todayKey(), n=D.events.filter(function(e){return parts(e.start).key===tk && !e.cancelled}).length;
     document.getElementById('cnt').innerHTML='Heute <strong>'+n+' Anlässe</strong>';
     document.getElementById('sunT').textContent=sunset(new Date(),47.166,8.516);
     var st=D.meta.sources||{}, bad=Object.keys(st).filter(function(k){return !st[k].ok});
@@ -272,13 +309,14 @@ footer .col{display:flex;flex-direction:column;gap:6px;max-width:560px}
   }
 
   function renderToday(){
-    var tk=todayKey(), list=D.agenda.filter(function(e){return parts(e.start).key===tk}), el=document.getElementById('todayList'), label='Heute in Zug';
+    var tk=todayKey(), src=D.events, list=src.filter(function(e){return parts(e.start).key===tk}), el=document.getElementById('todayList'), label='Heute in Zug';
     if(!list.length){ // sonst: nächster Tag mit Anlässen
-      var next=D.agenda.find(function(e){return parts(e.start).key>tk});
-      if(next){var k=parts(next.start).key; list=D.agenda.filter(function(e){return parts(e.start).key===k}); label='Als Nächstes · '+dLabel(k)}
+      var next=src.find(function(e){return parts(e.start).key>tk});
+      if(next){var k=parts(next.start).key; list=src.filter(function(e){return parts(e.start).key===k}); label='Als Nächstes · '+dLabel(k)}
     }
     document.getElementById('hTitle').textContent=label;
-    el.innerHTML=list.slice(0,6).map(function(e){return '<a class="trow" href="'+esc(e.url)+'"><span class="tm">'+(e.allday?'ganz­tags':parts(e.start).hm)+'</span><span style="display:flex;flex-direction:column;gap:2px;min-width:0"><span class="tt">'+esc(e.title)+'</span><span class="ts">'+esc(e.place)+' · '+esc(e.catLabel)+'</span></span></a>'}).join('')||'<p style="color:var(--soft)">Keine Anlässe gefunden.</p>';
+    el.innerHTML=list.slice(0,6).map(function(e){return '<a class="trow" href="#ev-'+esc(e.id)+'" data-open="'+esc(e.id)+'"><span class="tm">'+(e.allday?'ganz­tags':parts(e.start).hm)+'</span><span style="display:flex;flex-direction:column;gap:2px;min-width:0"><span class="tt">'+esc(e.title)+'</span><span class="ts">'+esc(e.place)+' · '+esc(e.catLabel)+'</span></span></a>'}).join('')||'<p style="color:var(--soft)">Keine Anlässe gefunden.</p>';
+    el.onclick=function(ev){var a=ev.target.closest('[data-open]'); if(!a) return; ev.preventDefault(); openEvent(a.dataset.open)};
   }
 
   function renderNews(){
@@ -291,27 +329,76 @@ footer .col{display:flex;flex-direction:column;gap:6px;max-width:560px}
     }).join('');
   }
 
+  // ---- Zeitraum
+  function addDays(key,n){var p=key.split('-'),d=new Date(Date.UTC(+p[0],+p[1]-1,+p[2]+n));return d.toISOString().slice(0,10)}
+  function dowOf(key){var p=key.split('-');return new Date(Date.UTC(+p[0],+p[1]-1,+p[2])).getUTCDay()}
+  function range(t){
+    var tk=todayKey(), dw=dowOf(tk);
+    if(t==='heute') return [tk,tk];
+    if(t==='woche') return [tk,addDays(tk,(7-dw)%7)];
+    if(t==='wochenende'){ if(dw===0) return [tk,tk]; if(dw===6) return [tk,addDays(tk,1)]; var sa=addDays(tk,6-dw); return [dw===5?tk:sa,addDays(sa,1)] }
+    return ['0000','9999'];
+  }
+  function inTime(e,t){var k=parts(e.start).key,r=range(t);return k>=r[0]&&k<=r[1]}
+  function filtered(){return D.events.filter(function(e){return inTime(e,state.time)&&(state.cat==='alle'||e.cat===state.cat)})}
+
   function renderChips(){
-    var counts={alle:D.agenda.length}; D.agenda.forEach(function(e){counts[e.cat]=(counts[e.cat]||0)+1});
+    var tl=document.getElementById('timeChips');
+    tl.innerHTML=TIMES.map(function(t){var n=D.events.filter(function(e){return inTime(e,t[0])}).length;return '<button type="button" class="chip" data-time="'+t[0]+'" aria-pressed="'+(t[0]===state.time)+'">'+t[1]+'<span class="n">'+n+'</span></button>'}).join('');
+    tl.onclick=function(ev){var b=ev.target.closest('.chip'); if(!b) return; state.time=b.dataset.time; state.limit=20; renderChips(); renderAgenda()};
+    var base=D.events.filter(function(e){return inTime(e,state.time)}), counts={alle:base.length}; base.forEach(function(e){counts[e.cat]=(counts[e.cat]||0)+1});
     var el=document.getElementById('chips');
-    el.innerHTML=CATS.filter(function(c){return counts[c[0]]}).map(function(c){return '<button type="button" class="chip" data-cat="'+c[0]+'" aria-pressed="'+(c[0]===state.cat)+'">'+c[1]+'<span class="n">'+counts[c[0]]+'</span></button>'}).join('');
+    el.innerHTML=CATS.filter(function(c){return counts[c[0]]||c[0]===state.cat}).map(function(c){return '<button type="button" class="chip" data-cat="'+c[0]+'" aria-pressed="'+(c[0]===state.cat)+'">'+c[1]+'<span class="n">'+(counts[c[0]]||0)+'</span></button>'}).join('');
     el.onclick=function(ev){var b=ev.target.closest('.chip'); if(!b) return; state.cat=b.dataset.cat; state.limit=20; try{localStorage.setItem('zugnow-cat',state.cat)}catch(e){} renderChips(); renderAgenda()};
   }
 
+  // ---- Kalender-Datei (.ics) für einen Anlass
+  function icsDate(iso){return new Date(iso).toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'')}
+  function icsEsc(s){return String(s||'').replace(/\\/g,'\\\\').replace(/\n/g,'\\n').replace(/,/g,'\\,').replace(/;/g,'\;')}
+  function icsHref(e){
+    var end=e.end||new Date(new Date(e.start).getTime()+36e5).toISOString();
+    var lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//zug.now//DE','BEGIN:VEVENT','UID:'+e.id+'@zug.now','DTSTAMP:'+icsDate(new Date().toISOString()),
+      'DTSTART:'+icsDate(e.start),'DTEND:'+icsDate(end),'SUMMARY:'+icsEsc(e.title),'LOCATION:'+icsEsc(e.location),'DESCRIPTION:'+icsEsc((e.teaser||'')+'\n\n'+e.url),'URL:'+e.url,'END:VEVENT','END:VCALENDAR'];
+    return 'data:text/calendar;charset=utf-8,'+encodeURIComponent(lines.join('\r\n'));
+  }
+  var CAL='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg>';
+  var CHEV='<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>';
+
   function evRow(e){
-    var p=parts(e.start);
-    return '<div class="ev"><div class="date" aria-label="'+dLabel(p.key)+'"><span class="wd">'+WD[p.dow]+'</span><span class="d">'+p.d+'</span><span class="mo">'+MO[p.m-1]+'</span></div>'+
+    var p=parts(e.start), slug=(e.title||'anlass').toLowerCase().replace(/[^a-z0-9äöü]+/g,'-').slice(0,40);
+    return '<details class="ev" id="ev-'+esc(e.id)+'"><summary><div class="date" aria-label="'+dLabel(p.key)+'"><span class="wd">'+WD[p.dow]+'</span><span class="d">'+p.d+'</span><span class="mo">'+MO[p.m-1]+'</span></div>'+
       (e.image?'<div class="thumb">'+img(e.image,'')+'</div>':'')+
-      '<div class="evmain"><a href="'+esc(e.url)+'">'+esc(e.title)+'</a><span class="meta">'+timeLabel(e)+(e.rhythm?' · '+esc(e.rhythm):'')+' · '+esc(e.place)+'</span></div>'+
-      '<div class="evside">'+(e.cancelled?'<span class="tag off">Abgesagt</span>':'<span class="tag">'+esc(e.catLabel)+'</span>')+'<small>Quelle: '+esc(e.source)+'</small></div></div>';
+      '<div class="evmain"><span class="ttl">'+esc(e.title)+'</span><span class="meta">'+timeLabel(e)+(e.rhythm?' · '+esc(e.rhythm):'')+' · '+esc(e.place)+'</span></div>'+
+      '<div class="evside">'+(e.cancelled?'<span class="tag off">Abgesagt</span>':'<span class="tag">'+esc(e.catLabel)+'</span>')+'<small>Quelle: '+esc(e.source)+'</small></div>'+CHEV+'</summary>'+
+      '<div class="panel'+(e.image?' withimg':'')+'"><div style="display:flex;flex-direction:column;gap:14px;min-width:0">'+
+        '<p>'+esc(e.text||e.teaser||'Keine Beschreibung vorhanden.')+'</p>'+
+        '<span class="facts">'+esc(e.location)+'</span>'+
+        '<div class="actions"><a class="btn primary" href="'+esc(e.url)+'">Zum Anlass →</a>'+(e.cancelled?'':'<a class="btn" href="'+icsHref(e)+'" download="'+esc(slug)+'.ics">'+CAL+'In Kalender</a>')+'</div>'+
+      '</div>'+(e.image?'<div class="pimg">'+img(e.image,'')+'</div>':'')+'</div></details>';
   }
 
   function renderAgenda(){
-    var list=D.agenda.filter(function(e){return state.cat==='alle'||e.cat===state.cat});
-    document.getElementById('agCount').textContent=list.length+(list.length===1?' Anlass':' Anlässe')+' in den nächsten 60 Tagen';
-    document.getElementById('agList').innerHTML=list.slice(0,state.limit).map(evRow).join('')||'<p style="color:var(--soft);padding:18px 0">Keine Anlässe in dieser Kategorie.</p>';
+    var list=filtered(), lbl={alle:'in den nächsten 60 Tagen',heute:'heute',wochenende:'am Wochenende',woche:'diese Woche'}[state.time];
+    document.getElementById('agCount').textContent=list.length+(list.length===1?' Anlass ':' Anlässe ')+lbl;
+    document.getElementById('agList').innerHTML=list.slice(0,state.limit).map(evRow).join('')||'<p style="color:var(--soft);padding:18px 0">Keine Anlässe für diese Auswahl.</p>';
     var m=document.getElementById('more'); m.hidden=list.length<=state.limit; m.textContent='Weitere '+Math.min(20,list.length-state.limit)+' anzeigen';
     m.onclick=function(){state.limit+=20; renderAgenda()};
+  }
+
+  function openEvent(id){
+    var i=D.events.findIndex(function(e){return e.id===id}); if(i<0) return;
+    state.time='alle'; state.cat='alle'; state.limit=Math.max(state.limit,Math.ceil((i+1)/20)*20); renderChips(); renderAgenda();
+    var el=document.getElementById('ev-'+id); if(el){el.open=true; el.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'})}
+  }
+
+  function renderLauf(){
+    var seen={}, items=[];
+    D.ongoing.forEach(function(e){ var k=e.title+'|'+e.place; if(seen[k]){seen[k].rh.push(e.rhythm); if(!seen[k].image&&e.image) seen[k].image=e.image; if(e.until>seen[k].until) seen[k].until=e.until; return}
+      seen[k]={e:e,rh:[e.rhythm],image:e.image,until:e.until}; items.push(seen[k]) });
+    var el=document.getElementById('laufend'); if(!items.length){el.hidden=true;return}
+    document.getElementById('laufGrid').innerHTML=items.map(function(x){var e=x.e;
+      var rh=x.rh.filter(Boolean).join(' · ')||timeLabel(e), bis=x.until&&x.until<'2028'?'bis '+dLabel(x.until):'Dauerangebot';
+      return '<a href="'+esc(e.url)+'"><div class="ph">'+img(x.image,'')+'</div><span class="eyebrow">'+esc(e.place)+'</span><strong>'+esc(e.title)+'</strong><span>'+esc(rh)+' · '+bis+'</span></a>'}).join('');
   }
 
   function renderInst(){

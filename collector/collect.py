@@ -267,6 +267,29 @@ def short_place(loc: str) -> str:
     return first or loc
 
 
+def rrule_until(rrule: str) -> date | None:
+    m = re.search(r"UNTIL=(\d{8})(T\d{6}Z?)?", rrule)
+    if not m:
+        return None
+    if m.group(2) and m.group(2).endswith("Z"):
+        return datetime.strptime(m.group(1) + m.group(2), "%Y%m%dT%H%M%SZ").replace(tzinfo=timezone.utc).astimezone(TZ).date()
+    return datetime.strptime(m.group(1), "%Y%m%d").date()
+
+
+_ONGOING = re.compile(r"Ausstellung|Dauer|Skulpturenweg|Installation|Schaudepot", re.I)
+
+
+def is_ongoing(ev: dict, title: str, start: datetime, end: datetime, rhythm: str) -> bool:
+    """Laufende Angebote (Ausstellungen, Tagesangebote) statt einzelner Anlässe."""
+    long_slot = (end - start) >= timedelta(hours=8)
+    if ev["allday"] and (end - start) >= timedelta(days=2):
+        return True
+    if ev["rrule"]:
+        many_days = rhythm == "täglich" or "–" in rhythm or rhythm.count(",") >= 1
+        return bool(long_slot or many_days or _ONGOING.search(title) or "Ausstellung" in ev["tags"])
+    return long_slot and bool(_ONGOING.search(title) or "Ausstellung" in ev["tags"])
+
+
 def build_agenda(raw: list[dict], today: date) -> list[dict]:
     horizon = today + timedelta(days=AGENDA_DAYS)
     seen, out = set(), []
@@ -290,6 +313,10 @@ def build_agenda(raw: list[dict], today: date) -> list[dict]:
         cancelled = bool(re.search(r"abgesagt|annulliert|fällt aus", ev["title"], re.I))
         title = re.sub(r"\s*[–-]\s*ABGESAGT!?\s*$", "", ev["title"], flags=re.I)
         cat = categorize(ev["tags"], title)
+        until = rrule_until(ev["rrule"]) if ev["rrule"] else None
+        if until and (until - start.date()).days < 2:   # «täglich» bis morgen = Einzeltermin
+            rhythm, until = "", None
+        ongoing = is_ongoing(ev, title, start, end, rhythm)
         # iCal-URL zeigt auf 404; gültig ist /event/<slug>-<YYYY-MM-DD> des jeweiligen Termins
         slug = re.sub(r"-\d{4}-\d{2}-\d{2}$", "", ev["uid"].split("@")[0])
         url = f"https://veranstaltungen.zug.ch/event/{slug}-{start.date().isoformat()}" if slug else ev["url"]
@@ -300,6 +327,8 @@ def build_agenda(raw: list[dict], today: date) -> list[dict]:
             "end": end.isoformat() if ev["end"] else None,
             "allday": ev["allday"],
             "rhythm": rhythm,
+            "ongoing": ongoing,
+            "until": until.isoformat() if until else None,
             "cancelled": cancelled,
             "place": short_place(ev["location"]),
             "location": ev["location"],
@@ -308,6 +337,7 @@ def build_agenda(raw: list[dict], today: date) -> list[dict]:
             "tags": ev["tags"],
             "institution": institution(ev),
             "teaser": re.sub(r"\s+", " ", ev["description"])[:220],
+            "text": re.sub(r"\n{3,}", "\n\n", ev["description"]).strip()[:1200],
             "url": url,
             "image": None,
             "source": "veranstaltungen.zug.ch",
