@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Agenda Stadt Zug – zug.now</title>
+<meta name="description" content="Alle Anlässe in der Stadt Zug in den nächsten 60 Tagen: filtern nach Zeitraum, Kategorie und Ort.">
+<meta property="og:title" content="Agenda Stadt Zug – zug.now">
+<meta property="og:description" content="Alle Anlässe in der Stadt Zug in den nächsten 60 Tagen: filtern nach Zeitraum, Kategorie und Ort.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..800&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body data-page="agenda">
+<div id="hdr"></div>
+<main class="wrap">
+  <div class="pagehead"><h1>Agenda Stadt Zug</h1><p>Alle Anlässe in der Stadt Zug, automatisch aus dem offiziellen Veranstaltungskalender. Anlass anklicken für Details und Kalendereintrag.</p></div>
+  <section class="block">
+    <div class="shead"><span id="agCount"></span></div>
+    <div class="filters">
+      <div class="chips time" role="group" aria-label="Zeitraum" id="timeChips"></div>
+      <div class="chips" role="group" aria-label="Kategorie" id="catChips"></div>
+      <div class="chips" role="group" aria-label="Ort" id="placeChips"></div>
+    </div>
+    <div class="agenda" id="agList"></div>
+    <button type="button" class="showmore" id="more" hidden>Mehr anzeigen</button>
+  </section>
+  <section id="laufend" class="block">
+    <div class="shead"><h2>Laufend</h2><span>Ausstellungen und Angebote, die über Wochen offen sind</span></div>
+    <div class="lauf" id="laufGrid"></div>
+  </section>
+</main>
+<div id="ftr"></div>
+<script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,238 @@
+/* zug.now – gemeinsames Skript für alle Seiten.
+   Jede Seite setzt <body data-page="start|agenda|news|amtlich"> und hat Platzhalter mit IDs. */
+(function () {
+  var TZ = 'Europe/Zurich';
+  var WD = ['SO', 'MO', 'DI', 'MI', 'DO', 'FR', 'SA'], MO = ['JAN', 'FEB', 'MÄR', 'APR', 'MAI', 'JUN', 'JUL', 'AUG', 'SEP', 'OKT', 'NOV', 'DEZ'];
+  var WDL = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+  var CATS = [['alle', 'Alle'], ['kinder', 'Kinder & Familie'], ['kultur', 'Kultur & Musik'], ['maerkte', 'Märkte & Feste'], ['treff', 'Treffpunkte'], ['sport', 'Sport & Natur'], ['weitere', 'Weitere']];
+  var TIMES = [['alle', 'Alle Termine'], ['heute', 'Heute'], ['wochenende', 'Wochenende'], ['woche', 'Diese Woche']];
+  var PLACES = [['alle', 'Alle Orte'], ['bibliothek', 'Bibliothek Zug'], ['kunsthaus', 'Kunsthaus Zug'], ['burg', 'Museum Burg Zug'], ['musikschule', 'Musikschule']];
+  var PAGES = [['index.html', 'start', 'Start'], ['agenda.html', 'agenda', 'Agenda'], ['news.html', 'news', 'News'], ['amtlich.html', 'amtlich', 'Amtlich']];
+  var page = document.body.dataset.page || 'start';
+  var D = {};
+
+  // ---------- Helfer
+  function $(id) { return document.getElementById(id) }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c] }) }
+  function parts(iso) {
+    var f = new Intl.DateTimeFormat('de-CH', { timeZone: TZ, year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false }).formatToParts(new Date(iso));
+    var o = {}; f.forEach(function (p) { o[p.type] = p.value });
+    var key = o.year + '-' + String(o.month).padStart(2, '0') + '-' + String(o.day).padStart(2, '0');
+    return { m: +o.month, d: +o.day, hm: o.hour + ':' + o.minute, dow: dowOf(key), key: key };
+  }
+  function todayKey() { return parts(new Date().toISOString()).key }
+  function dowOf(key) { var p = key.split('-'); return new Date(Date.UTC(+p[0], +p[1] - 1, +p[2])).getUTCDay() }
+  function addDays(key, n) { var p = key.split('-'); return new Date(Date.UTC(+p[0], +p[1] - 1, +p[2] + n)).toISOString().slice(0, 10) }
+  function dLabel(key) { var p = key.split('-'); return +p[2] + '.' + (+p[1]) + '.' + p[0] }
+  function dShort(key) { var p = key.split('-'); return WDL[dowOf(key)] + ' ' + (+p[2]) + '.' + (+p[1]) + '.' }
+  function timeLabel(e) { if (e.allday) return 'ganztags'; var a = parts(e.start).hm; return e.end ? a + '–' + parts(e.end).hm : a }
+  function img(src) { return src ? '<img src="' + esc(src) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">' : '' }
+  function get(n) { return fetch('data/' + n + '.json', { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json() }).catch(function () { return null }) }
+
+  // ---------- Zeitraum
+  function range(t) {
+    var tk = todayKey(), dw = dowOf(tk);
+    if (t === 'heute') return [tk, tk];
+    if (t === 'woche') return [tk, addDays(tk, (7 - dw) % 7)];
+    if (t === 'wochenende') {
+      if (dw === 0) return [tk, tk];
+      if (dw === 6) return [tk, addDays(tk, 1)];
+      var sa = addDays(tk, 6 - dw); return [dw === 5 ? tk : sa, addDays(sa, 1)];
+    }
+    return ['0000', '9999'];
+  }
+  function inTime(e, t) { var k = parts(e.start).key, r = range(t); return k >= r[0] && k <= r[1] }
+
+  // ---------- Rahmen: Kopf, Leiste, Fuss
+  function frame() {
+    $('hdr').innerHTML =
+      '<header><div class="wrap"><a class="logo" href="index.html" aria-label="zug.now Startseite">zug<span class="dot">.</span><span class="now">now</span></a>' +
+      '<nav aria-label="Hauptnavigation">' + PAGES.map(function (p) { return '<a href="' + p[0] + '"' + (p[1] === page ? ' aria-current="page"' : '') + '>' + p[2] + '</a>' }).join('') + '</nav></div></header>' +
+      '<div class="band"><div class="wrap"><span class="live" id="liveDate"></span><span id="wx" hidden>Luft <strong id="wxT"></strong></span>' +
+      '<span>Sonnenuntergang <strong id="sunT">–</strong></span><span id="cnt"></span></div></div>';
+    $('ftr').innerHTML =
+      '<footer><div class="wrap"><div class="col"><span style="font-family:var(--display);font-weight:800;font-size:22px;color:var(--fg)">zug<span style="color:var(--red)">.</span>now</span>' +
+      '<span>Unabhängig. Automatisch aktualisiert. Jede Meldung mit Quelle und Link zum Original.</span>' +
+      '<span>In Vorbereitung: Vereinsanlässe (städtisches Vereinsportal) und preisgünstiges Wohnen.</span></div>' +
+      '<div class="col"><span style="font-weight:600;color:var(--fg)">Quellen</span><span>stadtzug.ch · veranstaltungen.zug.ch · amtsblatt.zg.ch · Open-Meteo</span><span id="srcState"></span></div></div></footer>';
+  }
+
+  function band() {
+    $('liveDate').textContent = new Intl.DateTimeFormat('de-CH', { timeZone: TZ, weekday: 'long', day: 'numeric', month: 'long' }).format(new Date());
+    var tk = todayKey(), n = D.events.filter(function (e) { return parts(e.start).key === tk && !e.cancelled }).length;
+    $('cnt').innerHTML = '<a href="agenda.html#heute" style="color:inherit">Heute <strong>' + n + ' Anlässe</strong></a>';
+    $('sunT').textContent = sunset(new Date(), 47.166, 8.516);
+    var st = D.meta.sources || {}, bad = Object.keys(st).filter(function (k) { return !st[k].ok });
+    $('srcState').innerHTML = bad.length ? '<span class="err">Quelle gestört: ' + esc(bad.join(', ')) + ' (letzter Stand wird angezeigt)</span>' : 'Alle Quellen aktuell';
+    fetch('https://api.open-meteo.com/v1/forecast?latitude=47.166&longitude=8.516&current=temperature_2m&timezone=Europe%2FZurich')
+      .then(function (r) { return r.json() }).then(function (j) { var t = j && j.current && j.current.temperature_2m; if (t != null) { $('wxT').textContent = Math.round(t) + ' °C'; $('wx').hidden = false } }).catch(function () { });
+  }
+
+  function sunset(date, lat, lon) { // NOAA-Näherung
+    var rad = Math.PI / 180, N = Math.floor((date - Date.UTC(date.getUTCFullYear(), 0, 0)) / 864e5);
+    var g = 2 * Math.PI / 365 * (N - 1), eq = 229.18 * (0.000075 + 0.001868 * Math.cos(g) - 0.032077 * Math.sin(g) - 0.014615 * Math.cos(2 * g) - 0.040849 * Math.sin(2 * g));
+    var dec = 0.006918 - 0.399912 * Math.cos(g) + 0.070257 * Math.sin(g) - 0.006758 * Math.cos(2 * g) + 0.000907 * Math.sin(2 * g) - 0.002697 * Math.cos(3 * g) + 0.00148 * Math.sin(3 * g);
+    var ha = Math.acos(Math.cos(90.833 * rad) / (Math.cos(lat * rad) * Math.cos(dec)) - Math.tan(lat * rad) * Math.tan(dec)) / rad;
+    var utcMin = 720 - 4 * (lon - ha) - eq;
+    return parts(new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()) + utcMin * 6e4).toISOString()).hm;
+  }
+
+  // ---------- Bausteine
+  function leadNews() { return D.news.filter(function (x) { return x.image })[0] || D.news[0] }
+
+  function renderLead() {
+    var n = leadNews(), el = $('lead'); if (!el) return;
+    if (!n) { el.innerHTML = '<h1>Keine Meldungen</h1>'; return }
+    el.innerHTML = '<div class="ph" style="aspect-ratio:16/9;position:relative">' + img(n.image) + (n.image ? '<span class="credit">Bild: Stadt Zug</span>' : '') + '</div>' +
+      '<span class="eyebrow">Stadt Zug · ' + esc(n.type || 'News') + ' · ' + dLabel(n.date) + '</span>' +
+      '<h1><a href="' + esc(n.url) + '">' + esc(n.title) + '</a></h1><p>' + esc(n.lead) + '</p>' +
+      '<a href="' + esc(n.url) + '" style="font-weight:600;font-size:15px">Zur Meldung auf stadtzug.ch →</a>';
+  }
+
+  function renderToday() {
+    var el = $('todayList'); if (!el) return;
+    var tk = todayKey(), src = D.events, list = src.filter(function (e) { return parts(e.start).key === tk }), label = 'Heute in Zug';
+    if (!list.length) {
+      var next = src.find(function (e) { return parts(e.start).key > tk });
+      if (next) { var k = parts(next.start).key; list = src.filter(function (e) { return parts(e.start).key === k }); label = 'Als Nächstes · ' + dShort(k) }
+    }
+    $('hTitle').textContent = label;
+    el.innerHTML = list.slice(0, 6).map(function (e) {
+      return '<a class="trow" href="agenda.html#ev-' + esc(e.id) + '"><span class="tm">' + (e.allday ? 'ganz­tags' : parts(e.start).hm) + '</span><span style="display:flex;flex-direction:column;gap:2px;min-width:0"><span class="tt">' + esc(e.title) + '</span><span class="ts">' + esc(e.place) + ' · ' + esc(e.catLabel) + '</span></span></a>'
+    }).join('') || '<p style="color:var(--soft)">Keine Anlässe gefunden.</p>';
+  }
+
+  function renderWeekend() {
+    var el = $('wkCards'); if (!el) return;
+    var list = D.events.filter(function (e) { return inTime(e, 'wochenende') && !e.cancelled });
+    // Bilder zuerst, pro Titel nur einmal
+    var seen = {}, pick = [];
+    list.filter(function (e) { return e.image }).concat(list.filter(function (e) { return !e.image })).forEach(function (e) { if (!seen[e.title] && pick.length < 6) { seen[e.title] = 1; pick.push(e) } });
+    pick.sort(function (a, b) { return a.start < b.start ? -1 : 1 });
+    var r = range('wochenende'); $('wkTitle').textContent = r[0] === todayKey() && dowOf(r[0]) === 0 ? 'Heute, Sonntag' : 'Dieses Wochenende';
+    el.innerHTML = pick.map(function (e) {
+      var p = parts(e.start);
+      return '<a href="agenda.html#ev-' + esc(e.id) + '"><div class="ph">' + img(e.image) + '<span class="when">' + dShort(p.key) + ' · ' + (e.allday ? 'ganztags' : p.hm) + '</span></div><span class="eyebrow">' + esc(e.catLabel) + '</span><strong>' + esc(e.title) + '</strong><span class="s">' + esc(e.place) + '</span></a>'
+    }).join('') || '<p style="color:var(--soft)">Für dieses Wochenende sind noch keine Anlässe gemeldet.</p>';
+  }
+
+  function newsCard(n) {
+    return '<article><div class="ph' + (n.image ? '' : ' noimg') + '">' + (n.image ? img(n.image) : '<span>' + esc(n.type || 'News') + '</span>') + '</div>' +
+      '<span class="eyebrow">' + dLabel(n.date) + ' · ' + esc(n.type || 'News') + '</span>' +
+      '<h3><a href="' + esc(n.url) + '">' + esc(n.title) + '</a></h3><p>' + esc(n.lead) + '</p></article>';
+  }
+  function renderNewsTeaser() {
+    var el = $('newsGrid'); if (!el) return; var lead = leadNews();
+    el.innerHTML = D.news.filter(function (n) { return n !== lead }).slice(0, 3).map(newsCard).join('');
+  }
+  function renderNewsPage() {
+    var el = $('newsList'); if (!el) return;
+    el.innerHTML = D.news.map(function (n) {
+      return '<article><div class="ph' + (n.image ? '' : ' noimg') + '">' + (n.image ? img(n.image) : '<span>' + esc(n.type || 'News') + '</span>') + '</div><div style="min-width:0">' +
+        '<span class="eyebrow">' + dLabel(n.date) + ' · ' + esc(n.type || 'News') + '</span><h2><a href="' + esc(n.url) + '">' + esc(n.title) + '</a></h2><p>' + esc(n.lead) + '</p>' +
+        '<a class="src" href="' + esc(n.url) + '" style="display:inline-block;margin-top:10px;font-size:14px;font-weight:600">Auf stadtzug.ch lesen →</a></div></article>';
+    }).join('') || '<p style="color:var(--soft)">Keine Meldungen.</p>';
+  }
+
+  function laufItems() {
+    var seen = {}, items = [];
+    D.ongoing.forEach(function (e) {
+      var k = e.title + '|' + e.place;
+      if (seen[k]) { seen[k].rh.push(e.rhythm); if (!seen[k].image && e.image) seen[k].image = e.image; if ((e.until || '') > (seen[k].until || '')) seen[k].until = e.until; return }
+      seen[k] = { e: e, rh: [e.rhythm], image: e.image, until: e.until }; items.push(seen[k]);
+    });
+    return items;
+  }
+  function renderLauf(max) {
+    var el = $('laufGrid'); if (!el) return;
+    var items = laufItems(); if (!items.length) { $('laufend').hidden = true; return }
+    el.innerHTML = items.slice(0, max || 99).map(function (x) {
+      var e = x.e, rh = x.rh.filter(Boolean).join(' · ') || timeLabel(e), bis = x.until && x.until < '2028' ? 'bis ' + dLabel(x.until) : 'Dauerangebot';
+      return '<a href="' + esc(e.url) + '"><div class="ph">' + img(x.image) + '</div><span class="eyebrow">' + esc(e.place) + '</span><strong>' + esc(e.title) + '</strong><span>' + esc(rh) + ' · ' + bis + '</span></a>';
+    }).join('');
+  }
+
+  function amtItem(a) { return '<a href="' + esc(a.url) + '"><span class="lbl' + (a.label === 'Abstimmung' ? ' red' : '') + '">' + esc(a.label) + ' · ' + dLabel(a.date) + '</span><span>' + esc(a.title) + '</span></a>' }
+  function renderAmtTeaser() { var el = $('amtRow'); if (el) el.innerHTML = D.amtlich.slice(0, 3).map(amtItem).join('') || '<p style="color:var(--soft)">Keine aktuellen Publikationen.</p>' }
+  function renderAmtPage() {
+    var el = $('amtList'); if (!el) return;
+    el.innerHTML = D.amtlich.map(function (a) {
+      return '<a href="' + esc(a.url) + '"><span class="d">' + dLabel(a.date) + '</span><span class="t"><span class="lbl" style="display:block;margin-bottom:2px">' + esc(a.label) + '</span>' + esc(a.title) + '</span><span class="o">' + esc(a.office) + (a.expires ? ' · einsehbar bis ' + dLabel(a.expires) : '') + '</span></a>';
+    }).join('') || '<p style="color:var(--soft)">Keine aktuellen Publikationen.</p>';
+  }
+
+  // ---------- Agenda-Seite
+  var st = { time: 'alle', cat: 'alle', place: 'alle', limit: 20 };
+  function filtered() { return D.events.filter(function (e) { return inTime(e, st.time) && (st.cat === 'alle' || e.cat === st.cat) && (st.place === 'alle' || e.institution === st.place) }) }
+  function chipRow(id, defs, key, count) {
+    var el = $(id);
+    el.innerHTML = defs.filter(function (d) { return d[0] === 'alle' || count(d[0]) || st[key] === d[0] }).map(function (d) {
+      return '<button type="button" class="chip" data-v="' + d[0] + '" aria-pressed="' + (st[key] === d[0]) + '">' + d[1] + '<span class="n">' + count(d[0]) + '</span></button>'
+    }).join('');
+    el.onclick = function (ev) { var b = ev.target.closest('.chip'); if (!b) return; st[key] = b.dataset.v; st.limit = 20; renderFilters(); renderList() };
+  }
+  function renderFilters() {
+    chipRow('timeChips', TIMES, 'time', function (v) { return D.events.filter(function (e) { return inTime(e, v) && (st.cat === 'alle' || e.cat === st.cat) && (st.place === 'alle' || e.institution === st.place) }).length });
+    chipRow('catChips', CATS, 'cat', function (v) { return D.events.filter(function (e) { return inTime(e, st.time) && (v === 'alle' || e.cat === v) && (st.place === 'alle' || e.institution === st.place) }).length });
+    chipRow('placeChips', PLACES, 'place', function (v) { return D.events.filter(function (e) { return inTime(e, st.time) && (st.cat === 'alle' || e.cat === st.cat) && (v === 'alle' || e.institution === v) }).length });
+  }
+
+  function icsDate(iso) { return new Date(iso).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '') }
+  function icsEsc(s) { return String(s || '').replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;') }
+  function icsHref(e) {
+    var end = e.end || new Date(new Date(e.start).getTime() + 36e5).toISOString();
+    var L = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//zug.now//DE', 'BEGIN:VEVENT', 'UID:' + e.id + '@zug.now', 'DTSTAMP:' + icsDate(new Date().toISOString()),
+      'DTSTART:' + icsDate(e.start), 'DTEND:' + icsDate(end), 'SUMMARY:' + icsEsc(e.title), 'LOCATION:' + icsEsc(e.location), 'DESCRIPTION:' + icsEsc((e.teaser || '') + '\n\n' + e.url), 'URL:' + e.url, 'END:VEVENT', 'END:VCALENDAR'];
+    return 'data:text/calendar;charset=utf-8,' + encodeURIComponent(L.join('\r\n'));
+  }
+  var CAL = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg>';
+  var CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>';
+
+  function evRow(e) {
+    var p = parts(e.start), slug = (e.title || 'anlass').toLowerCase().replace(/[^a-z0-9äöü]+/g, '-').slice(0, 40);
+    return '<details class="ev" id="ev-' + esc(e.id) + '"><summary><div class="date" aria-label="' + dLabel(p.key) + '"><span class="wd">' + WD[p.dow] + '</span><span class="d">' + p.d + '</span><span class="mo">' + MO[p.m - 1] + '</span></div>' +
+      (e.image ? '<div class="thumb">' + img(e.image) + '</div>' : '') +
+      '<div class="evmain"><span class="ttl">' + esc(e.title) + '</span><span class="meta">' + timeLabel(e) + (e.rhythm ? ' · ' + esc(e.rhythm) : '') + ' · ' + esc(e.place) + '</span></div>' +
+      '<div class="evside">' + (e.cancelled ? '<span class="tag off">Abgesagt</span>' : '<span class="tag">' + esc(e.catLabel) + '</span>') + '<small>Quelle: ' + esc(e.source) + '</small></div>' + CHEV + '</summary>' +
+      '<div class="panel' + (e.image ? ' withimg' : '') + '"><div style="display:flex;flex-direction:column;gap:14px;min-width:0">' +
+      '<p>' + esc(e.text || e.teaser || 'Keine Beschreibung vorhanden.') + '</p><span class="facts">' + esc(e.location) + '</span>' +
+      '<div class="actions"><a class="btn primary" href="' + esc(e.url) + '">Zum Anlass →</a>' + (e.cancelled ? '' : '<a class="btn" href="' + icsHref(e) + '" download="' + esc(slug) + '.ics">' + CAL + 'In Kalender</a>') + '</div>' +
+      '</div>' + (e.image ? '<div class="pimg">' + img(e.image) + '</div>' : '') + '</div></details>';
+  }
+
+  function renderList() {
+    var list = filtered(), lbl = { alle: 'in den nächsten 60 Tagen', heute: 'heute', wochenende: 'am Wochenende', woche: 'diese Woche' }[st.time];
+    $('agCount').textContent = list.length + (list.length === 1 ? ' Anlass ' : ' Anlässe ') + lbl;
+    $('agList').innerHTML = list.slice(0, st.limit).map(evRow).join('') || '<p style="color:var(--soft);padding:18px 0">Keine Anlässe für diese Auswahl.</p>';
+    var m = $('more'); m.hidden = list.length <= st.limit; m.textContent = 'Weitere ' + Math.min(20, list.length - st.limit) + ' anzeigen';
+    m.onclick = function () { st.limit += 20; renderList() };
+  }
+
+  function agendaFromHash() {
+    var h = location.hash.slice(1);
+    if (TIMES.some(function (t) { return t[0] === h })) { st.time = h; return null }
+    if (h.indexOf('ev-') === 0) return h.slice(3);
+    return null;
+  }
+  function openEvent(id) {
+    var i = filtered().findIndex(function (e) { return e.id === id }); if (i < 0) return;
+    st.limit = Math.max(st.limit, Math.ceil((i + 1) / 20) * 20); renderList();
+    var el = $('ev-' + id); if (el) { el.open = true; el.scrollIntoView({ block: 'start' }) }
+  }
+
+  // ---------- Start
+  frame();
+  Promise.all(['news', 'agenda', 'amtlich', 'meta'].map(get)).then(function (r) {
+    D = { news: r[0] || [], agenda: r[1] || [], amtlich: r[2] || [], meta: r[3] || {} };
+    D.events = D.agenda.filter(function (e) { return !e.ongoing });
+    D.ongoing = D.agenda.filter(function (e) { return e.ongoing });
+    band();
+    if (page === 'start') { renderLead(); renderToday(); renderWeekend(); renderNewsTeaser(); renderLauf(3); renderAmtTeaser() }
+    if (page === 'agenda') {
+      var open = agendaFromHash(); renderFilters(); renderList(); renderLauf(); if (open) openEvent(open);
+      window.addEventListener('hashchange', function () { var o = agendaFromHash(); renderFilters(); renderList(); if (o) openEvent(o) });
+    }
+    if (page === 'news') renderNewsPage();
+    if (page === 'amtlich') renderAmtPage();
+  });
+})();
