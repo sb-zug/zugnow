@@ -44,17 +44,6 @@
   "source": "amtsblatt.zg.ch"
  },
  {
-  "id": "c592f9b7-484d-42f7-ab24-98141ee9c139",
-  "date": "2026-10-29",
-  "label": "Baugesuch",
-  "title": "Sumpfstrasse, Zug",
-  "office": "Stadt Zug - Baudepartement",
-  "number": "BP-ZG10-0000006363",
-  "expires": "2027-01-29",
-  "url": "https://amtsblatt.zg.ch/#!/search/publications/detail/c592f9b7-484d-42f7-ab24-98141ee9c139",
-  "source": "amtsblatt.zg.ch"
- },
- {
   "id": "d90845e0-61cf-48b5-a965-2e72a93d235e",
   "date": "2026-10-29",
   "label": "Baugesuch",
@@ -63,6 +52,17 @@
   "number": "BP-ZG10-0000006343",
   "expires": "2026-11-29",
   "url": "https://amtsblatt.zg.ch/#!/search/publications/detail/d90845e0-61cf-48b5-a965-2e72a93d235e",
+  "source": "amtsblatt.zg.ch"
+ },
+ {
+  "id": "c592f9b7-484d-42f7-ab24-98141ee9c139",
+  "date": "2026-10-29",
+  "label": "Baugesuch",
+  "title": "Sumpfstrasse, Zug",
+  "office": "Stadt Zug - Baudepartement",
+  "number": "BP-ZG10-0000006363",
+  "expires": "2027-01-29",
+  "url": "https://amtsblatt.zg.ch/#!/search/publications/detail/c592f9b7-484d-42f7-ab24-98141ee9c139",
   "source": "amtsblatt.zg.ch"
  },
  {
