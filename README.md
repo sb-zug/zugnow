@@ -1,6 +1,6 @@
 # zug.now
 
-Live-Website für die Stadt Zug. Ein Sammler holt stündlich echte Daten aus offenen Quellen, schreibt sie als JSON, und eine statische Seite zeigt sie an. Keine Datenbank, kein Server, keine Kosten.
+Live-Website für die Stadt Zug. Ein Sammler holt zweimal täglich echte Daten aus offenen Quellen, schreibt sie als JSON, und eine statische Seite zeigt sie an. Keine Datenbank, kein Server, keine Kosten.
 
 ## Quellen (Stand 29.10.2026 geprüft)
 
@@ -20,7 +20,7 @@ Fällt eine Quelle aus, bleibt der letzte Stand stehen; `site/data/meta.json` ze
 2. Den Inhalt dieses Ordners hochladen («Add file → Upload files», Ordner hineinziehen, inkl. `.github`).
 3. **Settings → Pages → Source: GitHub Actions** wählen.
 4. **Actions → «Daten aktualisieren & veröffentlichen» → Run workflow.** Nach ~1 Min. ist die Seite unter `https://<name>.github.io/zugnow/` live.
-5. Ab dann aktualisiert sie sich jede Stunde selbst.
+5. Ab dann aktualisiert sie sich zweimal täglich selbst (ca. 6 und 13 Uhr).
 
 Eigene Domain (z. B. zugnow.ch): unter Settings → Pages → Custom domain eintragen, beim Domain-Anbieter einen CNAME auf `<name>.github.io` setzen.
 

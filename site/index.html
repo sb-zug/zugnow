@@ -172,7 +172,6 @@ footer .col{display:flex;flex-direction:column;gap:6px;max-width:560px}
     <span id="wx" hidden>Luft <strong id="wxT"></strong></span>
     <span id="sun">Sonnenuntergang <strong id="sunT">–</strong></span>
     <span id="cnt"></span>
-    <span class="upd" id="upd">Daten werden geladen …</span>
   </div>
 </div>
 
@@ -278,7 +277,6 @@ footer .col{display:flex;flex-direction:column;gap:6px;max-width:560px}
 
   function renderBand(){
     document.getElementById('liveDate').textContent=new Intl.DateTimeFormat('de-CH',{timeZone:TZ,weekday:'long',day:'numeric',month:'long'}).format(new Date());
-    var g=D.meta.generated; document.getElementById('upd').textContent=g?'Aktualisiert '+parts(g).hm+(parts(g).key!==todayKey()?' ('+dLabel(parts(g).key)+')':''):'Keine Daten';
     var tk=todayKey(), n=D.events.filter(function(e){return parts(e.start).key===tk && !e.cancelled}).length;
     document.getElementById('cnt').innerHTML='Heute <strong>'+n+' Anlässe</strong>';
     document.getElementById('sunT').textContent=sunset(new Date(),47.166,8.516);

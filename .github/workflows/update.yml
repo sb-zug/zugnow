@@ -2,7 +2,7 @@ name: Daten aktualisieren & veröffentlichen
 
 on:
   schedule:
-    - cron: "7 * * * *"      # stündlich (UTC)
+    - cron: "7 5,12 * * *"   # 2× täglich: ca. 06:07 und 13:07 Zürich (Winterzeit; Sommer je +1 h)
   workflow_dispatch:          # «Run workflow» von Hand
   push:
     branches: [main]
