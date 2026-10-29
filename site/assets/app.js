@@ -116,22 +116,19 @@
     }).join('') || '<p style="color:var(--soft)">Für dieses Wochenende sind noch keine Anlässe gemeldet.</p>';
   }
 
-  function newsCard(n) {
-    return '<article><div class="ph' + (n.image ? '' : ' noimg') + '">' + (n.image ? img(n.image) : '<span>' + esc(n.type || 'News') + '</span>') + '</div>' +
-      '<span class="eyebrow">' + dLabel(n.date) + ' · ' + esc(n.type || 'News') + '</span>' +
-      '<h3><a href="' + esc(n.url) + '">' + esc(n.title) + '</a></h3><p>' + esc(n.lead) + '</p></article>';
+  function newsRow(n) {
+    var mm = /Medien/.test(n.type || '');
+    return '<a href="' + esc(n.url) + '" class="' + (n.image ? 'img' : '') + '"><span class="d"><b class="' + (mm ? 'mm' : '') + '">' + esc(n.type || 'News') + '</b>' + dLabel(n.date) + '</span>' +
+      '<span class="c"><span class="t">' + esc(n.title) + '</span><span class="l">' + esc(n.lead) + '</span></span>' +
+      (n.image ? '<span class="i">' + img(n.image) + '</span>' : '') + '</a>';
   }
   function renderNewsTeaser() {
     var el = $('newsGrid'); if (!el) return; var lead = leadNews();
-    el.innerHTML = D.news.filter(function (n) { return n !== lead }).slice(0, 3).map(newsCard).join('');
+    el.innerHTML = D.news.filter(function (n) { return n !== lead }).slice(0, 5).map(newsRow).join('');
   }
   function renderNewsPage() {
     var el = $('newsList'); if (!el) return;
-    el.innerHTML = D.news.map(function (n) {
-      return '<article><div class="ph' + (n.image ? '' : ' noimg') + '">' + (n.image ? img(n.image) : '<span>' + esc(n.type || 'News') + '</span>') + '</div><div style="min-width:0">' +
-        '<span class="eyebrow">' + dLabel(n.date) + ' · ' + esc(n.type || 'News') + '</span><h2><a href="' + esc(n.url) + '">' + esc(n.title) + '</a></h2><p>' + esc(n.lead) + '</p>' +
-        '<a class="src" href="' + esc(n.url) + '" style="display:inline-block;margin-top:10px;font-size:14px;font-weight:600">Auf stadtzug.ch lesen →</a></div></article>';
-    }).join('') || '<p style="color:var(--soft)">Keine Meldungen.</p>';
+    el.innerHTML = D.news.map(newsRow).join('') || '<p style="color:var(--soft)">Keine Meldungen.</p>';
   }
 
   function laufItems() {
