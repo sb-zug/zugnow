@@ -33,7 +33,7 @@ a{text-decoration:none} a:hover{text-decoration:underline;text-decoration-thickn
 #hdr{display:contents}
 header{position:sticky;top:0;z-index:50;background:var(--material);border-bottom:0;
   -webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px)}
-header::after{content:"";display:block;height:4px;background:linear-gradient(to bottom,var(--zug) 0 33.3%,var(--zug-white) 33.3% 66.6%,var(--zug) 66.6%)}
+header::after{content:"";display:block;height:9px;background:linear-gradient(to bottom,var(--zug) 0 33.3%,var(--zug-white) 33.3% 66.6%,var(--zug) 66.6%)}
 @media (prefers-reduced-transparency:reduce){header{background:var(--bg);-webkit-backdrop-filter:none;backdrop-filter:none}}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){header{background:var(--bg)}}
 header .wrap{padding-block:10px}
@@ -59,7 +59,7 @@ main.wrap{padding-block:32px 72px}
 .ph{border-radius:var(--r);background:var(--ph)}
 
 /* Hero als grosse Karte */
-.hero{gap:20px;align-items:stretch}
+.hero{gap:20px;align-items:start}
 .hero article{background:var(--card);border-radius:var(--r);padding:0 0 24px;overflow:hidden;gap:12px}
 .hero article>*:not(.ph){margin-inline:24px}
 .hero .ph{border-radius:0}
