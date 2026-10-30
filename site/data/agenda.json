@@ -2,8 +2,8 @@
  {
   "id": "augmented-reality-skulpturenweg-auf-schweizer-seen-2026-08-15",
   "title": "Augmented-Reality-Skulpturenweg auf Schweizer Seen",
-  "start": "2026-10-30T06:00:00+02:00",
-  "end": "2026-10-30T22:00:00+02:00",
+  "start": "2026-10-30T06:00:00+01:00",
+  "end": "2026-10-30T22:00:00+01:00",
   "allday": false,
   "rhythm": "täglich",
   "ongoing": true,
@@ -56,8 +56,8 @@
  {
   "id": "ausstellung-100-jahre-institut-montana-eine-reise-durch-die-geschichte-2026-10-22",
   "title": "Ausstellung 100 Jahre Institut Montana – eine Reise durch die Geschichte",
-  "start": "2026-10-30T09:00:00+02:00",
-  "end": "2026-10-30T19:00:00+02:00",
+  "start": "2026-10-30T09:00:00+01:00",
+  "end": "2026-10-30T19:00:00+01:00",
   "allday": false,
   "rhythm": "täglich",
   "ongoing": true,
@@ -105,8 +105,8 @@
  {
   "id": "dauerausstellung-museum-burg-zug-2025-07-22",
   "title": "Dauerausstellung Museum Burg Zug",
-  "start": "2026-10-30T14:00:00+02:00",
-  "end": "2026-10-30T17:00:00+02:00",
+  "start": "2026-10-30T14:00:00+01:00",
+  "end": "2026-10-30T17:00:00+01:00",
   "allday": false,
   "rhythm": "Di–Fr",
   "ongoing": true,
@@ -203,8 +203,8 @@
  {
   "id": "dauerausstellung-museum-burg-zug-1-2025-07-26",
   "title": "Dauerausstellung Museum Burg Zug",
-  "start": "2026-10-31T10:00:00+02:00",
-  "end": "2026-10-31T17:00:00+02:00",
+  "start": "2026-10-31T10:00:00+01:00",
+  "end": "2026-10-31T17:00:00+01:00",
   "allday": false,
   "rhythm": "Sa, So",
   "ongoing": true,
@@ -227,8 +227,8 @@
  {
   "id": "kyra-tabea-balderer-raphael-egil-chamber-chamber-2026-10-24",
   "title": "Kyra Tabea Balderer, Raphael Egil – Chamber, Chamber",
-  "start": "2026-10-31T10:00:00+02:00",
-  "end": "2026-10-31T17:00:00+02:00",
+  "start": "2026-10-31T10:00:00+01:00",
+  "end": "2026-10-31T17:00:00+01:00",
   "allday": false,
   "rhythm": "Sa, So",
   "ongoing": true,
@@ -376,6 +376,30 @@
   "source": "galvanik-zug.ch"
  },
  {
+  "id": "reise-in-die-vergangenheit-1-2026-07-12",
+  "title": "Reise in die Vergangenheit",
+  "start": "2026-11-01T10:00:00+01:00",
+  "end": "2026-11-01T17:00:00+01:00",
+  "allday": false,
+  "rhythm": "jeden Sonntag",
+  "ongoing": true,
+  "until": "2028-12-31",
+  "cancelled": false,
+  "place": "Museum für Urgeschichte(n)",
+  "location": "Museum für Urgeschichte(n), Hofstrasse 15, 6300 Zug",
+  "cat": "kultur",
+  "catLabel": "Kultur & Musik",
+  "tags": [
+   "Ausstellung"
+  ],
+  "institution": null,
+  "teaser": "Die Ausstellung zeigt archäologische Funde aus dem Kanton Zug von der Altsteinzeit bis zum Frühmittelalter. Modelle und Geschichten machen das Museum zu einem Erlebnis. Archäologische Funde aus dem Kanton Zug von der Alt",
+  "text": "Die Ausstellung zeigt archäologische Funde aus dem Kanton Zug von der Altsteinzeit bis zum Frühmittelalter. Modelle und Geschichten machen das Museum zu einem Erlebnis.\n\nArchäologische Funde aus dem Kanton Zug von der Altsteinzeit bis zum Frühmittelalter werden in der permanenten Ausstellung des Museums für Urgeschichte(n) Zug präsentiert. Ein Schwerpunkt dieser Sammlung von nationaler Bedeutung liegt in der Pfahlbauzeit. Zu sehen sind Fundstücke aus drei UNESCO-Welterbe-Stationen, darunter der spätbronzezeitlichen Siedlung von Zug-Sumpf, und weitere Highlights wie die jungsteinzeitliche Doppelaxt von Cham-Eslen. Mit hölzernen Bauteilen einer römischen Mühle und Tonstatuetten aus einem Heiligtum ist auch das römerzeitliche Cham-Hagendorn durch herausragende Exponate vertreten.\n\nSzenen und Figuren in Lebensgrösse, Modelle und Geschichten machen das Museum speziell für Familien und Schulklassen zu einem Erlebnis. Der Alltag vergangener Epochen lässt sich hier auf besonders anschauliche Weise nachvollziehen. Für Klassenbesuche stehen Werkräume und umfangreiches didaktisches Material bereit. Beliebt sind die Veranstaltungen: Sonntagsanlässe für die ganze Familie, Workshops für handwerk",
+  "url": "https://veranstaltungen.zug.ch/event/reise-in-die-vergangenheit-1-2026-11-01",
+  "image": "https://veranstaltungen.zug.ch/storage/daf45d895c123c1b82bfd27a9c450fce83637f5a34c7837e9b9e3df395db6ac6",
+  "source": "veranstaltungen.zug.ch"
+ },
+ {
   "id": "markus-kummer-neuinszenierung-im-kunsthaus-zug-schaudepot-2026-11-01",
   "title": "Markus Kummer - Neuinszenierung im Kunsthaus Zug Schaudepot",
   "start": "2026-11-01T10:00:00+01:00",
@@ -397,30 +421,6 @@
   "text": "Die Veranstaltung findet nicht statt. \n\nIm Herbst 2026 werden ausgewählte Sammlungsobjekte vom Zuger Künstler Markus Kummer neu inszeniert.\n\nDas Kunsthaus Zug Schaudepot beherbergt skulpturale, plastische und installative Werke aus der Sammlung des Kunsthaus Zug. Im Herbst 2026 werden ausgewählte Sammlungsobjekte vom Zuger Künstler Markus Kummer neu inszeniert. Sein Sinn für Raum, Material und Atmosphäre verbindet sich mit einem Interesse an archäologischen Praktiken, Sammlungsobjekten und den Prinzipien des Bauens und Zerlegens – mit Fragen also, wie sich Dinge verbinden und wieder auflösen lassen, wie im Spiel Neues entsteht. So eröffnet Markus Kummer überraschende Perspektiven auf die Bestände des Hauses. Eine Einladung, Vertrautes neu zu entdecken.\n\nMarkus Kummer ist ausgebildeter Maurer und Hochbauzeichner. Nach einem Bachelor in Innenarchitektur und Szenografie schloss er einen Master of Fine Arts an der HKB Bern ab. Seine Arbeiten verbinden unterschiedliche Materialien, Denkprozesse und Perspektiven zu poetischen wie kraftvollen Setzungen. Kummers Werke wurden in renommierten Institutionen im In- und Ausland präsentiert, etwa im Haus für Kunst Uri, im Haus Konstruktiv, Züric",
   "url": "https://veranstaltungen.zug.ch/event/markus-kummer-neuinszenierung-im-kunsthaus-zug-schaudepot-2026-11-01",
   "image": "https://veranstaltungen.zug.ch/storage/8f4cff9cc6d00283c5e84fc9a4900ec09a5972b17d62e7c73f905565defe1114",
-  "source": "veranstaltungen.zug.ch"
- },
- {
-  "id": "reise-in-die-vergangenheit-1-2026-07-12",
-  "title": "Reise in die Vergangenheit",
-  "start": "2026-11-01T10:00:00+02:00",
-  "end": "2026-11-01T17:00:00+02:00",
-  "allday": false,
-  "rhythm": "jeden Sonntag",
-  "ongoing": true,
-  "until": "2028-12-31",
-  "cancelled": false,
-  "place": "Museum für Urgeschichte(n)",
-  "location": "Museum für Urgeschichte(n), Hofstrasse 15, 6300 Zug",
-  "cat": "kultur",
-  "catLabel": "Kultur & Musik",
-  "tags": [
-   "Ausstellung"
-  ],
-  "institution": null,
-  "teaser": "Die Ausstellung zeigt archäologische Funde aus dem Kanton Zug von der Altsteinzeit bis zum Frühmittelalter. Modelle und Geschichten machen das Museum zu einem Erlebnis. Archäologische Funde aus dem Kanton Zug von der Alt",
-  "text": "Die Ausstellung zeigt archäologische Funde aus dem Kanton Zug von der Altsteinzeit bis zum Frühmittelalter. Modelle und Geschichten machen das Museum zu einem Erlebnis.\n\nArchäologische Funde aus dem Kanton Zug von der Altsteinzeit bis zum Frühmittelalter werden in der permanenten Ausstellung des Museums für Urgeschichte(n) Zug präsentiert. Ein Schwerpunkt dieser Sammlung von nationaler Bedeutung liegt in der Pfahlbauzeit. Zu sehen sind Fundstücke aus drei UNESCO-Welterbe-Stationen, darunter der spätbronzezeitlichen Siedlung von Zug-Sumpf, und weitere Highlights wie die jungsteinzeitliche Doppelaxt von Cham-Eslen. Mit hölzernen Bauteilen einer römischen Mühle und Tonstatuetten aus einem Heiligtum ist auch das römerzeitliche Cham-Hagendorn durch herausragende Exponate vertreten.\n\nSzenen und Figuren in Lebensgrösse, Modelle und Geschichten machen das Museum speziell für Familien und Schulklassen zu einem Erlebnis. Der Alltag vergangener Epochen lässt sich hier auf besonders anschauliche Weise nachvollziehen. Für Klassenbesuche stehen Werkräume und umfangreiches didaktisches Material bereit. Beliebt sind die Veranstaltungen: Sonntagsanlässe für die ganze Familie, Workshops für handwerk",
-  "url": "https://veranstaltungen.zug.ch/event/reise-in-die-vergangenheit-1-2026-11-01",
-  "image": "https://veranstaltungen.zug.ch/storage/daf45d895c123c1b82bfd27a9c450fce83637f5a34c7837e9b9e3df395db6ac6",
   "source": "veranstaltungen.zug.ch"
  },
  {
@@ -593,8 +593,8 @@
  {
   "id": "zazen-in-zug-woechentliche-zen-meditation-2026-06-01",
   "title": "Zazen in Zug – wöchentliche Zen-Meditation",
-  "start": "2026-11-02T19:15:00+02:00",
-  "end": "2026-11-02T20:45:00+02:00",
+  "start": "2026-11-02T19:15:00+01:00",
+  "end": "2026-11-02T20:45:00+01:00",
   "allday": false,
   "rhythm": "jeden Montag",
   "ongoing": false,
@@ -667,8 +667,8 @@
  {
   "id": "reise-in-die-vergangenheit-2026-07-15",
   "title": "Reise in die Vergangenheit",
-  "start": "2026-11-04T14:00:00+02:00",
-  "end": "2026-11-04T17:00:00+02:00",
+  "start": "2026-11-04T14:00:00+01:00",
+  "end": "2026-11-04T17:00:00+01:00",
   "allday": false,
   "rhythm": "jeden Mittwoch",
   "ongoing": true,
