@@ -2,41 +2,39 @@
  "sources": {
   "news": {
    "ok": true,
-   "updated": "2026-10-30T21:27+01:00",
+   "updated": "2026-10-30T21:29+01:00",
    "count": 10
   },
   "agenda": {
    "ok": true,
-   "updated": "2026-10-30T21:27+01:00",
+   "updated": "2026-10-30T21:29+01:00",
    "count": 189
   },
   "amtlich": {
-   "ok": false,
-   "updated": "2026-10-30T21:20+01:00",
-   "count": 8,
-   "error": "IncompleteRead: IncompleteRead(354383 bytes read, 57235 more expected)",
-   "failed": "2026-10-30T21:27+01:00"
+   "ok": true,
+   "updated": "2026-10-30T21:29+01:00",
+   "count": 8
   },
   "theatercasino": {
    "ok": true,
-   "updated": "2026-10-30T21:27+01:00",
+   "updated": "2026-10-30T21:29+01:00",
    "count": 31
   },
   "galvanik": {
    "ok": true,
-   "updated": "2026-10-30T21:27+01:00",
+   "updated": "2026-10-30T21:29+01:00",
    "count": 15
   },
   "wab": {
    "ok": true,
-   "updated": "2026-10-30T21:27+01:00",
+   "updated": "2026-10-30T21:29+01:00",
    "count": 2
   },
   "politik": {
    "ok": true,
-   "updated": "2026-10-30T21:27+01:00",
+   "updated": "2026-10-30T21:29+01:00",
    "count": 9
   }
  },
- "generated": "2026-10-30T21:27+01:00"
+ "generated": "2026-10-30T21:29+01:00"
 }
