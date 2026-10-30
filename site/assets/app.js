@@ -166,25 +166,25 @@
       (n.image ? '<span class="i">' + img(n.image) + '</span>' : '') + '</a>';
   }
   var CHEVR = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
+  var EXT = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>';
+  function dMini(key) { var p = key.split('-'); return +p[2] + '.' + (+p[1]) + '.' }
+  function topicOf(n) { return !n.topicLabel || n.topic === 'weitere' ? 'Stadtleben' : n.topicLabel }
   function renderNewsTeaser() {
     var el = $('newsGrid'); if (!el) return;
-    // Top-Themen: Meldungen mit Bild als Karten; der Rest als Liste
-    var top = D.news.filter(function (n) { return n.image }).slice(0, 6), tEl = $('topNews');
-    if (tEl && top.length) {
-      $('topSec').hidden = false;
-      tEl.innerHTML = top.map(function (n) {
-        return '<a class="tcard" href="' + esc(n.url) + '"><div class="tim">' + img(n.image) + '</div>' +
-          '<div class="tb"><span class="tm">' + dLabel(n.date) + (n.topicLabel ? '<b class="ntop">' + esc(n.topicLabel) + '</b>' : '') + '</span><strong>' + esc(n.title) + '</strong>' +
-          (n.lead ? '<span class="tl">' + esc(n.lead) + '</span>' : '') +
-          '<span class="ts"><span>' + esc(n.type || 'News') + ' · Stadt Zug</span>' + CHEVR + '</span></div></a>';
-      }).join('');
-      swiper(tEl, $('nPrev'), $('nNext'));
-    } else { $('nTitle').textContent = 'Aktuelle News' }
-    el.innerHTML = D.news.filter(function (n) { return top.indexOf(n) < 0 }).slice(0, 5).map(function (n) {
-      return '<a href="' + esc(n.url) + '"><span class="hc"><span class="hd">' + dLabel(n.date) + (n.topicLabel ? '<b class="ntop">' + esc(n.topicLabel) + '</b>' : '') + '</span><span class="ht">' + esc(n.title) + '</span>' +
-        (n.lead ? '<span class="hl">' + esc(n.lead) + '</span>' : '') + '</span>' +
-        '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>';
-    }).join('') || '<p style="color:var(--soft)">Keine Meldungen.</p>';
+    // «Das bewegt Zug»: neueste Meldung mit Bild gross links, daneben die nächsten Meldungen (ohne Baugesuch-Listen)
+    var pool = D.news.filter(function (n) { return !/^Baugesuche vom/i.test(n.title) });
+    var lead = pool.filter(function (n) { return n.image })[0] || pool[0];
+    if (!lead) { el.innerHTML = '<p style="color:var(--soft)">Keine Meldungen.</p>'; return }
+    var rest = pool.filter(function (n) { return n !== lead }).slice(0, 3);
+    el.innerHTML = '<a class="blead" href="' + esc(lead.url) + '">' + (lead.image ? '<div class="bim">' + img(lead.image) + '</div>' : '') +
+      '<div class="bb"><span class="beye">' + esc(topicOf(lead)) + ' · ' + dLabel(lead.date) + '</span><strong>' + esc(lead.title) + '</strong>' +
+      (lead.lead ? '<span class="bl">' + esc(lead.lead) + '</span>' : '') +
+      '<span class="bsrc">' + esc(lead.type || 'News') + ' · Stadt Zug ' + EXT + '</span></div></a>' +
+      '<div class="blist">' + rest.map(function (n) {
+        return '<a href="' + esc(n.url) + '"><span class="bc"><span class="beye">' + esc(topicOf(n)) + ' · ' + dMini(n.date) + '</span><strong>' + esc(n.title) + '</strong>' +
+          (n.lead ? '<span class="bl">' + esc(n.lead) + '</span>' : '') + '<span class="bsrc">Stadt Zug ' + EXT + '</span></span>' +
+          (n.image ? '<span class="bth">' + img(n.image) + '</span>' : '') + '</a>';
+      }).join('') + '</div>';
   }
   var NTOPICS = [['alle', 'Alle'], ['politik', 'Politik & Verwaltung'], ['bauen', 'Bauen & Planung'], ['mobilitaet', 'Mobilität & Verkehr'], ['bildung', 'Bildung & Schule'], ['kultur', 'Kultur & Freizeit'], ['umwelt', 'Umwelt & Energie'], ['soziales', 'Soziales & Gesundheit'], ['weitere', 'Weitere']];
   // Themen-Kacheln (Startseite) → News-Seite mit Filter
