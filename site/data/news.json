@@ -7,7 +7,9 @@
   "type": "Medienmitteilung",
   "lead": "In der Äusseren Lorzenallmend soll ein neuer Stadtteil entstehen. Die dafür erarbeiteten Unterlagen zur Gebietsplanung Äussere Lorzenallmend werden vom 12. November 2026 bis 11. Dezember 2026 öffentlich aufgelegt. Am 9. November 2026 findet für Interessierte eine Informationsveranstaltung im Burgbachsaal",
   "image": "https://cdn.zg.ch/.imaging/flex/jcr:46173d0b-0baf-446c-8ea4-f6a3e6be00d3/ratio/3508:2481/version/1793348322/width/1120/Perimeter_%C3%A4ussere_Lorenallmend_Luftbild.png",
-  "source": "Stadt Zug"
+  "source": "Stadt Zug",
+  "topic": "bauen",
+  "topicLabel": "Bauen & Planung"
  },
  {
   "id": "ggr-sitzung-vom-12-11-2028",
@@ -17,7 +19,9 @@
   "type": "Amtsmitteilung",
   "lead": "Die Sitzung des GGR ist öffentlich und findet im Regierungsgebäude, Seestrasse 2, Zug, ab 8 Uhr statt. Sie können die Sitzung auch zuhause im Live-Stream verfolgen.",
   "image": null,
-  "source": "Stadt Zug"
+  "source": "Stadt Zug",
+  "topic": "politik",
+  "topicLabel": "Politik & Verwaltung"
  },
  {
   "id": "winterdienst-2026-2027",
@@ -27,7 +31,9 @@
   "type": "Amtsmitteilung",
   "lead": "Der Werkhof der Stadt Zug wird sich auch im kommenden Winter für betriebssichere Strassen und Trottoire in der Stadtgemeinde einsetzen. Der offizielle Winterdienst beginnt am 2. November 2026 und endet am 12. April 2027. Grundsätzlich gilt für das gesamte Gemeindenetz Schwarzräumung, abgesehen von wenigen",
   "image": null,
-  "source": "Stadt Zug"
+  "source": "Stadt Zug",
+  "topic": "mobilitaet",
+  "topicLabel": "Mobilität & Verkehr"
  },
  {
   "id": "Baugesuche-vom-29-10-2026",
@@ -37,7 +43,9 @@
   "type": "Amtsmitteilung",
   "lead": "Im Stadthaus an der Gubelstrasse 22, am Empfangsschalter im Erdgeschoss, liegen jeweils Montag bis Freitag von 8.00 - 12.00 Uhr und von 13.30 - 17.00 Uhr, nachstehende Baugesuche auf: Stadt Zug, Finanzdepartement, Immobilien, Gubelstrasse 22, 6301 Zug. Neubau Lagergebäude als Ersatz des abgebrannten",
   "image": null,
-  "source": "Stadt Zug"
+  "source": "Stadt Zug",
+  "topic": "bauen",
+  "topicLabel": "Bauen & Planung"
  },
  {
   "id": "ggr-sitzung-vom-20-10-2027",
@@ -47,7 +55,9 @@
   "type": "Amtsmitteilung",
   "lead": "Die Sitzung des GGR ist öffentlich und findet im Regierungsgebäude, Seestrasse 2, Zug, ab 8 Uhr statt. Sie können die Sitzung auch zuhause im Live-Stream verfolgen.",
   "image": null,
-  "source": "Stadt Zug"
+  "source": "Stadt Zug",
+  "topic": "politik",
+  "topicLabel": "Politik & Verwaltung"
  },
  {
   "id": "quartierbuero-geht-zu-den-menschen",
@@ -57,7 +67,9 @@
   "type": "Medienmitteilung",
   "lead": "Die Stadt Zug entwickelt das Quartierbüro Guthirt weiter: Künftig steht das «Quartierbüro on Tour» im Zentrum. Der Fachbereich Soziokultur ist damit vermehrt dort präsent, wo sich die Bevölkerung im Alltag aufhält. Ergänzend bleibt der digitale Quartierbriefkasten bestehen.",
   "image": null,
-  "source": "Stadt Zug"
+  "source": "Stadt Zug",
+  "topic": "soziales",
+  "topicLabel": "Soziales & Gesundheit"
  },
  {
   "id": "Baugesuche-vom-22-10-2026",
@@ -67,7 +79,9 @@
   "type": "Amtsmitteilung",
   "lead": "Im Stadthaus an der Gubelstrasse 22, am Empfangsschalter im Erdgeschoss, liegen jeweils Montag bis Freitag von 8.00 - 12.00 Uhr und von 13.30 - 17.00 Uhr, nachstehende Baugesuche auf: Brandenberg Esther, Grienbachstrasse 27, 6300 Zug. CSL Partner Architekten AG, Baarerstrasse 133, 6300 Zug. Abbruch Mehrfamilienhaus",
   "image": null,
-  "source": "Stadt Zug"
+  "source": "Stadt Zug",
+  "topic": "bauen",
+  "topicLabel": "Bauen & Planung"
  },
  {
   "id": "Publikation-Baugesuche-Dezember-2026",
@@ -77,7 +91,9 @@
   "type": "Amtsmitteilung",
   "lead": "Publikationen von Baugesuchen während der Weihnachtszeit führen häufig dazu, dass Betroffene von ihren Einsprachemöglichkeiten nicht – oder nur unter erschwerten Bedingungen – Gebrauch machen können. Im Dezember 2026 gilt daher folgende Regelung: Am Donnerstag, 17. und Donnerstag, 24. Dezember 2026 werden",
   "image": null,
-  "source": "Stadt Zug"
+  "source": "Stadt Zug",
+  "topic": "bauen",
+  "topicLabel": "Bauen & Planung"
  },
  {
   "id": "geschaefte-und-resultate-der-sitzung-des-grossen-gemeinderates-ggr-vom-20-oktober-2026",
@@ -87,7 +103,9 @@
   "type": "Medienmitteilung",
   "lead": "Zusammenfassung der Geschäfte und Resultate der Sitzung des Grossen Gemeinderates (GGR) vom 20. Oktober 2026.",
   "image": null,
-  "source": "Stadt Zug"
+  "source": "Stadt Zug",
+  "topic": "politik",
+  "topicLabel": "Politik & Verwaltung"
  },
  {
   "id": "z-fuess-fahrsch-besser",
@@ -97,6 +115,8 @@
   "type": "Medienmitteilung",
   "lead": "Der Schulweg ist ein wichtiger Lern- und Erfahrungsraum, der die Entwicklung von Kindern auf vielen Ebenen fördert. Mit ihrer Sensibilisierungskampagne «Z’Fuess fahrsch besser!» will die Stadt Zug dazu anregen, vom Elterntaxi in die Selbstständigkeit umzusteigen. Damit soll die Entwicklung der Kinder",
   "image": "https://cdn.zg.ch/.imaging/flex/jcr:bb292908-645f-4dfa-9f97-fe400de183e9/ratio/2998:2000/version/1792393933/width/1120/Strassenbemalung%20Schulhaus%20Kirchmatt.jpg",
-  "source": "Stadt Zug"
+  "source": "Stadt Zug",
+  "topic": "mobilitaet",
+  "topicLabel": "Mobilität & Verkehr"
  }
 ]
