@@ -11,6 +11,8 @@ Quellen:
   News     https://stadtzug.ch/de/news?content_category=news (HTML, inkl. Artikelbild)
   Agenda   https://veranstaltungen.zug.ch/events/ical       (OneGov iCal, auf Stadt Zug gefiltert)
   Amtlich  https://amtsblatt.zg.ch/api/v1/publications       (eSHAB REST-API, Absender «Stadt Zug»)
+  Theater  https://www.theatercasino.ch/programm/veranstaltungen (HTML-Spielplan, in die Agenda gemischt)
+  Galvanik https://galvanik-zug.ch/programm/                 (HTML-Programm + Detailseite für Uhrzeit/Bild)
 Bibliothek, Museum Burg, Kunsthaus, Musikschule sind in der OneGov-Agenda enthalten
 und werden über Ort/Kategorie als Institution markiert.
 """
@@ -274,6 +276,8 @@ INSTITUTIONS = [
     ("burg", "Museum Burg Zug", re.compile(r"Burg Zug", re.I), None),
     ("kunsthaus", "Kunsthaus Zug", re.compile(r"Kunsthaus Zug", re.I), None),
     ("musikschule", "Musikschule Zug", re.compile(r"Musikschule", re.I), "Musikschule"),
+    ("theatercasino", "Theater Casino Zug", re.compile(r"Theater Casino", re.I), None),
+    ("galvanik", "Galvanik", re.compile(r"Galvanik", re.I), None),
 ]
 
 
@@ -388,6 +392,133 @@ _OG_IMAGE = re.compile(r'<meta[^>]+property="og:image"[^>]+content="([^"]+)"', r
 def og_image(page: str) -> str | None:
     m = _OG_IMAGE.search(page) or re.search(r'<meta[^>]+content="([^"]+)"[^>]+property="og:image"', page, re.I)
     return html.unescape(m.group(1)) if m else None
+
+
+# ---------------------------------------------------------------- Kulturhäuser (eigene Websites, HTML)
+# Theater Casino und Galvanik fehlen in der OneGov-Agenda → direkt von ihren Programmseiten.
+
+TCZ_URL = "https://www.theatercasino.ch/programm/veranstaltungen"
+GALVANIK_URL = "https://galvanik-zug.ch/programm/"
+GALVANIK_BASE = "https://galvanik-zug.ch"
+
+_TCZ_TOKEN = re.compile(r'id="month-(\d{4})-(\d{2})"|<div id="node-([0-9a-f-]+)" class="event-date-entry\b')
+_MONTHS_DE = {"jan": 1, "feb": 2, "mär": 3, "mar": 3, "apr": 4, "mai": 5, "jun": 6, "jul": 7,
+              "aug": 8, "sep": 9, "okt": 10, "nov": 11, "dez": 12}
+
+
+def _house_event(eid, title, sub, start, allday, url, cat, tags, inst, place, location, source, cancelled=False, soldout=False):
+    teaser = sub + (" · Ausverkauft" if soldout else "")
+    return {
+        "id": eid, "title": title, "start": start.isoformat(), "end": None, "allday": allday,
+        "rhythm": "", "ongoing": False, "until": None, "cancelled": cancelled,
+        "place": place, "location": location, "cat": cat, "catLabel": CAT_LABEL[cat], "tags": tags,
+        "institution": inst, "teaser": teaser[:220], "text": teaser[:1200], "url": url, "image": None,
+        "source": source,
+    }
+
+
+def parse_theatercasino(page: str) -> list[dict]:
+    toks = list(_TCZ_TOKEN.finditer(page))
+    year, out = None, []
+    for i, m in enumerate(toks):
+        if m.group(1):
+            year = int(m.group(1))
+            continue
+        chunk = page[m.end(): toks[i + 1].start() if i + 1 < len(toks) else len(page)]
+        d = re.search(r'date-font[^>]*>\s*\w*\s*(\d{1,2})\.(\d{1,2})\.', chunk)
+        title = re.search(r'event-title-text[^>]*>(.*?)</strong>', chunk, re.S)
+        if not (d and title and year):
+            continue
+        hm = re.search(r'(\d{1,2}):(\d{2})\s*Uhr', chunk)
+        day, mon = int(d.group(1)), int(d.group(2))
+        start = datetime(year, mon, day, int(hm.group(1)) if hm else 0, int(hm.group(2)) if hm else 0, tzinfo=TZ)
+        link = re.search(r'href="(https://www\.theatercasino\.ch/programm/veranstaltungen/[^"]+)"', chunk)
+        sub = re.search(r'<p class="fs-lg[^"]*">(.*?)</p>', chunk, re.S)
+        cats = re.search(r'data-categories="([^"]*)"', page[m.start(): m.end() + 400])
+        junges = re.search(r'data-junges="([^"]+)"', page[m.start(): m.end() + 400])
+        t = _text(title.group(1))
+        tags = [c for c in (cats.group(1).split(",") if cats else []) if c]
+        out.append(_house_event(
+            "tcz-" + m.group(3), t, re.sub(r"\s+", " ", _text(sub.group(1))) if sub else "", start, not hm,
+            html.unescape(link.group(1)) if link else TCZ_URL,
+            "kinder" if junges or _KIDS.search(t) else "kultur", tags, "theatercasino",
+            "Theater Casino Zug", "Theater Casino Zug, Artherstrasse 2–4, 6300 Zug", "theatercasino.ch",
+            cancelled=bool(re.search(r"abgesagt", chunk, re.I)), soldout="isSoldOut" in chunk))
+    return out
+
+
+def tcz_image(page: str) -> str | None:
+    """Erstes Bühnenbild der Detailseite, Variante ~768 px."""
+    m = re.search(r'<img class="img-lazy[^"]*object-fit-cover"[^>]*data-srcset="([^"]+)"', page)
+    if not m:
+        return None
+    cands = [c.strip().split() for c in m.group(1).split(",") if c.strip()]
+    cands = [(int(w[:-1]), u) for u, w in (c for c in cands if len(c) == 2) if w.endswith("w")]
+    fit = [c for c in cands if c[0] <= 800] or cands
+    return max(fit)[1] if fit else None
+
+
+_GALV_CAT = {"Kinder": "kinder", "Familie": "kinder", "Markt": "maerkte"}
+
+
+def parse_galvanik(page: str) -> list[dict]:
+    year, out = None, []
+    for m in re.finditer(r'<tr class="year-row"><td[^>]*>(\d{4})</td></tr>|<tr class="event[^"]*">(.*?)</tr>', page, re.S):
+        if m.group(1):
+            year = int(m.group(1))
+            continue
+        row = m.group(2)
+        href = re.search(r'href="(/programm/[^"]+)"', row)
+        day = re.search(r'class="day">(\d{1,2})\.', row)
+        mon = re.search(r'class="month">([^<.]+)', row)
+        title = re.search(r'class="title">(.*?)</span>', row, re.S)
+        if not (href and day and mon and title and year):
+            continue
+        mnum = _MONTHS_DE.get(mon.group(1).strip().lower()[:3])
+        if not mnum:
+            continue
+        serie = re.search(r'class="serie">(.*?)</span>', row, re.S)
+        cat = re.search(r'class="category[^"]*">\s*([^<]+?)\s*</div>', row)
+        catname = cat.group(1) if cat else ""
+        t = _text(title.group(1))
+        out.append(_house_event(
+            "galvanik-" + href.group(1).strip("/").split("/")[-1], t,
+            re.sub(r"\s+", " ", _text(serie.group(1))) if serie else catname,
+            datetime(year, mnum, int(day.group(1)), tzinfo=TZ), True, GALVANIK_BASE + href.group(1),
+            "kinder" if _KIDS.search(t) else _GALV_CAT.get(catname, "kultur"), [catname] if catname else [],
+            "galvanik", "Galvanik", "Kulturzentrum Galvanik, Chamerstrasse 173, 6300 Zug", "galvanik-zug.ch",
+            cancelled=bool(re.search(r"abgesagt|verschoben", t, re.I))))
+    return out
+
+
+def galvanik_detail(page: str) -> dict:
+    """Uhrzeit und Bild von der Detailseite."""
+    hm = re.search(r'date-time[\s\S]{0,200}?(\d{1,2}):(\d{2})\s*Uhr', page)
+    return {"hm": f"{int(hm.group(1)):02d}:{hm.group(2)}" if hm else None, "image": og_image(page)}
+
+
+def _norm_title(t: str) -> str:
+    return re.sub(r"[^a-z0-9äöü]+", "", t.lower())
+
+
+def merge_events(base: list[dict], extra: list[dict], today: date) -> list[dict]:
+    """Zusätzliche Anlässe anfügen: nur im Zeitfenster, ohne Doppel (gleicher Tag, ähnlicher Titel)."""
+    horizon = today + timedelta(days=AGENDA_DAYS)
+    have = {}
+    for e in base:
+        have.setdefault(e["start"][:10], []).append(_norm_title(e["title"]))
+    out = list(base)
+    for e in extra:
+        d = date.fromisoformat(e["start"][:10])
+        if d < today or d > horizon:
+            continue
+        n = _norm_title(e["title"])
+        if any(n == o or (min(len(n), len(o)) >= 6 and (n in o or o in n)) for o in have.get(e["start"][:10], [])):
+            continue
+        have.setdefault(e["start"][:10], []).append(n)
+        out.append(e)
+    out.sort(key=lambda e: e["start"])
+    return out
 
 
 # ---------------------------------------------------------------- Amtlich (eSHAB API)
@@ -508,6 +639,45 @@ def run(offline: Path | None, only: set[str]) -> int:
         for it in items[:EVENT_IMAGES_MAX]:
             if it["url"]:
                 it["image"] = image_for(it["url"], None, og_image)
+        # Kulturhäuser: Ausfall einer Website stoppt die Agenda nicht
+        for name, url, fixture, parser in (("theatercasino", TCZ_URL, "theatercasino.html", parse_theatercasino),
+                                           ("galvanik", GALVANIK_URL, "galvanik.html", parse_galvanik)):
+            try:
+                extra = parser(get(url, fixture))
+                if not extra:
+                    raise ValueError("keine Anlässe erkannt (Seitenaufbau geändert?)")
+                n0 = len(items)
+                items = merge_events(items, extra, today)
+                meta["sources"][name] = {"ok": True, "updated": now.isoformat(timespec="minutes"), "count": len(items) - n0}
+                print(f"  ✓ {name}: {len(extra)} gefunden, {len(items) - n0} übernommen")
+            except Exception as e:
+                meta["sources"][name] = {**meta["sources"].get(name, {}), "ok": False,
+                                         "error": f"{type(e).__name__}: {e}", "failed": now.isoformat(timespec="minutes")}
+                print(f"  ✗ {name}: {e}", file=sys.stderr)
+        for it in items:
+            if it["source"] == "theatercasino.ch" and it["url"] != TCZ_URL:
+                base = it["url"].split("?")[0]   # ein Bild pro Produktion, nicht pro Termin
+                fx = "theatercasino_event.html" if "wiener-concert-verein" in base else None
+                it["image"] = image_for(base, fx, tcz_image)
+            elif it["source"] == "galvanik-zug.ch":
+                fx = "galvanik_event.html" if "noise-fest" in it["url"] else None
+                key, det = "detail:" + it["url"], None
+                if key in cache:
+                    det = cache[key]
+                elif offline:
+                    det = galvanik_detail((offline / fx).read_text("utf-8")) if fx else None
+                else:
+                    try:
+                        det = cache[key] = galvanik_detail(fetch(it["url"]))
+                    except Exception:
+                        pass
+                if det:
+                    it["image"] = det.get("image")
+                    if det.get("hm"):
+                        h, mi = map(int, det["hm"].split(":"))
+                        it["start"] = datetime.fromisoformat(it["start"]).replace(hour=h, minute=mi).isoformat()
+                        it["allday"] = False
+        items.sort(key=lambda e: e["start"])
         return items
 
     def amtlich():
