@@ -300,3 +300,15 @@ nav a[aria-current="page"]::after{transform:scaleX(1);opacity:1}
   .hero #lead>.eyebrow{grid-row:2}.hero #lead>h2{grid-row:3}.hero #lead>p{grid-row:4}.hero #lead>a{grid-row:5;justify-self:start}
   .hero #lead>.eyebrow{justify-self:start}
 }
+
+/* --- Startseite «Aktuelle News»: Textliste ohne Bilder --- */
+.hn{margin-top:48px}
+.hnews{border-top:1px solid var(--line)}
+.hnews a{display:flex;align-items:center;gap:24px;padding:20px 0;border-bottom:1px solid var(--line);text-decoration:none;color:var(--fg)}
+.hnews .hc{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.hnews .hd{font-size:15px;color:var(--soft);font-variant-numeric:tabular-nums}
+.hnews .ht{font-family:var(--body);font-weight:700;font-size:20px;line-height:1.3;letter-spacing:-.01em}
+.hnews .hl{font-size:16px;line-height:1.5;color:var(--soft);max-width:80ch;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hnews svg{flex-shrink:0;color:var(--brand)}
+.hnews a:hover .ht{text-decoration:underline}
+@media (max-width:560px){.hnews a{gap:12px;padding:16px 0}.hnews .ht{font-size:18px}.hnews .hl{font-size:15px}}
