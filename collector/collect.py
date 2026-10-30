@@ -49,7 +49,6 @@ ZUG_BFS = 1711                   # Gemeindenummer Stadt Zug
 VOTE_DATES = ["2026-11-29"]
 PARTY_DAYS = 120          # Parteimeldungen: so weit zurück
 PARTY_MAX = 4             # pro Partei höchstens so viele (gleich behandelt)
-PARTY_SKIP = {"EDU"}      # nur nationale Website verlinkt → keine Meldungen übernehmen
 
 AGENDA_DAYS = 60          # so weit voraus
 EVENT_IMAGES_MAX = 150    # Bilder (og:image) für die nächsten n Anlässe; gecacht, nur neue werden abgerufen
@@ -605,16 +604,18 @@ POLITIK_FIX = {
                  ["Etienne Schumpf", "FDP", ""], ["Eliane Birchmeier", "FDP", ""]],
     # alphabetisch wie stadtzug.ch: Name, Website, Kürzel, Ebene der Website (Stadt/Kanton/Schweiz)
     "parteien": [
-        ["Alternative – die Grünen (ALG)", "https://gruene-zug.ch/", "ALG", "Kanton"],
-        ["Aufrecht Zug", "https://aufrecht-zug.ch/", "Aufrecht", "Kanton"],
-        ["Christlichsoziale Partei (CSP)", "https://csp-zug.ch/", "CSP", "Stadt"],
-        ["Die Mitte Stadt Zug", "https://stadtzug-diemitte.ch/", "Mitte", "Stadt"],
-        ["EDU", "https://www.edu-schweiz.ch/", "EDU", "Schweiz"],
-        ["EVP Kanton Zug", "https://www.evp-zg.ch", "EVP", "Kanton"],
-        ["FDP.Die Liberalen Stadt Zug", "https://www.fdp-zg.ch/partei/sektionen/fdpdie-liberalen-stadt-zug/willkommen/", "FDP", "Stadt"],
-        ["Grünliberale (GLP)", "https://zg.grunliberale.ch/", "GLP", "Kanton"],
-        ["SP Stadt Zug", "https://stadtzug.sp-zug.ch/", "SP", "Stadt"],
-        ["SVP Stadt Zug", "https://www.svp-zug.ch/sektion/svp-stadt-zug/", "SVP", "Stadt"],
+        # Name, Website, Kürzel, Ebene, Quelle der Meldungen (Typ, URL) – geprüft 30.10.2026 im Browser
+        ["Alternative – die Grünen (ALG)", "https://gruene-stadt-zug.ch/", "ALG", "Stadt", "feed", "https://gruene-stadt-zug.ch/feed/"],
+        ["Aufrecht Zug", "https://aufrecht-zug.ch/", "Aufrecht", "Schweiz", None, None],   # leitet auf nationale Website um
+        ["Christlichsoziale Partei (CSP)", "https://csp-zug.ch/", "CSP", "Stadt", "feed", "https://csp-zug.ch/feed/"],
+        ["Die Mitte Stadt Zug", "https://stadtzug-diemitte.ch/", "Mitte", "Stadt", "feed", "https://stadtzug-diemitte.ch/feed/"],
+        ["EDU", "https://www.edu-schweiz.ch/", "EDU", "Schweiz", None, None],               # nur nationale Website
+        ["EVP Kanton Zug", "https://www.evp-zg.ch", "EVP", "Kanton", "typo3", "https://www.evp-zg.ch/aktuell"],
+        ["FDP.Die Liberalen Stadt Zug", "https://www.fdp-zg.ch/partei/sektionen/fdpdie-liberalen-stadt-zug/willkommen/", "FDP", "Stadt",
+         "typo3", "https://www.fdp-zg.ch/partei/sektionen/fdpdie-liberalen-stadt-zug/news"],
+        ["Grünliberale (GLP)", "https://zg.glp.swiss/", "GLP", "Kanton", "feed", "https://zg.glp.swiss/feed/"],
+        ["SP Stadt Zug", "https://stadtzug.sp-zug.ch/", "SP", "Stadt", "feed", "https://stadtzug.sp-zug.ch/feed/"],
+        ["SVP Stadt Zug", "https://www.svp-zug.ch/sektion/svp-stadt-zug/", "SVP", "Stadt", "svplist", "https://www.svp-zug.ch/sektion/svp-stadt-zug/"],
     ],
     "links": {
         "ris": "https://ratsinfo.stadtzug.ch/gremium/1/geschaefte?itemsPerPage=50&ordering=-begin_date&page=1",
@@ -682,27 +683,6 @@ def wab_city_result(data) -> dict | None:
 
 # ---------------------------------------------------------------- Parteimeldungen (RSS/Atom)
 
-_FEED_LINK = re.compile(r'<link[^>]+type="application/(?:rss|atom)\+xml"[^>]*>', re.I)
-
-
-def discover_feeds(page: str, base: str) -> list[str]:
-    """Feed-Links aus <link rel="alternate">, ohne Kommentar-Feeds; danach WordPress-Standard /feed/."""
-    out = []
-    for tag in _FEED_LINK.findall(page):
-        m = re.search(r'href="([^"]+)"', tag)
-        if m and not re.search(r"comment|kommentar", m.group(1) + tag, re.I):
-            out.append(urllib.parse.urljoin(base, html.unescape(m.group(1))))
-    root = re.match(r"https?://[^/]+", base).group(0)
-    if base.rstrip("/") != root:          # Unterseite (z. B. Sektion Stadt Zug): deren eigener Feed zuerst
-        out.insert(0, base.rstrip("/") + "/feed/")
-    out += [root + "/feed/"]
-    seen, res = set(), []
-    for u in out:
-        if u not in seen:
-            seen.add(u); res.append(u)
-    return res
-
-
 def parse_feed(xml: str) -> list[dict]:
     import xml.etree.ElementTree as ET
     from email.utils import parsedate_to_datetime
@@ -735,9 +715,37 @@ def parse_feed(xml: str) -> list[dict]:
         if not x["title"] or not x["url"] or not x["dt"]:
             continue
         lead = _text(html.unescape(re.sub(r"<[^>]+>", " ", x["lead"])))
-        lead = re.sub(r"\s*(\[…\]|\[\.\.\.\]|Der Beitrag .* erschien zuerst auf .*)$", "", lead).strip()
+        lead = re.sub(r"\s*(\[…\]|\[\.\.\.\]|Der Beitrag .* erschien zuerst auf .*|The post .* appeared first on .*)$", "", lead).strip()
         out.append({"title": _text(html.unescape(x["title"])), "url": x["url"],
                     "date": x["dt"].astimezone(TZ).date().isoformat(), "lead": lead[:220]})
+    return out
+
+
+def parse_typo3_news(page: str, base: str) -> list[dict]:
+    """TYPO3 tx_news Listenansicht (FDP, EVP): <div class="article …"> mit <time datetime> und Titel-Link."""
+    out = []
+    for blk in re.split(r'<div class="article\b', page)[1:]:
+        d = re.search(r'datetime="(\d{4}-\d{2}-\d{2})', blk)
+        a = re.search(r'<a\b[^>]*href="([^"]+)"[^>]*>(.*?)</a>', blk, re.S)
+        if not d or not a:
+            continue
+        t = re.search(r'<a\b[^>]*title="([^"]+)"', blk)
+        lead = re.search(r'class="teaser-text"[^>]*>(.*?)</div>|itemprop="description"[^>]*>(.*?)</div>', blk, re.S)
+        out.append({"title": _text(html.unescape(t.group(1) if t else re.sub(r"<[^>]+>", " ", a.group(2)))),
+                    "url": urllib.parse.urljoin(base, html.unescape(a.group(1))), "date": d.group(1),
+                    "lead": _text(html.unescape(re.sub(r"<[^>]+>", " ", (lead.group(1) or lead.group(2)) if lead else "")))[:220]})
+    return out
+
+
+def parse_svp_list(page: str) -> list[dict]:
+    """SVP-Sektionsseite (WordPress): <li><a href="…/artikel/…"><span> TT.MM.JJJJ </span><span>Titel</span></a></li>."""
+    out = []
+    for href, inner in re.findall(r'<a\s+href="([^"]*/artikel/[^"]*)"[^>]*>(.*?)</a>', page, re.S):
+        d = re.search(r"(\d{2})\.(\d{2})\.(\d{4})", inner)
+        t = re.search(r'class="uk-text-bold"[^>]*>(.*?)</span>', inner, re.S)
+        if d and t:
+            out.append({"title": _text(html.unescape(re.sub(r"<[^>]+>", " ", t.group(1)))), "url": html.unescape(href),
+                        "date": f"{d.group(3)}-{d.group(2)}-{d.group(1)}", "lead": ""})
     return out
 
 
@@ -895,42 +903,27 @@ def run(offline: Path | None, only: set[str]) -> int:
             prev_posts.setdefault(x["party"], []).append(x)
         posts, status = [], {}
         since = (today - timedelta(days=PARTY_DAYS)).isoformat()
-        for name, site, short, level in POLITIK_FIX["parteien"]:
-            if short in PARTY_SKIP:
+        fx = {"SP": "party_feed.xml", "FDP": "party_fdp.html", "EVP": "party_evp.html", "SVP": "party_svp.html"}
+        for name, site, short, level, kind, src in POLITIK_FIX["parteien"]:
+            if not kind:
                 continue
             try:
-                if offline:
-                    cands = ["party_feed.xml"] if short == "SP" else []
-                    found = parse_feed((offline / cands[0]).read_text("utf-8")) if cands else []
-                    used = cands[0] if cands else None
-                else:
-                    found, used = [], None
-                    try:
-                        cands = discover_feeds(fetch(site), site)
-                    except Exception:
-                        cands = discover_feeds("", site)
-                    for u in cands:
-                        try:
-                            found = parse_feed(fetch(u, "application/rss+xml, application/atom+xml, application/xml;q=0.9, */*;q=0.5"))
-                        except Exception:
-                            continue
-                        used = u
-                        break
-                if used is None:
-                    raise ValueError("kein Feed gefunden")
+                if offline and short not in fx:
+                    raise FileNotFoundError("kein Fixture")
+                raw = (offline / fx[short]).read_text("utf-8") if offline else \
+                    fetch(src, "application/rss+xml, application/atom+xml, application/xml;q=0.9, */*;q=0.5" if kind == "feed" else "*/*")
+                found = parse_feed(raw) if kind == "feed" else parse_typo3_news(raw, src) if kind == "typo3" else parse_svp_list(raw)
+                if not found:
+                    raise ValueError("keine Meldungen erkannt (Seitenaufbau geändert?)")
                 keep = sorted([f for f in found if f["date"] >= since], key=lambda f: f["date"], reverse=True)[:PARTY_MAX]
-                root = re.match(r"https?://[^/]+", site).group(0)
-                if level == "Stadt" and site.rstrip("/") != root and used and not used.startswith(site.rstrip("/")) \
-                        and urllib.parse.urlparse(used).netloc == urllib.parse.urlparse(site).netloc:
-                    level = "Kanton"          # Sektionsseite ohne eigenen Feed → Feed der ganzen Website
                 for f in keep:
                     f.update(party=short, partyName=name, level=level)
                 posts += keep
-                status[short] = {"ok": True, "feed": used, "count": len(keep)}
-                print(f"  ✓ Partei {short}: {len(keep)} Meldungen ({used})")
+                status[short] = {"ok": True, "source": src, "count": len(keep)}
+                print(f"  ✓ Partei {short}: {len(keep)} Meldungen")
             except Exception as e:
                 posts += prev_posts.get(short, [])
-                status[short] = {"ok": False, "error": f"{type(e).__name__}: {e}"}
+                status[short] = {"ok": False, "source": src, "error": f"{type(e).__name__}: {e}"}
                 print(f"  ✗ Partei {short}: {e}", file=sys.stderr)
         out["posts"] = sorted(posts, key=lambda f: f["date"], reverse=True)
         out["postStatus"] = status
