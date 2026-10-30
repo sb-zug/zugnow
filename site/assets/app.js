@@ -5,7 +5,7 @@
   var WD = ['SO', 'MO', 'DI', 'MI', 'DO', 'FR', 'SA'], MO = ['JAN', 'FEB', 'MÄR', 'APR', 'MAI', 'JUN', 'JUL', 'AUG', 'SEP', 'OKT', 'NOV', 'DEZ'];
   var WDL = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
   var CATS = [['alle', 'Alle'], ['kinder', 'Kinder & Familie'], ['kultur', 'Kultur & Musik'], ['maerkte', 'Märkte & Feste'], ['treff', 'Treffpunkte'], ['sport', 'Sport & Natur'], ['weitere', 'Weitere']];
-  var TIMES = [['alle', 'Alle Termine'], ['heute', 'Heute'], ['wochenende', 'Wochenende'], ['woche', 'Diese Woche']];
+  var TIMES = [['alle', 'Alle Termine'], ['heute', 'Heute'], ['morgen', 'Morgen'], ['wochenende', 'Wochenende'], ['woche', 'Diese Woche']];
   var PLACES = [['alle', 'Alle Orte'], ['bibliothek', 'Bibliothek Zug'], ['kunsthaus', 'Kunsthaus Zug'], ['burg', 'Museum Burg Zug'], ['musikschule', 'Musikschule'], ['theatercasino', 'Theater Casino'], ['galvanik', 'Galvanik']];
   var PAGES = [['index.html', 'start', 'Start'], ['agenda.html', 'agenda', 'Agenda'], ['news.html', 'news', 'News'], ['amtlich.html', 'amtlich', 'Amtlich']];
   var page = document.body.dataset.page || 'start';
@@ -33,11 +33,12 @@
   function range(t) {
     var tk = todayKey(), dw = dowOf(tk);
     if (t === 'heute') return [tk, tk];
+    if (t === 'morgen') return [addDays(tk, 1), addDays(tk, 1)];
     if (t === 'woche') return [tk, addDays(tk, (7 - dw) % 7)];
     if (t === 'wochenende') {
       if (dw === 0) return [tk, tk];
       if (dw === 6) return [tk, addDays(tk, 1)];
-      var sa = addDays(tk, 6 - dw); return [dw === 5 ? tk : sa, addDays(sa, 1)];
+      var sa = addDays(tk, 6 - dw); return [sa, addDays(sa, 1)];
     }
     return ['0000', '9999'];
   }
@@ -103,20 +104,31 @@
       '<a href="' + esc(n.url) + '" style="font-weight:600;font-size:15px">Zur Meldung auf stadtzug.ch →</a>';
   }
 
+  var hDay = 'heute';
+  var HDAYS = [['heute', 'Heute'], ['morgen', 'Morgen'], ['wochenende', 'Wochenende']];
   function renderToday() {
     var el = $('todayList'); if (!el) return;
+    var seg = $('hSeg');
+    if (seg && !seg.children.length) {
+      seg.innerHTML = HDAYS.map(function (d) { return '<button type="button" class="segb" data-d="' + d[0] + '">' + d[1] + '</button>' }).join('');
+      seg.onclick = function (ev) { var b = ev.target.closest('.segb'); if (!b) return; hDay = b.dataset.d; renderToday(); el.scrollLeft = 0 };
+    }
+    if (seg) [].forEach.call(seg.children, function (b) { b.setAttribute('aria-pressed', b.dataset.d === hDay) });
     var tk = todayKey(), src = D.events.filter(function (e) { return !e.cancelled && parts(e.start).key >= tk });
-    var today = src.filter(function (e) { return parts(e.start).key === tk });
-    var list = today.slice(0, 12);
+    var sel = src.filter(function (e) { return inTime(e, hDay) });
+    var list = sel.slice(0, hDay === 'heute' ? 12 : 18), filled = false;
     // Wenig los heute: mit den nächsten Anlässen auffüllen (mit Tag angeschrieben)
-    if (list.length < 6) list = list.concat(src.filter(function (e) { return parts(e.start).key > tk }).slice(0, 6 - list.length + (list.length ? 0 : 3)));
-    $('hTitle').textContent = today.length ? 'Heute in Zug' : 'Als Nächstes in Zug';
+    if (hDay === 'heute' && list.length < 6) { list = list.concat(src.filter(function (e) { return parts(e.start).key > tk }).slice(0, 6 - list.length + (list.length ? 0 : 3))); filled = !sel.length }
+    $('hTitle').textContent = filled ? 'Als Nächstes in Zug' : { heute: 'Heute in Zug', morgen: 'Morgen in Zug', wochenende: 'Wochenende in Zug' }[hDay];
+    if ($('hMore')) $('hMore').href = 'agenda.html#' + hDay;
+    el.setAttribute('aria-label', 'Anlässe ' + { heute: 'heute', morgen: 'morgen', wochenende: 'am Wochenende' }[hDay]);
+    var oneDay = hDay !== 'wochenende';
     el.innerHTML = list.map(function (e) {
       var p = parts(e.start), t = e.allday ? 'ganztags' : p.hm;
       return '<a class="tcard" href="agenda.html#ev-' + esc(e.id) + '"><div class="tim">' + (e.image ? img(e.image) : '<span>' + esc(e.catLabel) + '</span>') + '</div>' +
-        '<div class="tb"><span class="tm">' + (p.key === tk ? t : dShort(p.key) + ' · ' + t) + '</span><strong>' + esc(e.title) + '</strong>' +
+        '<div class="tb"><span class="tm">' + (oneDay && inTime(e, hDay) ? t : dShort(p.key) + ' · ' + t) + '</span><strong>' + esc(e.title) + '</strong>' +
         '<span class="ts"><span>' + esc(e.place) + ' · ' + esc(e.catLabel) + '</span><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></div></a>';
-    }).join('') || '<p style="color:var(--soft)">Keine Anlässe gefunden.</p>';
+    }).join('') || '<p style="color:var(--soft)">Noch keine Anlässe gemeldet.</p>';
     swiper(el, $('tPrev'), $('tNext'));
   }
   // Pfeile für wischbare Leisten
@@ -126,7 +138,8 @@
     function upd() { prev.disabled = el.scrollLeft < 4; next.disabled = el.scrollLeft + el.clientWidth >= el.scrollWidth - 4 }
     prev.onclick = function () { el.scrollBy({ left: -step(), behavior: 'smooth' }) };
     next.onclick = function () { el.scrollBy({ left: step(), behavior: 'smooth' }) };
-    el.addEventListener('scroll', upd, { passive: true }); window.addEventListener('resize', upd); upd();
+    if (!el._sw) { el._sw = 1; el.addEventListener('scroll', function () { el._upd() }, { passive: true }); window.addEventListener('resize', function () { el._upd() }) }
+    el._upd = upd; upd();
   }
 
   function renderWeekend() {
@@ -299,7 +312,7 @@
   }
 
   function renderList() {
-    var list = filtered(), lbl = { alle: 'in den nächsten 60 Tagen', heute: 'heute', wochenende: 'am Wochenende', woche: 'diese Woche' }[st.time];
+    var list = filtered(), lbl = { alle: 'in den nächsten 60 Tagen', heute: 'heute', morgen: 'morgen', wochenende: 'am Wochenende', woche: 'diese Woche' }[st.time];
     $('agCount').textContent = list.length + (list.length === 1 ? ' Anlass ' : ' Anlässe ') + lbl;
     $('agList').innerHTML = list.slice(0, st.limit).map(evRow).join('') || '<p style="color:var(--soft);padding:18px 0">Keine Anlässe für diese Auswahl.</p>';
     var m = $('more'); m.hidden = list.length <= st.limit; m.textContent = 'Weitere ' + Math.min(20, list.length - st.limit) + ' anzeigen';
