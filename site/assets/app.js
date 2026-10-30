@@ -45,6 +45,7 @@
 
   // ---------- Rahmen: Kopf, Leiste, Fuss
   function frame() {
+    if ($('sBtn')) return; // Kopf und Fuss stehen bereits im HTML
     $('hdr').innerHTML =
       '<header><div class="wrap"><a class="logo" href="index.html" aria-label="zug.now Startseite">zug<span class="dot">.</span><span class="now">now</span></a>' +
       '<nav aria-label="Hauptnavigation">' + PAGES.map(function (p) { return '<a href="' + p[0] + '"' + (p[1] === page ? ' aria-current="page"' : '') + '>' + p[2] + '</a>' }).join('') + '</nav>' +
