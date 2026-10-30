@@ -74,63 +74,83 @@
  "parteien": [
   [
    "Alternative – die Grünen (ALG)",
-   "https://gruene-zug.ch/",
+   "https://gruene-stadt-zug.ch/",
    "ALG",
-   "Kanton"
+   "Stadt",
+   "feed",
+   "https://gruene-stadt-zug.ch/feed/"
   ],
   [
    "Aufrecht Zug",
    "https://aufrecht-zug.ch/",
    "Aufrecht",
-   "Kanton"
+   "Schweiz",
+   null,
+   null
   ],
   [
    "Christlichsoziale Partei (CSP)",
    "https://csp-zug.ch/",
    "CSP",
-   "Stadt"
+   "Stadt",
+   "feed",
+   "https://csp-zug.ch/feed/"
   ],
   [
    "Die Mitte Stadt Zug",
    "https://stadtzug-diemitte.ch/",
    "Mitte",
-   "Stadt"
+   "Stadt",
+   "feed",
+   "https://stadtzug-diemitte.ch/feed/"
   ],
   [
    "EDU",
    "https://www.edu-schweiz.ch/",
    "EDU",
-   "Schweiz"
+   "Schweiz",
+   null,
+   null
   ],
   [
    "EVP Kanton Zug",
    "https://www.evp-zg.ch",
    "EVP",
-   "Kanton"
+   "Kanton",
+   "typo3",
+   "https://www.evp-zg.ch/aktuell"
   ],
   [
    "FDP.Die Liberalen Stadt Zug",
    "https://www.fdp-zg.ch/partei/sektionen/fdpdie-liberalen-stadt-zug/willkommen/",
    "FDP",
-   "Stadt"
+   "Stadt",
+   "typo3",
+   "https://www.fdp-zg.ch/partei/sektionen/fdpdie-liberalen-stadt-zug/news"
   ],
   [
    "Grünliberale (GLP)",
-   "https://zg.grunliberale.ch/",
+   "https://zg.glp.swiss/",
    "GLP",
-   "Kanton"
+   "Kanton",
+   "feed",
+   "https://zg.glp.swiss/feed/"
   ],
   [
    "SP Stadt Zug",
    "https://stadtzug.sp-zug.ch/",
    "SP",
-   "Stadt"
+   "Stadt",
+   "feed",
+   "https://stadtzug.sp-zug.ch/feed/"
   ],
   [
    "SVP Stadt Zug",
    "https://www.svp-zug.ch/sektion/svp-stadt-zug/",
    "SVP",
-   "Stadt"
+   "Stadt",
+   "svplist",
+   "https://www.svp-zug.ch/sektion/svp-stadt-zug/"
   ]
  ],
  "links": {
@@ -172,6 +192,42 @@
  "upcoming": [],
  "posts": [
   {
+   "title": "Kantonsratsvorschauen / Polit-Ausblick GLP",
+   "url": "https://zg.glp.swiss/kantonsratsvorschauen-polit-ausblick-glp-9/",
+   "date": "2026-10-29",
+   "lead": "Überschüsse an die Bevölkerung zurückzugeben ist gerade bei guter Finanzlage das beste Mittel, um den Staat schlank zu halten. Bis 2027 profitieren die Zugerinnen und Zuger bereits von tieferen Krankenkassenprämien, weil",
+   "party": "GLP",
+   "partyName": "Grünliberale (GLP)",
+   "level": "Kanton"
+  },
+  {
+   "title": "Strom lokal nutzen",
+   "url": "https://zg.glp.swiss/strom-lokal-nutzen/",
+   "date": "2026-10-29",
+   "lead": "Am Beispiel von Cham zeigt sich grosses, noch ungenutztes Potenzial für Solarstrom. Laut Bundesamt für Energie könnten geeignete Dächer und Fassaden jährlich rund 80 Gigawattstunden produzieren, etwas 3-mal die Menge des",
+   "party": "GLP",
+   "partyName": "Grünliberale (GLP)",
+   "level": "Kanton"
+  },
+  {
+   "title": "FDP Zug im Stadtparlament - kurz & klar",
+   "url": "https://www.fdp-zg.ch/partei/sektionen/fdpdie-liberalen-stadt-zug/news/news-detail/news/fdp-zug-im-stadtparlament-kurz-klar",
+   "date": "2026-10-28",
+   "lead": "Eine Zusammenfassung der wichtigsten Themen aus dem Grossen Gemeinderat der Stadt Zug. Zusammengestellt von der FDP-Fraktion des GGR.",
+   "party": "FDP",
+   "partyName": "FDP.Die Liberalen Stadt Zug",
+   "level": "Stadt"
+  },
+  {
+   "title": "FDP beschliesst Nein-Parole zur Initiative Villa Unterer Frauenstein",
+   "url": "https://www.fdp-zg.ch/partei/sektionen/fdpdie-liberalen-stadt-zug/news/news-detail/news/fdp-beschliesst-nein-parole-zur-initiative-villa-unterer-frauenstein",
+   "date": "2026-10-28",
+   "lead": "",
+   "party": "FDP",
+   "partyName": "FDP.Die Liberalen Stadt Zug",
+   "level": "Stadt"
+  },
+  {
    "title": "SP Stadt Zug: 2 x Ja zu den städtischen Vorlagen",
    "url": "https://stadtzug.sp-zug.ch/blog/2026/10/28/sp-stadt-zug-2-x-ja-zu-den-staedtischen-vorlagen/",
    "date": "2026-10-28",
@@ -179,6 +235,60 @@
    "party": "SP",
    "partyName": "SP Stadt Zug",
    "level": "Stadt"
+  },
+  {
+   "title": "SVP beschliesst deutliches Nein zur Luxusvilla: 54,5 Millionen Franken ohne verbindliches Nutzungskonzept",
+   "url": "https://www.svp-zug.ch/artikel/svp-beschliesst-deutliches-nein-zur-luxusvilla-545-millionen-franken-ohne-verbindliches-nutzungskonzept/",
+   "date": "2026-10-28",
+   "lead": "",
+   "party": "SVP",
+   "partyName": "SVP Stadt Zug",
+   "level": "Stadt"
+  },
+  {
+   "title": "Medienmitteilung betreffend Abstimmung Kauf untere Frauensteinmatt",
+   "url": "https://gruene-stadt-zug.ch/blog/news/mm/medienmitteilung-betreffend-abstimmung-kauf-untere-frauensteinmatt",
+   "date": "2026-10-26",
+   "lead": "",
+   "party": "ALG",
+   "partyName": "Alternative – die Grünen (ALG)",
+   "level": "Stadt"
+  },
+  {
+   "title": "Grünes Telegramm vom 20. Oktober 2026",
+   "url": "https://gruene-stadt-zug.ch/blog/news/telegram-aus-dem-ggr/grnes-telegramm-vom-20-oktober-2026",
+   "date": "2026-10-22",
+   "lead": "",
+   "party": "ALG",
+   "partyName": "Alternative – die Grünen (ALG)",
+   "level": "Stadt"
+  },
+  {
+   "title": "Villa Unterer Frauenstein: Schöne Bilder ersetzen keine ehrliche Rechnung",
+   "url": "https://www.svp-zug.ch/artikel/villa-unterer-frauenstein-schoene-bilder-ersetzen-keine-ehrliche-rechnung/",
+   "date": "2026-10-21",
+   "lead": "",
+   "party": "SVP",
+   "partyName": "SVP Stadt Zug",
+   "level": "Stadt"
+  },
+  {
+   "title": "Demokratie als Selecta-Automat",
+   "url": "https://zg.glp.swiss/demokratie-als-selecta-automat/",
+   "date": "2026-10-14",
+   "lead": "Der NZZ-Artikel «Einmal alles, und zwar sofort» beschrieb treffend, wie unsere Gesellschaft im Hamsterrad gefangen ist. Nicht nur in der Technologie, auch im Alltag ist das Tempo brutal: Heute bestellt, morgen geliefert ",
+   "party": "GLP",
+   "partyName": "Grünliberale (GLP)",
+   "level": "Kanton"
+  },
+  {
+   "title": "Der schwierigste Kilometer ist der erste",
+   "url": "https://zg.glp.swiss/der-schwierigste-kilometer-ist-der-erste/",
+   "date": "2026-10-10",
+   "lead": "Ein Kilometer ist nicht weit. Ausser, man trägt zwei volle Einkaufstaschen. Oder ist nicht mehr gut zu Fuss. Oder muss auf dem Heimweg mit dem Kinderwagen einen steilen Hang hinauf. Dann kann der Weg zwischen Haustür und",
+   "party": "GLP",
+   "partyName": "Grünliberale (GLP)",
+   "level": "Kanton"
   },
   {
    "title": "Bezahlbare Wohnungen ohne Wenn und Aber!",
@@ -208,40 +318,40 @@
    "level": "Stadt"
   },
   {
-   "title": "Unser Wahlbudget 2026",
-   "url": "https://gruene-zug.ch/blog/allgemein/unser-wahlbudget-2026",
-   "date": "2026-10-01",
-   "lead": "The post  Unser Wahlbudget 2026  appeared first on  Alternative – die Grünen Zug .",
-   "party": "ALG",
-   "partyName": "Alternative – die Grünen (ALG)",
-   "level": "Kanton"
+   "title": "Weiter mit Tatendrang, Innovationskraft und freisinnigem Kompass",
+   "url": "https://www.fdp-zg.ch/partei/sektionen/fdpdie-liberalen-stadt-zug/news/news-detail/news/weiter-mit-tatendrang-innovationskraft-und-freisinnigem-kompass",
+   "date": "2026-10-06",
+   "lead": "",
+   "party": "FDP",
+   "partyName": "FDP.Die Liberalen Stadt Zug",
+   "level": "Stadt"
   },
   {
-   "title": "So wählst du richtig: Schritt für Schritt",
-   "url": "https://gruene-zug.ch/blog/allgemein/so-waehlst-du-richtig-schritt-fuer-schritt",
+   "title": "Nein zum Kauf der Artherstrasse 6, Zug",
+   "url": "https://www.svp-zug.ch/artikel/nein-zum-kauf-der-artherstrasse-6-zug/",
+   "date": "2026-09-23",
+   "lead": "",
+   "party": "SVP",
+   "partyName": "SVP Stadt Zug",
+   "level": "Stadt"
+  },
+  {
+   "title": "55 Millionen für eine Idee?",
+   "url": "https://www.svp-zug.ch/artikel/55-millionen-fuer-eine-idee/",
    "date": "2026-09-22",
-   "lead": "The post  So wählst du richtig: Schritt für Schritt  appeared first on  Alternative – die Grünen Zug .",
-   "party": "ALG",
-   "partyName": "Alternative – die Grünen (ALG)",
-   "level": "Kanton"
+   "lead": "",
+   "party": "SVP",
+   "partyName": "SVP Stadt Zug",
+   "level": "Stadt"
   },
   {
-   "title": "Fraktionsbericht 27. August",
-   "url": "https://gruene-zug.ch/blog/allgemein/fraktionsbericht-27-august",
-   "date": "2026-09-09",
-   "lead": "The post  Fraktionsbericht 27. August  appeared first on  Alternative – die Grünen Zug .",
+   "title": "Grünes Telegramm vom 15. September 2026",
+   "url": "https://gruene-stadt-zug.ch/blog/news/telegram-aus-dem-ggr/grnes-telegramm-vom-19-september-2026",
+   "date": "2026-09-19",
+   "lead": "",
    "party": "ALG",
    "partyName": "Alternative – die Grünen (ALG)",
-   "level": "Kanton"
-  },
-  {
-   "title": "Pflaster statt OP",
-   "url": "https://gruene-zug.ch/blog/news/bulletin-artikel/pflaster-statt-op",
-   "date": "2026-09-05",
-   "lead": "The post  Pflaster statt OP  appeared first on  Alternative – die Grünen Zug .",
-   "party": "ALG",
-   "partyName": "Alternative – die Grünen (ALG)",
-   "level": "Kanton"
+   "level": "Stadt"
   },
   {
    "title": "Katrin Speck als Korporationsschreiberin nominiert",
@@ -253,6 +363,15 @@
    "level": "Stadt"
   },
   {
+   "title": "EVP unterstützt Kandidierende mit Weitsicht",
+   "url": "https://www.evp-zg.ch/newsartikel/evp-unterstuetzt-kandidierende-mit-weitsicht",
+   "date": "2026-08-31",
+   "lead": "Die EVP Kanton Zug unterstützt Martin Iten (Stadtradtswahl) und Andreas Lustenberger (Regierungsratswahl) bei den kantonalen Wahlen vom 4. Oktober 2026.",
+   "party": "EVP",
+   "partyName": "EVP Kanton Zug",
+   "level": "Kanton"
+  },
+  {
    "title": "Die Mitte Stadt Zug besucht Siemens Smart Infrastructure",
    "url": "https://stadtzug-diemitte.ch/die-mitte-stadt-zug-besucht-siemens-smart-infrastructure/",
    "date": "2026-08-29",
@@ -260,49 +379,57 @@
    "party": "Mitte",
    "partyName": "Die Mitte Stadt Zug",
    "level": "Stadt"
+  },
+  {
+   "title": "Grünes Telegramm vom 18. August 2026",
+   "url": "https://gruene-stadt-zug.ch/blog/news/telegram-aus-dem-ggr/grnes-telegramm-vom-18-august-2026",
+   "date": "2026-08-25",
+   "lead": "",
+   "party": "ALG",
+   "partyName": "Alternative – die Grünen (ALG)",
+   "level": "Stadt"
   }
  ],
  "postStatus": {
   "ALG": {
    "ok": true,
-   "feed": "https://gruene-zug.ch/feed/",
+   "source": "https://gruene-stadt-zug.ch/feed/",
    "count": 4
-  },
-  "Aufrecht": {
-   "ok": false,
-   "error": "ValueError: kein Feed gefunden"
   },
   "CSP": {
    "ok": true,
-   "feed": "https://csp-zug.ch/feed/",
+   "source": "https://csp-zug.ch/feed/",
    "count": 0
   },
   "Mitte": {
    "ok": true,
-   "feed": "https://stadtzug-diemitte.ch/feed/",
+   "source": "https://stadtzug-diemitte.ch/feed/",
    "count": 2
   },
   "EVP": {
-   "ok": false,
-   "error": "ValueError: kein Feed gefunden"
+   "ok": true,
+   "source": "https://www.evp-zg.ch/aktuell",
+   "count": 1
   },
   "FDP": {
-   "ok": false,
-   "error": "ValueError: kein Feed gefunden"
+   "ok": true,
+   "source": "https://www.fdp-zg.ch/partei/sektionen/fdpdie-liberalen-stadt-zug/news",
+   "count": 3
   },
   "GLP": {
-   "ok": false,
-   "error": "ValueError: kein Feed gefunden"
+   "ok": true,
+   "source": "https://zg.glp.swiss/feed/",
+   "count": 4
   },
   "SP": {
    "ok": true,
-   "feed": "https://stadtzug.sp-zug.ch/feed/",
+   "source": "https://stadtzug.sp-zug.ch/feed/",
    "count": 4
   },
   "SVP": {
    "ok": true,
-   "feed": "https://www.svp-zug.ch/feed/",
-   "count": 0
+   "source": "https://www.svp-zug.ch/sektion/svp-stadt-zug/",
+   "count": 4
   }
  },
  "nextVoteDate": "2026-11-29"
