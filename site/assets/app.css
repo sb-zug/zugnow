@@ -236,7 +236,7 @@ nav a[aria-current="page"]::after{transform:scaleX(1);opacity:1}
 :root[data-theme="dark"] .intro{--b-blue:#1B2D45;--b-peach:#3A2A20;--b-mint:#183530;--b-lilac:#2A2340}
 .intro .wrap{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);align-items:center;gap:24px 40px;padding-block:16px 56px}
 .intro h1{font-family:var(--display);font-weight:800;font-stretch:100%;font-size:clamp(72px,11.5vw,156px);line-height:.9;letter-spacing:-.04em;color:var(--fg);text-wrap:nowrap}
-.intro h1 .dot{color:var(--red)}
+.intro h1 .dot{display:inline-block;width:.17em;height:.17em;margin-left:.06em;border-radius:50%;background:var(--red);color:transparent;line-height:0;overflow:hidden;vertical-align:baseline}
 .intro p{margin:28px 0 0;font-size:clamp(18px,2vw,24px);line-height:1.4;color:var(--muted);max-width:27ch}
 .ivis{position:relative;width:100%;max-width:620px;aspect-ratio:6/5;justify-self:end}
 .blob{position:absolute;pointer-events:none}
