@@ -235,26 +235,32 @@ nav a[aria-current="page"]::after{transform:scaleX(1);opacity:1}
 .intro .claim{margin:0;font-family:var(--body);font-weight:400;font-size:clamp(17px,1.7vw,22px);line-height:1.4;letter-spacing:-.005em;color:var(--muted);max-width:34ch}
 .intro .claim .dot{display:inline-block;width:.32em;height:.32em;margin-left:.08em;border-radius:50%;background:var(--red);color:transparent;line-height:0;overflow:hidden;vertical-align:baseline}
 
-/* --- Infoleiste: Wetter, Sonnenuntergang, Anlässe heute --- */
-.infobar .wrap{padding-block:8px 8px}
-.ibox{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:center;padding:14px 8px;border-radius:20px;background:var(--surface);box-shadow:0 2px 18px rgba(14,26,38,.07),0 0 0 1px rgba(14,26,38,.05)}
-.iitem{display:flex;align-items:center;gap:16px;padding:6px 24px;min-width:0;color:var(--fg);text-decoration:none}
-.iitem+.iitem{border-left:1px solid var(--line)}
+/* --- Infoleiste: Wetter, Sonnenuntergang, Anlässe heute (ohne Rahmenlinie, nur weicher Schatten) --- */
+.infobar .wrap{padding-block:8px 12px}
+.ibox{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:center;padding:20px 8px;border-radius:24px;background:var(--surface);box-shadow:0 10px 36px rgba(14,26,38,.06),0 2px 6px rgba(14,26,38,.025)}
+.iitem{position:relative;display:flex;align-items:center;gap:20px;padding:8px 32px;min-width:0;color:var(--fg);text-decoration:none}
+.iitem+.iitem::before{content:"";position:absolute;left:0;top:14%;bottom:14%;width:1px;background:var(--line)}
 .iitem[hidden]{display:none}
-.iitem[hidden]+.iitem{border-left:0}
-.iic{flex-shrink:0;display:grid;place-items:center;width:52px;height:52px}
-.iic.cal{border-radius:50%;background:var(--tint);color:var(--brand)}
-.itx{display:flex;flex-direction:column;gap:2px;min-width:0;font-size:16px;color:var(--muted);line-height:1.3}
-.itx strong{font-size:20px;font-weight:700;color:var(--fg)}
-.ilink{border-radius:14px}
+.iitem[hidden]+.iitem::before{display:none}
+.iic{flex-shrink:0;display:grid;place-items:center;width:60px;height:60px}
+.iic svg{width:56px;height:56px}
+.iic.cal{width:68px;height:68px;border-radius:50%;background:#EDF2FB;color:#1F55C4}
+.iic.cal svg{width:32px;height:32px}
+.itx{display:flex;flex-direction:column;gap:4px;min-width:0;font-size:17px;color:var(--muted);line-height:1.25}
+.itx strong{font-size:22px;font-weight:700;color:var(--fg)}
+.ilink{border-radius:18px}
 .ilink:hover strong{text-decoration:underline}
 .ichev{margin-left:auto;flex-shrink:0;color:var(--brand)}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .ibox{background:var(--tint-2);box-shadow:0 0 0 1px var(--line)}}
 :root[data-theme="dark"] .ibox{background:var(--tint-2);box-shadow:0 0 0 1px var(--line)}
 @media (max-width:760px){
-  .ibox{grid-template-columns:repeat(2,minmax(0,1fr));padding:6px 4px}
+  .ibox{grid-template-columns:repeat(2,minmax(0,1fr));padding:8px 4px;border-radius:20px}
   .iitem{padding:12px 14px;gap:10px}
-  .iic{width:40px;height:40px}.iic svg{width:34px;height:34px}.iic.cal svg{width:22px;height:22px}
-  .ilink{grid-column:1/-1;border-left:0!important;border-top:1px solid var(--line);border-radius:0}
-  .itx{font-size:14px}.itx strong{font-size:17px}
+  .iic{width:40px;height:40px}.iic svg{width:36px;height:36px}
+  .iic.cal{width:44px;height:44px}.iic.cal svg{width:22px;height:22px}
+  .ilink::before{left:14px!important;right:14px;top:0!important;bottom:auto!important;width:auto!important;height:1px}
+  .ilink{grid-column:1/-1;border-radius:0}
+  .itx{font-size:14px}.itx strong{font-size:18px}
 }
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .iic.cal{background:var(--tint);color:var(--brand)}}
+:root[data-theme="dark"] .iic.cal{background:var(--tint);color:var(--brand)}
