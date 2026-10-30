@@ -1,5 +1,17 @@
 [
  {
+  "id": "der-production-day-der-stadt-zug-geht-in-die-zweite-runde",
+  "url": "https://stadtzug.ch/de/news/2026/oktober-2026/der-production-day-der-stadt-zug-geht-in-die-zweite-runde",
+  "title": "Der Production Day der Stadt Zug geht in die zweite Runde",
+  "date": "2026-10-30",
+  "type": "Medienmitteilung",
+  "lead": "Nach einer erfolgreichen ersten Ausgabe im letzten Jahr findet am 7. November 2026 erneut der Production Day in der Stadt Zug statt. 44 Produzentinnen und Produzenten öffnen dafür ihre Werkstätten, Ateliers und Produktionsräume. Besucherinnen und Besucher erhalten bei Führungen, Workshops und Spontanbesuchen",
+  "image": "https://cdn.zg.ch/.imaging/flex/jcr:3c59cdf2-944e-4324-af78-abeb6d18ef15/ratio/3000:2000/version/1793364517/width/1120/MM%20Production%20Day_Innendekoration_am_Fischmarkt_AWey.jpg",
+  "source": "Stadt Zug",
+  "topic": "weitere",
+  "topicLabel": "Weitere"
+ },
+ {
   "id": "oeffentlicher-informationsanlass-zu-den-bebauungsplaenen-aeussere-lorzenallmend",
   "url": "https://stadtzug.ch/de/news/2026/oktober-2026/oeffentlicher-informationsanlass-zu-den-bebauungsplaenen-aeussere-lorzenallmend",
   "title": "Öffentlicher Informationsanlass zu den Bebauungsplänen Äussere Lorzenallmend",
@@ -106,17 +118,5 @@
   "source": "Stadt Zug",
   "topic": "politik",
   "topicLabel": "Politik & Verwaltung"
- },
- {
-  "id": "z-fuess-fahrsch-besser",
-  "url": "https://stadtzug.ch/de/news/2026/oktober-2026/z-fuess-fahrsch-besser",
-  "title": "«Z’Fuess fahrsch besser!»",
-  "date": "2026-10-19",
-  "type": "Medienmitteilung",
-  "lead": "Der Schulweg ist ein wichtiger Lern- und Erfahrungsraum, der die Entwicklung von Kindern auf vielen Ebenen fördert. Mit ihrer Sensibilisierungskampagne «Z’Fuess fahrsch besser!» will die Stadt Zug dazu anregen, vom Elterntaxi in die Selbstständigkeit umzusteigen. Damit soll die Entwicklung der Kinder",
-  "image": "https://cdn.zg.ch/.imaging/flex/jcr:bb292908-645f-4dfa-9f97-fe400de183e9/ratio/2998:2000/version/1792393933/width/1120/Strassenbemalung%20Schulhaus%20Kirchmatt.jpg",
-  "source": "Stadt Zug",
-  "topic": "mobilitaet",
-  "topicLabel": "Mobilität & Verkehr"
  }
 ]
