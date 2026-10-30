@@ -3,7 +3,7 @@
   var VARIANTS = {
     b: { css: 'assets/v-b.css?v=202610301200', label: 'Variante B · Vibrant',
          fonts: 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Righteous&display=swap' },
-    c: { css: 'assets/v-c.css?v=202610301150', label: 'Variante C · Apple' }
+    c: { css: 'assets/v-c.css?v=202610301155', label: 'Variante C · Apple' }
   };
   var v = null;
   try {
