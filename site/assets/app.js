@@ -369,7 +369,7 @@
     D.ongoing = D.agenda.filter(function (e) { return e.ongoing });
     band();
     if (!$('sPanel').hidden) searchInit.run();
-    if (page === 'start') { renderToday(); renderNewsTeaser(); renderThemes(); renderAmtTeaser() }
+    if (page === 'start') { renderToday(); renderNewsTeaser(); renderThemes() }
     if (page === 'agenda') {
       var open = agendaFromHash(); renderFilters(); renderList(); renderWeekend(); renderLauf(); if (open) openEvent(open);
       window.addEventListener('hashchange', function () { var o = agendaFromHash(); renderFilters(); renderList(); if (o) openEvent(o) });
