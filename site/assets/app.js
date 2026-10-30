@@ -42,6 +42,8 @@
     }
     return ['0000', '9999'];
   }
+  // Vorbei: Ende (oder Beginn, falls ohne Ende) liegt in der Vergangenheit; ganztägige bleiben bis Tagesende
+  function over(e) { if (e.allday) return false; return new Date(e.end || e.start) < new Date() }
   function inTime(e, t) { var k = parts(e.start).key, r = range(t); return k >= r[0] && k <= r[1] }
 
   // ---------- Rahmen: Kopf, Leiste, Fuss
@@ -70,11 +72,12 @@
   }
 
   function band() {
-    var tk = todayKey(), n = D.events.filter(function (e) { return parts(e.start).key === tk && !e.cancelled }).length;
-    $('cntN').textContent = n + (n === 1 ? ' Anlass' : ' Anlässe');
-    $('sunT').textContent = sunset(new Date(), 47.166, 8.516) + ' Uhr';
+    var tk = todayKey(), n = D.events.filter(function (e) { return parts(e.start).key === tk && !e.cancelled && !over(e) }).length;
     var st = D.meta.sources || {}, bad = Object.keys(st).filter(function (k) { return !st[k].ok });
     $('srcState').innerHTML = bad.length ? '<span class="err">Quelle gestört: ' + esc(bad.join(', ')) + ' (letzter Stand wird angezeigt)</span>' : '';
+    if (!$('cntN')) return; // Infoleiste nur auf der Startseite
+    $('cntN').textContent = n + (n === 1 ? ' Anlass' : ' Anlässe');
+    $('sunT').textContent = sunset(new Date(), 47.166, 8.516) + ' Uhr';
     fetch('https://api.open-meteo.com/v1/forecast?latitude=47.166&longitude=8.516&current=temperature_2m,weather_code,is_day&timezone=Europe%2FZurich')
       .then(function (r) { return r.json() }).then(function (j) {
         var c = j && j.current; if (!c || c.temperature_2m == null) return;
@@ -114,7 +117,7 @@
       seg.onclick = function (ev) { var b = ev.target.closest('.segb'); if (!b) return; hDay = b.dataset.d; renderToday(); el.scrollLeft = 0 };
     }
     if (seg) [].forEach.call(seg.children, function (b) { b.setAttribute('aria-pressed', b.dataset.d === hDay) });
-    var tk = todayKey(), src = D.events.filter(function (e) { return !e.cancelled && parts(e.start).key >= tk });
+    var tk = todayKey(), src = D.events.filter(function (e) { return !e.cancelled && parts(e.start).key >= tk && !over(e) });
     var sel = src.filter(function (e) { return inTime(e, hDay) });
     var list = sel.slice(0, hDay === 'heute' ? 12 : 18), filled = false;
     // Wenig los heute: mit den nächsten Anlässen auffüllen (mit Tag angeschrieben)
