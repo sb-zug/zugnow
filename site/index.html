@@ -9,7 +9,7 @@
 <meta property="og:description" content="Was heute in der Stadt Zug läuft: News der Stadt, Agenda, Ausstellungen und Amtliches, automatisch aktualisiert.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..800&family=Inter:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="assets/app.css?v=202610302115">
+<link rel="stylesheet" href="assets/app.css?v=202610302050">
 </head>
 <body data-page="start">
 <div id="hdr"><header><div class="wrap"><a class="logo" href="index.html" aria-label="zug.now Startseite">zug<span class="dot">.</span><span class="now">now</span></a><nav aria-label="Hauptnavigation"><a href="index.html" aria-current="page">Start</a><a href="agenda.html">Agenda</a><a href="news.html">News</a><a href="amtlich.html">Amtlich</a></nav><button type="button" class="sbtn" id="sBtn" aria-expanded="false" aria-controls="sPanel" aria-label="Suchen"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="M15.5 15.5L20 20"></path></svg></button></div></header><div class="search" id="sPanel" role="search" hidden><div class="wrap"><label class="vh" for="sIn">Suche in News, Agenda und Amtlichem</label><div class="sfield"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="M15.5 15.5L20 20"></path></svg><input id="sIn" type="search" placeholder="News, Anlässe, Amtliches durchsuchen" autocomplete="off" enterkeyhint="search"><button type="button" class="sclose" id="sClose">Schliessen</button></div><p class="scount" id="sCount" aria-live="polite"></p><div class="sres" id="sRes"></div></div></div><section class="intro" id="intro" aria-labelledby="introT">
@@ -21,13 +21,12 @@
 <div class="infobar"><div class="wrap"><div class="ibox"><div class="iitem" id="wx" hidden><span class="iic" id="wxI"></span><span class="itx"><strong id="wxT"></strong><span id="wxD"></span></span></div><div class="iitem"><span class="iic"><svg viewBox="0 0 48 48" width="44" height="44" aria-hidden="true"><g stroke="#F2B134" stroke-width="2.4" stroke-linecap="round"><path d="M24 8v5M10 15l3 3M38 15l-3 3M5 28h4M39 28h4"/></g><path d="M12 34a12 12 0 0 1 24 0z" fill="#F2B134"/><path d="M5 36h38" stroke="#E2603C" stroke-width="2.6" stroke-linecap="round"/></svg></span><span class="itx"><span>Sonnen&shy;untergang</span><span id="sunT">–</span></span></div><a class="iitem ilink" href="agenda.html#heute"><span class="iic cal"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M8.5 14v3M12 14v3M15.5 14v3"/></svg></span><span class="itx"><strong id="cntN">–</strong><span>heute</span></span><svg class="ichev" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a></div></div></div></div>
 <main id="top" class="wrap">
   <section class="tday" aria-labelledby="hTitle">
-    <div class="shead"><h2 id="hTitle">Agenda</h2>
+    <div class="shead"><div class="stitle"><h2 id="hTitle">Agenda</h2><div class="seg" id="hSeg" role="group" aria-label="Zeitraum"></div></div>
       <div class="sctl"><a href="agenda.html#heute" id="hMore">Ganze Agenda →</a>
         <button type="button" class="sarr" id="tPrev" aria-label="Zurück" aria-controls="todayList"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
         <button type="button" class="sarr" id="tNext" aria-label="Weiter" aria-controls="todayList"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
       </div>
     </div>
-    <div class="seg" id="hSeg" role="group" aria-label="Zeitraum"></div>
     <div class="swipe" id="todayList" role="region" aria-label="Anlässe heute" tabindex="0"></div>
   </section>
 
