@@ -234,7 +234,9 @@ def next_occurrence(start: datetime, rrule: str, today: date) -> tuple[datetime 
         if until and d > until:
             return None, rhythm
         if freq == "DAILY" or _WD[d.weekday()] in days:
-            return start.replace(year=d.year, month=d.month, day=d.day), rhythm
+            # Wanduhrzeit in Zürich beibehalten (sonst bleibt nach der Zeitumstellung der alte UTC-Offset hängen)
+            loc = start.astimezone(TZ)
+            return datetime(d.year, d.month, d.day, loc.hour, loc.minute, loc.second, tzinfo=TZ), rhythm
         d += timedelta(days=1)
     return None, rhythm
 
