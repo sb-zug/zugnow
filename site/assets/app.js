@@ -407,7 +407,7 @@
         '<p class="note">Noch keine Meldungen der Parteien gesammelt.</p>';
     }
     var miss = (P.parteien || []).filter(function (p) { return !posts.some(function (x) { return x.party === p[2] }) }).map(function (p) { return p[2] });
-    $('polMiss').textContent = miss.length ? 'Zurzeit ohne Meldungen (kein Feed oder nichts Neues in den letzten 4 Monaten): ' + miss.join(', ') + '.' : '';
+    $('polMiss').textContent = miss.length ? 'Zurzeit ohne Meldungen (nur nationale Website oder nichts Neues in den letzten 4 Monaten): ' + miss.join(', ') + '.' : '';
     $('polPChips').onclick = function (ev) { var b = ev.target.closest('.chip'); if (!b) return; pf = b.dataset.v; postsRender() };
     postsRender();
     $('polParties').innerHTML = (P.parteien || []).map(function (p) { return '<a href="' + esc(p[1]) + '"><strong>' + esc(p[0]) + '</strong><span>Website ' + EXT + '</span></a>' }).join('');
