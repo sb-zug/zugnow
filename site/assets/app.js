@@ -104,15 +104,24 @@
 
   function renderToday() {
     var el = $('todayList'); if (!el) return;
-    var tk = todayKey(), src = D.events, list = src.filter(function (e) { return parts(e.start).key === tk }), label = 'Heute in Zug';
-    if (!list.length) {
-      var next = src.find(function (e) { return parts(e.start).key > tk });
-      if (next) { var k = parts(next.start).key; list = src.filter(function (e) { return parts(e.start).key === k }); label = 'Als Nächstes · ' + dShort(k) }
-    }
-    $('hTitle').textContent = label;
-    el.innerHTML = list.slice(0, 6).map(function (e) {
-      return '<a class="trow" href="agenda.html#ev-' + esc(e.id) + '"><span class="tm">' + (e.allday ? 'ganz­tags' : parts(e.start).hm) + '</span><span style="display:flex;flex-direction:column;gap:2px;min-width:0"><span class="tt">' + esc(e.title) + '</span><span class="ts">' + esc(e.place) + ' · ' + esc(e.catLabel) + '</span></span></a>'
+    var tk = todayKey(), src = D.events.filter(function (e) { return !e.cancelled && parts(e.start).key >= tk });
+    var today = src.filter(function (e) { return parts(e.start).key === tk });
+    var list = today.slice(0, 12);
+    // Wenig los heute: mit den nächsten Anlässen auffüllen (mit Tag angeschrieben)
+    if (list.length < 6) list = list.concat(src.filter(function (e) { return parts(e.start).key > tk }).slice(0, 6 - list.length + (list.length ? 0 : 3)));
+    $('hTitle').textContent = today.length ? 'Heute in Zug' : 'Als Nächstes in Zug';
+    el.innerHTML = list.map(function (e) {
+      var p = parts(e.start), t = e.allday ? 'ganztags' : p.hm;
+      return '<a class="tcard" href="agenda.html#ev-' + esc(e.id) + '"><div class="tim">' + (e.image ? img(e.image) : '<span>' + esc(e.catLabel) + '</span>') + '</div>' +
+        '<div class="tb"><span class="tm">' + (p.key === tk ? t : dShort(p.key) + ' · ' + t) + '</span><strong>' + esc(e.title) + '</strong>' +
+        '<span class="ts"><span>' + esc(e.place) + ' · ' + esc(e.catLabel) + '</span><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></div></a>';
     }).join('') || '<p style="color:var(--soft)">Keine Anlässe gefunden.</p>';
+    var prev = $('tPrev'), next = $('tNext');
+    function step() { var c = el.querySelector('.tcard'); return c ? c.getBoundingClientRect().width + 20 : el.clientWidth }
+    function upd() { prev.disabled = el.scrollLeft < 4; next.disabled = el.scrollLeft + el.clientWidth >= el.scrollWidth - 4 }
+    prev.onclick = function () { el.scrollBy({ left: -step(), behavior: 'smooth' }) };
+    next.onclick = function () { el.scrollBy({ left: step(), behavior: 'smooth' }) };
+    el.addEventListener('scroll', upd, { passive: true }); window.addEventListener('resize', upd); upd();
   }
 
   function renderWeekend() {

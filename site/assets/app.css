@@ -264,3 +264,39 @@ nav a[aria-current="page"]::after{transform:scaleX(1);opacity:1}
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .iic.cal{background:var(--tint);color:var(--brand)}}
 :root[data-theme="dark"] .iic.cal{background:var(--tint);color:var(--brand)}
+
+/* --- «Heute in Zug»: horizontal wischbare Karten --- */
+.tday{margin-top:8px}
+.tday .shead{margin-bottom:16px}
+.sctl{display:flex;align-items:center;gap:10px}
+.sctl a{margin-right:6px}
+.sarr{width:40px;height:40px;border-radius:50%;border:0;display:grid;place-items:center;cursor:pointer;background:var(--surface);color:var(--fg);box-shadow:0 2px 10px rgba(14,26,38,.08)}
+.sarr:disabled{opacity:.35;cursor:default}
+@media (hover:none){.sarr{display:none}}
+.swipe{display:grid;grid-auto-flow:column;grid-auto-columns:calc((100% - 40px)/3);gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:2px;padding:4px 2px 24px;margin:-4px -2px 0;scrollbar-width:none;overscroll-behavior-x:contain}
+.swipe::-webkit-scrollbar{display:none}
+.swipe:focus-visible{outline-offset:4px}
+@media (prefers-reduced-motion:no-preference){.swipe{scroll-behavior:smooth}}
+.tcard{scroll-snap-align:start;display:flex;flex-direction:column;min-width:0;border-radius:20px;overflow:hidden;background:var(--surface);color:var(--fg);text-decoration:none;box-shadow:0 10px 30px rgba(14,26,38,.06),0 2px 6px rgba(14,26,38,.03)}
+.tim{aspect-ratio:16/9;background:var(--ph);display:flex;align-items:flex-end;padding:0}
+.tim img{width:100%;height:100%;object-fit:cover;display:block}
+.tim span{padding:14px 18px;font-family:var(--display);font-weight:800;font-size:15px;color:var(--soft)}
+.tb{display:flex;flex-direction:column;gap:6px;padding:16px 20px 18px;flex:1}
+.tb .tm{font-size:15px;font-weight:600;color:var(--soft);font-variant-numeric:tabular-nums}
+.tb strong{font-family:var(--display);font-weight:700;font-size:20px;line-height:1.22;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tb .ts{margin-top:auto;padding-top:6px;display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:15px;color:var(--soft)}
+.tb .ts span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tb .ts svg{flex-shrink:0;color:var(--brand)}
+.tcard:hover strong{text-decoration:underline}
+@media (max-width:900px){.swipe{grid-auto-columns:calc((100% - 20px)/2.15)}}
+@media (max-width:560px){.swipe{grid-auto-columns:82%;gap:14px}.tb strong{font-size:18px}}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tcard,:root:not([data-theme="light"]) .sarr{background:var(--tint-2);box-shadow:0 0 0 1px var(--line)}}
+:root[data-theme="dark"] .tcard,:root[data-theme="dark"] .sarr{background:var(--tint-2);box-shadow:0 0 0 1px var(--line)}
+/* Aufmacher ohne Seitenspalte: Bild links, Text rechts */
+@media (min-width:860px){
+  .hero #lead{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);grid-template-rows:1fr auto auto auto auto 1fr;column-gap:40px;row-gap:12px}
+  .hero #lead>.ph{grid-column:1;grid-row:1/-1}
+  .hero #lead>:not(.ph){grid-column:2}
+  .hero #lead>.eyebrow{grid-row:2}.hero #lead>h2{grid-row:3}.hero #lead>p{grid-row:4}.hero #lead>a{grid-row:5;justify-self:start}
+  .hero #lead>.eyebrow{justify-self:start}
+}
