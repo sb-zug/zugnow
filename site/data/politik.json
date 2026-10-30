@@ -121,7 +121,34 @@
   "wahlen": "https://stadtzug.ch/de/politik/gesamterneuerungswahlen-2026",
   "abstimmungen": "https://stadtzug.ch/de/politik/abstimmungen"
  },
- "votes": [],
+ "votes": [
+  {
+   "title": "Volksinitiative «Für eine sichere Ernährung – durch Stärkung einer nachhaltigen inländischen Produktion, mehr pflanzliche Lebensmittel und sauberes Trinkwasser",
+   "date": "2026-09-27",
+   "domain": "federation",
+   "url": "https://wab.zug.ch/vote/ernaehrungsinitiative",
+   "completed": true,
+   "answer": "rejected",
+   "yeas": 23.5,
+   "city": {
+    "yeas": 26.9,
+    "answer": "rejected"
+   }
+  },
+  {
+   "title": "Volksinitiative «Wahrung der schweizerischen Neutralität (Neutralitätsinitiative)»",
+   "date": "2026-09-27",
+   "domain": "federation",
+   "url": "https://wab.zug.ch/vote/neutralitaetsinitiative",
+   "completed": true,
+   "answer": "rejected",
+   "yeas": 28.6,
+   "city": {
+    "yeas": 25.1,
+    "answer": "rejected"
+   }
+  }
+ ],
  "upcoming": [],
  "nextVoteDate": "2026-11-29"
 }

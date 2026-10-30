@@ -244,5 +244,13 @@
   "hm": "20:30",
   "image": "https://galvanik-zug.ch/site/assets/files/8063/img_1745.1200x628.jpg"
  },
- "https://www.theatercasino.ch/programm/veranstaltungen/schellen-ursli": "https://www.theatercasino.ch/_Resources/Persistent/2/b/f/8/2bf8a4b69833c597abacae1f74a9fb97500561cb/20261224_Schellen_Ursli_KV_Ursli_1920x1080px_LR-6005x4500-768x576.webp"
+ "https://www.theatercasino.ch/programm/veranstaltungen/schellen-ursli": "https://www.theatercasino.ch/_Resources/Persistent/2/b/f/8/2bf8a4b69833c597abacae1f74a9fb97500561cb/20261224_Schellen_Ursli_KV_Ursli_1920x1080px_LR-6005x4500-768x576.webp",
+ "wab:https://wab.zug.ch/vote/ernaehrungsinitiative": {
+  "yeas": 26.9,
+  "answer": "rejected"
+ },
+ "wab:https://wab.zug.ch/vote/neutralitaetsinitiative": {
+  "yeas": 25.1,
+  "answer": "rejected"
+ }
 }
