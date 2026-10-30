@@ -74,43 +74,63 @@
  "parteien": [
   [
    "Alternative – die Grünen (ALG)",
-   "https://gruene-zug.ch/"
+   "https://gruene-zug.ch/",
+   "ALG",
+   "Kanton"
   ],
   [
    "Aufrecht Zug",
-   "https://aufrecht-zug.ch/"
+   "https://aufrecht-zug.ch/",
+   "Aufrecht",
+   "Kanton"
   ],
   [
    "Christlichsoziale Partei (CSP)",
-   "https://csp-zug.ch/"
+   "https://csp-zug.ch/",
+   "CSP",
+   "Stadt"
   ],
   [
    "Die Mitte Stadt Zug",
-   "https://stadtzug-diemitte.ch/"
+   "https://stadtzug-diemitte.ch/",
+   "Mitte",
+   "Stadt"
   ],
   [
    "EDU",
-   "https://www.edu-schweiz.ch/"
+   "https://www.edu-schweiz.ch/",
+   "EDU",
+   "Schweiz"
   ],
   [
    "EVP Kanton Zug",
-   "https://www.evp-zg.ch"
+   "https://www.evp-zg.ch",
+   "EVP",
+   "Kanton"
   ],
   [
    "FDP.Die Liberalen Stadt Zug",
-   "https://www.fdp-zg.ch/partei/sektionen/fdpdie-liberalen-stadt-zug/willkommen/"
+   "https://www.fdp-zg.ch/partei/sektionen/fdpdie-liberalen-stadt-zug/willkommen/",
+   "FDP",
+   "Stadt"
   ],
   [
    "Grünliberale (GLP)",
-   "https://zg.grunliberale.ch/"
+   "https://zg.grunliberale.ch/",
+   "GLP",
+   "Kanton"
   ],
   [
    "SP Stadt Zug",
-   "https://stadtzug.sp-zug.ch/"
+   "https://stadtzug.sp-zug.ch/",
+   "SP",
+   "Stadt"
   ],
   [
    "SVP Stadt Zug",
-   "https://www.svp-zug.ch/sektion/svp-stadt-zug/"
+   "https://www.svp-zug.ch/sektion/svp-stadt-zug/",
+   "SVP",
+   "Stadt"
   ]
  ],
  "links": {
@@ -150,5 +170,140 @@
   }
  ],
  "upcoming": [],
+ "posts": [
+  {
+   "title": "SP Stadt Zug: 2 x Ja zu den städtischen Vorlagen",
+   "url": "https://stadtzug.sp-zug.ch/blog/2026/10/28/sp-stadt-zug-2-x-ja-zu-den-staedtischen-vorlagen/",
+   "date": "2026-10-28",
+   "lead": "Zustimmung zum Erwerb der Parkanlage “Unterer Frauenstein” und zur ETH Learning Factory Zug. Bei beiden Vorlagen steht für die Stadtzuger SP das zukunftsorientierte Handeln im Vordergrund. An ihrer Mitgliederversammlung ",
+   "party": "SP",
+   "partyName": "SP Stadt Zug",
+   "level": "Stadt"
+  },
+  {
+   "title": "Bezahlbare Wohnungen ohne Wenn und Aber!",
+   "url": "https://stadtzug.sp-zug.ch/blog/2026/10/10/bezahlbare-wohnungen-ohne-wenn-und-aber/",
+   "date": "2026-10-10",
+   "lead": "Zuger Woche, 7. Oktober 2026Es war ziemlich auffällig. Alle Zuger Parteien haben sich während ihrer Wahlkampagnen diesen Sommer und Herbst plötzlich glasklar für bezahlbaren Wohnraum ausgesprochen. Das ist jawunderbar. E",
+   "party": "SP",
+   "partyName": "SP Stadt Zug",
+   "level": "Stadt"
+  },
+  {
+   "title": "Einladung zur Parolenfassung und Wahlfeier am 26. Oktober 26",
+   "url": "https://stadtzug.sp-zug.ch/blog/2026/10/10/einladung-zur-parolenfassung-und-wahlfeier-am-26-oktober-26/",
+   "date": "2026-10-10",
+   "lead": "Die letzten Monate waren intensiv. Dank eurer Unterstützung konnten wir unsere Sitze sowohl im Grossen Gemeinderat als auch im Kantonsrat in der Stadt halten, und unsere Stadträtin hat ein hervorragendes",
+   "party": "SP",
+   "partyName": "SP Stadt Zug",
+   "level": "Stadt"
+  },
+  {
+   "title": "SP Stadt Zug freut sich über das Vertrauen der Bevölkerung und über die Bestätigung ihrer städtischen Arbeit",
+   "url": "https://stadtzug.sp-zug.ch/blog/2026/10/10/sp-stadt-zug-freut-sich-ueber-das-vertrauen-der-bevoelkerung-und-ueber-die-bestaetigung-ihrer-staedtischen-arbeit/",
+   "date": "2026-10-10",
+   "lead": "Die SP Stadt Zug freut sich über das Ergebnis der heutigen Gesamterneuerungswahlen. Sie behält ihre bisherigen drei städtischen Sitze im Kantonsrat und im Grossen Gemeinderat. Barbara Gysel wurde mit 4580",
+   "party": "SP",
+   "partyName": "SP Stadt Zug",
+   "level": "Stadt"
+  },
+  {
+   "title": "Unser Wahlbudget 2026",
+   "url": "https://gruene-zug.ch/blog/allgemein/unser-wahlbudget-2026",
+   "date": "2026-10-01",
+   "lead": "The post  Unser Wahlbudget 2026  appeared first on  Alternative – die Grünen Zug .",
+   "party": "ALG",
+   "partyName": "Alternative – die Grünen (ALG)",
+   "level": "Kanton"
+  },
+  {
+   "title": "So wählst du richtig: Schritt für Schritt",
+   "url": "https://gruene-zug.ch/blog/allgemein/so-waehlst-du-richtig-schritt-fuer-schritt",
+   "date": "2026-09-22",
+   "lead": "The post  So wählst du richtig: Schritt für Schritt  appeared first on  Alternative – die Grünen Zug .",
+   "party": "ALG",
+   "partyName": "Alternative – die Grünen (ALG)",
+   "level": "Kanton"
+  },
+  {
+   "title": "Fraktionsbericht 27. August",
+   "url": "https://gruene-zug.ch/blog/allgemein/fraktionsbericht-27-august",
+   "date": "2026-09-09",
+   "lead": "The post  Fraktionsbericht 27. August  appeared first on  Alternative – die Grünen Zug .",
+   "party": "ALG",
+   "partyName": "Alternative – die Grünen (ALG)",
+   "level": "Kanton"
+  },
+  {
+   "title": "Pflaster statt OP",
+   "url": "https://gruene-zug.ch/blog/news/bulletin-artikel/pflaster-statt-op",
+   "date": "2026-09-05",
+   "lead": "The post  Pflaster statt OP  appeared first on  Alternative – die Grünen Zug .",
+   "party": "ALG",
+   "partyName": "Alternative – die Grünen (ALG)",
+   "level": "Kanton"
+  },
+  {
+   "title": "Katrin Speck als Korporationsschreiberin nominiert",
+   "url": "https://stadtzug-diemitte.ch/ersatzwahl-fuer-das-amt-des-korporationsschreibers-katrin-speck-einstimmig-nominiert/",
+   "date": "2026-09-01",
+   "lead": "Ersatzwahl für das Amt des Korporationsschreibers: Katrin Speck einstimmig nominiert An der Nominationsversammlung vom Montag, 31. August 2026, wurde die 40-jährige Juristin Katrin Speck aus Oberwil einstimmig als offizi",
+   "party": "Mitte",
+   "partyName": "Die Mitte Stadt Zug",
+   "level": "Stadt"
+  },
+  {
+   "title": "Die Mitte Stadt Zug besucht Siemens Smart Infrastructure",
+   "url": "https://stadtzug-diemitte.ch/die-mitte-stadt-zug-besucht-siemens-smart-infrastructure/",
+   "date": "2026-08-29",
+   "lead": "Mehrmals jährlich lädt die Mitte Stadt Zug ihre Mitglieder sowie Sympathisanten zu spannenden Anlässen mit Blick hinter die Kulissen ein. Eine ansehnliche Gruppe folgte dieses Mal der Einladung an den",
+   "party": "Mitte",
+   "partyName": "Die Mitte Stadt Zug",
+   "level": "Stadt"
+  }
+ ],
+ "postStatus": {
+  "ALG": {
+   "ok": true,
+   "feed": "https://gruene-zug.ch/feed/",
+   "count": 4
+  },
+  "Aufrecht": {
+   "ok": false,
+   "error": "ValueError: kein Feed gefunden"
+  },
+  "CSP": {
+   "ok": true,
+   "feed": "https://csp-zug.ch/feed/",
+   "count": 0
+  },
+  "Mitte": {
+   "ok": true,
+   "feed": "https://stadtzug-diemitte.ch/feed/",
+   "count": 2
+  },
+  "EVP": {
+   "ok": false,
+   "error": "ValueError: kein Feed gefunden"
+  },
+  "FDP": {
+   "ok": false,
+   "error": "ValueError: kein Feed gefunden"
+  },
+  "GLP": {
+   "ok": false,
+   "error": "ValueError: kein Feed gefunden"
+  },
+  "SP": {
+   "ok": true,
+   "feed": "https://stadtzug.sp-zug.ch/feed/",
+   "count": 4
+  },
+  "SVP": {
+   "ok": true,
+   "feed": "https://www.svp-zug.ch/feed/",
+   "count": 0
+  }
+ },
  "nextVoteDate": "2026-11-29"
 }
