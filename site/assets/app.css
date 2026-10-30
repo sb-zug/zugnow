@@ -254,3 +254,27 @@ nav a[aria-current="page"]::after{transform:scaleX(1);opacity:1}
   .hand{right:0;bottom:4%;font-size:28px}
   .intro .b5{display:none}
 }
+
+/* --- Infoleiste: Wetter, Sonnenuntergang, Anlässe heute --- */
+.infobar .wrap{padding-block:8px 8px}
+.ibox{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:center;padding:14px 8px;border-radius:20px;background:var(--bg);box-shadow:0 2px 18px rgba(14,26,38,.07),0 0 0 1px rgba(14,26,38,.05)}
+.iitem{display:flex;align-items:center;gap:16px;padding:6px 24px;min-width:0;color:var(--fg);text-decoration:none}
+.iitem+.iitem{border-left:1px solid var(--line)}
+.iitem[hidden]{display:none}
+.iitem[hidden]+.iitem{border-left:0}
+.iic{flex-shrink:0;display:grid;place-items:center;width:52px;height:52px}
+.iic.cal{border-radius:50%;background:var(--tint);color:var(--brand)}
+.itx{display:flex;flex-direction:column;gap:2px;min-width:0;font-size:16px;color:var(--muted);line-height:1.3}
+.itx strong{font-size:20px;font-weight:700;color:var(--fg)}
+.ilink{border-radius:14px}
+.ilink:hover strong{text-decoration:underline}
+.ichev{margin-left:auto;flex-shrink:0;color:var(--brand)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .ibox{background:var(--tint-2);box-shadow:0 0 0 1px var(--line)}}
+:root[data-theme="dark"] .ibox{background:var(--tint-2);box-shadow:0 0 0 1px var(--line)}
+@media (max-width:760px){
+  .ibox{grid-template-columns:repeat(2,minmax(0,1fr));padding:6px 4px}
+  .iitem{padding:12px 14px;gap:10px}
+  .iic{width:40px;height:40px}.iic svg{width:34px;height:34px}.iic.cal svg{width:22px;height:22px}
+  .ilink{grid-column:1/-1;border-left:0!important;border-top:1px solid var(--line);border-radius:0}
+  .itx{font-size:14px}.itx strong{font-size:17px}
+}

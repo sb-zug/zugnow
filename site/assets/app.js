@@ -53,9 +53,13 @@
       '<div class="sfield">' + LUPE + '<input id="sIn" type="search" placeholder="News, Anlässe, Amtliches durchsuchen" autocomplete="off" enterkeyhint="search">' +
       '<button type="button" class="sclose" id="sClose">Schliessen</button></div>' +
       '<p class="scount" id="sCount" aria-live="polite"></p><div class="sres" id="sRes"></div></div></div>' +
-      '<div class="band"><div class="wrap"><span class="live" id="liveDate"></span><span id="wx" hidden>Luft <strong id="wxT"></strong></span>' +
-      '<span>Sonnenuntergang <strong id="sunT">–</strong></span><span id="cnt"></span></div></div>';
-    var intro = $('intro'); if (intro) $('hdr').insertBefore(intro, $('hdr').querySelector('.band'));
+      '<div class="infobar"><div class="wrap"><div class="ibox">' +
+      '<div class="iitem" id="wx" hidden><span class="iic" id="wxI"></span><span class="itx"><strong id="wxT"></strong><span id="wxD"></span></span></div>' +
+      '<div class="iitem"><span class="iic">' + IC.sunset + '</span><span class="itx"><span>Sonnenuntergang</span><span id="sunT">–</span></span></div>' +
+      '<a class="iitem ilink" href="agenda.html#heute"><span class="iic cal">' + IC.cal + '</span><span class="itx"><strong id="cntN">–</strong><span>heute</span></span>' +
+      '<svg class="ichev" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>' +
+      '</div></div></div>';
+    var intro = $('intro'); if (intro) $('hdr').insertBefore(intro, $('hdr').querySelector('.infobar'));
     $('ftr').innerHTML =
       '<footer><div class="wrap"><div class="col"><span style="font-family:var(--display);font-weight:800;font-size:22px;color:var(--fg)">zug<span style="color:var(--red)">.</span>now</span>' +
       '<span>Unabhängig. Automatisch aktualisiert. Jede Meldung mit Quelle und Link zum Original.</span>' +
@@ -64,14 +68,17 @@
   }
 
   function band() {
-    $('liveDate').textContent = new Intl.DateTimeFormat('de-CH', { timeZone: TZ, weekday: 'long', day: 'numeric', month: 'long' }).format(new Date());
     var tk = todayKey(), n = D.events.filter(function (e) { return parts(e.start).key === tk && !e.cancelled }).length;
-    $('cnt').innerHTML = '<a href="agenda.html#heute" style="color:inherit">Heute <strong>' + n + ' Anlässe</strong></a>';
-    $('sunT').textContent = sunset(new Date(), 47.166, 8.516);
+    $('cntN').textContent = n + (n === 1 ? ' Anlass' : ' Anlässe');
+    $('sunT').textContent = sunset(new Date(), 47.166, 8.516) + ' Uhr';
     var st = D.meta.sources || {}, bad = Object.keys(st).filter(function (k) { return !st[k].ok });
     $('srcState').innerHTML = bad.length ? '<span class="err">Quelle gestört: ' + esc(bad.join(', ')) + ' (letzter Stand wird angezeigt)</span>' : '';
-    fetch('https://api.open-meteo.com/v1/forecast?latitude=47.166&longitude=8.516&current=temperature_2m&timezone=Europe%2FZurich')
-      .then(function (r) { return r.json() }).then(function (j) { var t = j && j.current && j.current.temperature_2m; if (t != null) { $('wxT').textContent = Math.round(t) + ' °C'; $('wx').hidden = false } }).catch(function () { });
+    fetch('https://api.open-meteo.com/v1/forecast?latitude=47.166&longitude=8.516&current=temperature_2m,weather_code,is_day&timezone=Europe%2FZurich')
+      .then(function (r) { return r.json() }).then(function (j) {
+        var c = j && j.current; if (!c || c.temperature_2m == null) return;
+        var w = wxOf(c.weather_code, c.is_day);
+        $('wxT').textContent = Math.round(c.temperature_2m) + ' °C'; $('wxD').textContent = w[1]; $('wxI').innerHTML = IC[w[0]]; $('wx').hidden = false;
+      }).catch(function () { });
   }
 
   function sunset(date, lat, lon) { // NOAA-Näherung
@@ -190,6 +197,33 @@
   }
   var CAL = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg>';
   var LUPE = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="M15.5 15.5L20 20"></path></svg>';
+  // Wetter-Codes von Open-Meteo (WMO) → Symbol und Text
+  function wxOf(c, day) {
+    if (c === 0) return day ? ['sun', 'Sonnig'] : ['moon', 'Klar'];
+    if (c === 1 || c === 2) return [day ? 'part' : 'moon', c === 1 ? 'Meist sonnig' : 'Teilweise bewölkt'];
+    if (c === 3) return ['cloud', 'Bewölkt'];
+    if (c === 45 || c === 48) return ['fog', 'Nebel'];
+    if (c >= 51 && c <= 57) return ['rain', 'Nieselregen'];
+    if ((c >= 61 && c <= 67) || (c >= 80 && c <= 82)) return ['rain', c >= 80 ? 'Regenschauer' : 'Regen'];
+    if ((c >= 71 && c <= 77) || c === 85 || c === 86) return ['snow', 'Schnee'];
+    if (c >= 95) return ['storm', 'Gewitter'];
+    return ['cloud', 'Bewölkt'];
+  }
+  var SUN = '<g stroke="#F2B134" stroke-width="2.4" stroke-linecap="round"><path d="M24 4v5M24 39v5M4 24h5M39 24h5M9.9 9.9l3.5 3.5M34.6 34.6l3.5 3.5M9.9 38.1l3.5-3.5M34.6 13.4l3.5-3.5"/></g><circle cx="24" cy="24" r="9" fill="#F2B134"/>';
+  var CLOUD = '<path d="M15 38h20a8 8 0 0 0 .6-16A11 11 0 0 0 14.4 25 6.5 6.5 0 0 0 15 38z" fill="#B7C3D0"/>';
+  function svg(inner) { return '<svg viewBox="0 0 48 48" width="44" height="44" aria-hidden="true">' + inner + '</svg>' }
+  var IC = {
+    sun: svg(SUN),
+    moon: svg('<path d="M30 8a16 16 0 1 0 10 26A13 13 0 0 1 30 8z" fill="#F2C55C"/>'),
+    part: svg('<g transform="translate(-6 -6) scale(.8)">' + SUN + '</g><path d="M17 40h18a7 7 0 0 0 .5-14A9.5 9.5 0 0 0 17.3 28.6 5.8 5.8 0 0 0 17 40z" fill="#B7C3D0"/>'),
+    cloud: svg(CLOUD),
+    fog: svg('<g stroke="#9DAAB8" stroke-width="3" stroke-linecap="round"><path d="M8 18h32M12 26h28M8 34h26"/></g>'),
+    rain: svg('<g transform="translate(0 -6)">' + CLOUD + '</g><g stroke="#4F8FE0" stroke-width="2.6" stroke-linecap="round"><path d="M17 37l-2 5M25 37l-2 5M33 37l-2 5"/></g>'),
+    snow: svg('<g transform="translate(0 -6)">' + CLOUD + '</g><g fill="#8FB6EA"><circle cx="16" cy="40" r="2"/><circle cx="24" cy="43" r="2"/><circle cx="32" cy="40" r="2"/></g>'),
+    storm: svg('<g transform="translate(0 -6)">' + CLOUD + '</g><path d="M25 32l-5 8h5l-2 6 7-9h-5l3-5z" fill="#F2B134"/>'),
+    sunset: svg('<g stroke="#F2B134" stroke-width="2.4" stroke-linecap="round"><path d="M24 8v5M10 15l3 3M38 15l-3 3M5 28h4M39 28h4"/></g><path d="M12 34a12 12 0 0 1 24 0z" fill="#F2B134"/><path d="M5 36h38" stroke="#E2603C" stroke-width="2.6" stroke-linecap="round"/>'),
+    cal: '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M8.5 14v3M12 14v3M15.5 14v3"/></svg>'
+  };
   var CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>';
 
   function evRow(e) {
