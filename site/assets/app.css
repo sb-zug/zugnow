@@ -234,10 +234,10 @@ nav a[aria-current="page"]::after{transform:scaleX(1);opacity:1}
 .intro{position:relative;overflow:hidden;background:var(--bg);--b-blue:#D3E3F8;--b-peach:#FBE3CF;--b-mint:#D5EEE6;--b-lilac:#E9DFF8}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .intro{--b-blue:#1B2D45;--b-peach:#3A2A20;--b-mint:#183530;--b-lilac:#2A2340}}
 :root[data-theme="dark"] .intro{--b-blue:#1B2D45;--b-peach:#3A2A20;--b-mint:#183530;--b-lilac:#2A2340}
-.intro .wrap{position:relative;display:flex;align-items:center;justify-content:space-between;gap:16px 40px;padding-block:20px 28px;min-height:120px}
-.intro h1{position:relative;z-index:1;font-family:var(--display);font-weight:800;font-stretch:100%;font-size:clamp(26px,3.4vw,42px);line-height:1.08;letter-spacing:-.025em;color:var(--fg);max-width:22ch}
-.intro h1 .dot{display:inline-block;width:.2em;height:.2em;margin-left:.06em;border-radius:50%;background:var(--red);color:transparent;line-height:0;overflow:hidden;vertical-align:baseline}
-.ivis{position:relative;flex:0 0 auto;width:260px;height:120px}
+.intro .wrap{position:relative;display:flex;align-items:center;justify-content:space-between;gap:16px 40px;padding-block:12px 20px;min-height:100px}
+.intro .claim{position:relative;z-index:1;margin:0;font-family:var(--body);font-weight:400;font-size:clamp(18px,1.7vw,22px);line-height:1.4;letter-spacing:-.005em;color:var(--muted);max-width:34ch}
+.intro .claim .dot{display:inline-block;width:.32em;height:.32em;margin-left:.08em;border-radius:50%;background:var(--red);color:transparent;line-height:0;overflow:hidden;vertical-align:baseline}
+.ivis{position:relative;flex:0 0 auto;width:240px;height:100px}
 .blob{position:absolute;pointer-events:none}
 .ivis .b1{left:10%;top:-8%;width:46%;height:78%;background:var(--b-blue);border-radius:52% 48% 40% 60% / 58% 62% 38% 42%}
 .ivis .b2{right:-4%;top:6%;width:36%;height:90%;background:var(--b-peach);border-radius:48% 52% 46% 54% / 40% 44% 56% 60%}
@@ -249,7 +249,7 @@ nav a[aria-current="page"]::after{transform:scaleX(1);opacity:1}
 .hand svg{flex-shrink:0;color:var(--red);margin-bottom:4px}
 @media (max-width:640px){
   .intro .wrap{padding-block:14px 22px;min-height:0;gap:8px}
-  .intro h1{font-size:clamp(24px,7vw,30px)}
+  .intro .claim{font-size:17px}
   .ivis{width:130px;height:96px}
   .hand{right:0;bottom:4%;font-size:28px}
   .intro .b5{display:none}
