@@ -382,6 +382,9 @@
   searchInit();
   Promise.all(['news', 'agenda', 'amtlich', 'meta'].map(get)).then(function (r) {
     D = { news: r[0] || [], agenda: r[1] || [], amtlich: r[2] || [], meta: r[3] || {} };
+    // GGR-Sitzungen vorerst ausblenden (später eigener Reiter «Politik»; Daten bleiben im JSON)
+    var GGR = /Grosse[nr]? Gemeinderat|\bGGR\b/i, noGgr = function (x) { return !GGR.test(x.title || '') };
+    D.news = D.news.filter(noGgr); D.amtlich = D.amtlich.filter(noGgr); D.agenda = D.agenda.filter(noGgr);
     D.events = D.agenda.filter(function (e) { return !e.ongoing });
     D.ongoing = D.agenda.filter(function (e) { return e.ongoing });
     band();
