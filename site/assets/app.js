@@ -170,6 +170,24 @@
     }).join('') || '<p style="color:var(--soft)">Keine Meldungen.</p>';
   }
   var NTOPICS = [['alle', 'Alle'], ['politik', 'Politik & Verwaltung'], ['bauen', 'Bauen & Planung'], ['mobilitaet', 'Mobilität & Verkehr'], ['bildung', 'Bildung & Schule'], ['kultur', 'Kultur & Freizeit'], ['umwelt', 'Umwelt & Energie'], ['soziales', 'Soziales & Gesundheit'], ['weitere', 'Weitere']];
+  // Themen-Kacheln (Startseite) → News-Seite mit Filter
+  var TICON = {
+    politik: '<path d="M4 20h16M5 17h14M6 17V10M10 17V10M14 17V10M18 17V10M3.5 9.5L12 4l8.5 5.5z"/>',
+    bauen: '<path d="M4 21V9l6-3v15M10 21V11h8v10M3 21h18M13 14h2M13 17h2M6.5 12h1M6.5 15h1"/>',
+    mobilitaet: '<circle cx="6" cy="16" r="3.5"/><circle cx="18" cy="16" r="3.5"/><path d="M6 16l4-7h5l3 7M10 9l2 7h-6M14 6h2.5"/>',
+    bildung: '<path d="M2.5 9L12 4.5 21.5 9 12 13.5z"/><path d="M6.5 11v4.5c0 1.5 2.5 3 5.5 3s5.5-1.5 5.5-3V11M21.5 9v5"/>',
+    kultur: '<path d="M9 18V6l11-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/>',
+    umwelt: '<path d="M5 19c0-8 5-13 15-14-1 10-6 15-14 15M5 19l8-8"/>',
+    soziales: '<circle cx="9" cy="8" r="3.2"/><circle cx="17" cy="9" r="2.6"/><path d="M3 19c.6-3.4 3-5.5 6-5.5s5.4 2.1 6 5.5M15.5 13.6c2.7.1 4.8 2 5.3 5.4"/>'
+  };
+  function renderThemes() {
+    var el = $('themes'); if (!el) return;
+    el.innerHTML = NTOPICS.filter(function (t) { return TICON[t[0]] }).map(function (t) {
+      var n = D.news.filter(function (x) { return x.topic === t[0] }).length;
+      return '<a class="theme th-' + t[0] + '" href="news.html#' + t[0] + '"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + TICON[t[0]] + '</svg>' +
+        '<span class="tn">' + t[1] + '</span><span class="tc">' + (n ? n + (n === 1 ? ' Meldung' : ' Meldungen') : 'aktuell keine') + '</span></a>';
+    }).join('');
+  }
   function renderNewsPage() {
     var el = $('newsList'); if (!el) return;
     var h = location.hash.slice(1); if (NTOPICS.some(function (t) { return t[0] === h })) st.ntopic = h;
@@ -351,7 +369,7 @@
     D.ongoing = D.agenda.filter(function (e) { return e.ongoing });
     band();
     if (!$('sPanel').hidden) searchInit.run();
-    if (page === 'start') { renderToday(); renderNewsTeaser(); renderAmtTeaser() }
+    if (page === 'start') { renderToday(); renderNewsTeaser(); renderThemes(); renderAmtTeaser() }
     if (page === 'agenda') {
       var open = agendaFromHash(); renderFilters(); renderList(); renderWeekend(); renderLauf(); if (open) openEvent(open);
       window.addEventListener('hashchange', function () { var o = agendaFromHash(); renderFilters(); renderList(); if (o) openEvent(o) });

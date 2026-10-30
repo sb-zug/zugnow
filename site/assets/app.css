@@ -322,3 +322,17 @@ nav a[aria-current="page"]::after{transform:scaleX(1);opacity:1}
 .tb .tl{font-size:15px;line-height:1.5;color:var(--soft);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .tb .tm .ntop{vertical-align:1px}
 .hn2{margin-top:40px}
+
+/* Themen-Kacheln */
+.themes{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(140px,100%),1fr));gap:14px}
+.theme{--c:#2F5FD0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:150px;padding:20px 12px;border-radius:20px;text-align:center;text-decoration:none;color:var(--fg);background:color-mix(in srgb,var(--c) 8%,var(--surface));box-shadow:0 6px 22px rgba(14,26,38,.04)}
+.theme svg{color:var(--c)}
+.theme .tn{font-weight:600;font-size:16px;line-height:1.25}
+.theme .tc{font-size:13px;color:var(--soft)}
+.theme:hover .tn{text-decoration:underline}
+@media (prefers-reduced-motion:no-preference){.theme{transition:transform .18s ease-out}.theme:hover{transform:translateY(-2px)}}
+.th-politik{--c:#2F5FD0}.th-bauen{--c:#C8641B}.th-mobilitaet{--c:#23845A}.th-bildung{--c:#7A4BD6}.th-kultur{--c:#D9403A}.th-umwelt{--c:#13807C}.th-soziales{--c:#C88A0A}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .theme{background:color-mix(in srgb,var(--c) 18%,var(--bg));box-shadow:none}:root:not([data-theme="light"]) .theme svg{color:color-mix(in srgb,var(--c) 55%,#fff)}}
+:root[data-theme="dark"] .theme{background:color-mix(in srgb,var(--c) 18%,var(--bg));box-shadow:none}
+:root[data-theme="dark"] .theme svg{color:color-mix(in srgb,var(--c) 55%,#fff)}
+@media (max-width:560px){.themes{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.theme{min-height:120px}}
