@@ -835,28 +835,6 @@
   "source": "veranstaltungen.zug.ch"
  },
  {
-  "id": "tcz-326b77cc-38b4-4cd5-b9ef-8ce6984cb930",
-  "title": "218. Generalversammlung",
-  "start": "2026-11-05T19:00:00+01:00",
-  "end": null,
-  "allday": false,
-  "rhythm": "",
-  "ongoing": false,
-  "until": null,
-  "cancelled": false,
-  "place": "Theater Casino Zug",
-  "location": "Theater Casino Zug, Artherstrasse 2–4, 6300 Zug",
-  "cat": "kultur",
-  "catLabel": "Kultur & Musik",
-  "tags": [],
-  "institution": "theatercasino",
-  "teaser": "der Theater- und Musikgesellschaft Zug",
-  "text": "der Theater- und Musikgesellschaft Zug",
-  "url": "https://www.theatercasino.ch/programm/veranstaltungen",
-  "image": null,
-  "source": "theatercasino.ch"
- },
- {
   "id": "tcz-189829e4-d95b-4e93-b372-26c27752e516",
   "title": "Klavier Total IV",
   "start": "2026-11-05T19:00:00+01:00",
@@ -3961,7 +3939,7 @@
  },
  {
   "id": "tcz-544d0ad7-cb49-4e92-b0ca-52e0110c1f72",
-  "title": "Weihnachts­zauber",
+  "title": "Weihnachtszauber",
   "start": "2026-12-11T08:30:00+01:00",
   "end": null,
   "allday": false,
@@ -4106,7 +4084,7 @@
  },
  {
   "id": "tcz-4e28153c-03fd-4c06-8f5c-9b96a4067b50",
-  "title": "Weihnachts­zauber",
+  "title": "Weihnachtszauber",
   "start": "2026-12-12T14:00:00+01:00",
   "end": null,
   "allday": false,
@@ -4298,7 +4276,7 @@
  },
  {
   "id": "tcz-a7332c92-5e80-4f37-90d9-2e0973ce7982",
-  "title": "Weihnachts­zauber",
+  "title": "Weihnachtszauber",
   "start": "2026-12-13T13:30:00+01:00",
   "end": null,
   "allday": false,
