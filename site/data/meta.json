@@ -2,19 +2,19 @@
  "sources": {
   "news": {
    "ok": true,
-   "updated": "2026-10-30T11:55+01:00",
+   "updated": "2026-10-30T12:00+01:00",
    "count": 10
   },
   "agenda": {
    "ok": true,
-   "updated": "2026-10-30T11:55+01:00",
+   "updated": "2026-10-30T12:00+01:00",
    "count": 143
   },
   "amtlich": {
    "ok": true,
-   "updated": "2026-10-30T11:55+01:00",
+   "updated": "2026-10-30T12:00+01:00",
    "count": 8
   }
  },
- "generated": "2026-10-30T11:55+01:00"
+ "generated": "2026-10-30T12:00+01:00"
 }
