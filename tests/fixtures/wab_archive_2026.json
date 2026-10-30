@@ -1,0 +1,8 @@
+{"_hinweis": "Nachgebaut nach der OneGov-Doku (Summary-Format), keine echten Rohdaten – vor dem Commit-Test durch echten Abruf ersetzen.",
+ "results": [
+  {"type": "vote", "title": {"de_CH": "Bundesgesetz über die Individualbesteuerung"}, "date": "2026-03-08", "domain": "federation", "url": "https://wab.zug.ch/vote/individualbesteuerung", "completed": true, "answer": "rejected", "yeas_percentage": 45.6, "nays_percentage": 54.4, "progress": {"counted": 11, "total": 11}},
+  {"type": "vote", "title": {"de_CH": "Vorlage A"}, "date": "2026-09-27", "domain": "federation", "url": "https://wab.zug.ch/vote/vorlage-a", "completed": true, "answer": "accepted", "yeas_percentage": 55.1, "nays_percentage": 44.9, "progress": {"counted": 11, "total": 11}},
+  {"type": "vote", "title": {"de_CH": "Vorlage B"}, "date": "2026-09-27", "domain": "canton", "url": "https://wab.zug.ch/vote/vorlage-b", "completed": true, "answer": "rejected", "yeas_percentage": 40.2, "nays_percentage": 59.8, "progress": {"counted": 11, "total": 11}},
+  {"type": "vote", "title": {"de_CH": "Vorlage C"}, "date": "2026-11-29", "domain": "federation", "url": "https://wab.zug.ch/vote/vorlage-c", "completed": false, "answer": null, "yeas_percentage": null, "progress": {"counted": 0, "total": 11}},
+  {"type": "election", "title": {"de_CH": "Regierungsratswahl"}, "date": "2026-10-04", "domain": "canton", "url": "https://wab.zug.ch/election/rr", "completed": true}
+ ]}

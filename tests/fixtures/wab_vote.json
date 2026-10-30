@@ -1,0 +1,3 @@
+[{"_hinweis": "nachgebaut (OneGov data-json Format)", "type": "proposal", "entity_id": 1702, "name": "Cham", "counted": true, "yeas": 3000, "nays": 2500},
+ {"type": "proposal", "entity_id": 1711, "name": "Zug", "counted": true, "yeas": 6100, "nays": 5000},
+ {"type": "counter-proposal", "entity_id": 1711, "name": "Zug", "counted": true, "yeas": 1, "nays": 9}]

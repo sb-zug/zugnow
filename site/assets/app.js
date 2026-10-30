@@ -1,5 +1,5 @@
 /* zug.now – gemeinsames Skript für alle Seiten.
-   Jede Seite setzt <body data-page="start|agenda|news|amtlich"> und hat Platzhalter mit IDs. */
+   Jede Seite setzt <body data-page="start|agenda|news|amtlich|politik"> und hat Platzhalter mit IDs. */
 (function () {
   var TZ = 'Europe/Zurich';
   var WD = ['SO', 'MO', 'DI', 'MI', 'DO', 'FR', 'SA'], MO = ['JAN', 'FEB', 'MÄR', 'APR', 'MAI', 'JUN', 'JUL', 'AUG', 'SEP', 'OKT', 'NOV', 'DEZ'];
@@ -7,7 +7,7 @@
   var CATS = [['alle', 'Alle'], ['kinder', 'Kinder & Familie'], ['kultur', 'Kultur & Musik'], ['maerkte', 'Märkte & Feste'], ['treff', 'Treffpunkte'], ['sport', 'Sport & Natur'], ['weitere', 'Weitere']];
   var TIMES = [['alle', 'Alle Termine'], ['heute', 'Heute'], ['morgen', 'Morgen'], ['wochenende', 'Wochenende'], ['woche', 'Diese Woche']];
   var PLACES = [['alle', 'Alle Orte'], ['bibliothek', 'Bibliothek Zug'], ['kunsthaus', 'Kunsthaus Zug'], ['burg', 'Museum Burg Zug'], ['musikschule', 'Musikschule'], ['theatercasino', 'Theater Casino'], ['galvanik', 'Galvanik']];
-  var PAGES = [['index.html', 'start', 'Start'], ['agenda.html', 'agenda', 'Agenda'], ['news.html', 'news', 'News'], ['amtlich.html', 'amtlich', 'Amtlich']];
+  var PAGES = [['index.html', 'start', 'Start'], ['agenda.html', 'agenda', 'Agenda'], ['news.html', 'news', 'News'], ['amtlich.html', 'amtlich', 'Amtlich'], ['politik.html', 'politik', 'Politik']];
   var page = document.body.dataset.page || 'start';
   var D = {};
 
@@ -334,6 +334,71 @@
     var el = $('ev-' + id); if (el) { el.open = true; el.scrollIntoView({ block: 'start' }) }
   }
 
+
+  // ---------- Politik
+  var MON = { januar: 1, februar: 2, märz: 3, maerz: 3, april: 4, mai: 5, juni: 6, juli: 7, august: 8, september: 9, oktober: 10, november: 11, dezember: 12 };
+  var DOM = { federation: 'Bund', canton: 'Kanton', region: 'Region', municipality: 'Stadt Zug' };
+  function pad(n) { return String(n).padStart(2, '0') }
+  function sessionDate(t) { // «… GGR vom 12.11.2026» oder «… vom 20. Oktober 2026»
+    var m = /vom (\d{1,2})\.(\d{1,2})\.(\d{4})/.exec(t); if (m) return m[3] + '-' + pad(m[2]) + '-' + pad(m[1]);
+    m = /vom (\d{1,2})\.\s*([A-Za-zäÄ]+)\s+(\d{4})/.exec(t); if (m && MON[m[2].toLowerCase()]) return m[3] + '-' + pad(MON[m[2].toLowerCase()]) + '-' + pad(m[1]);
+    return null;
+  }
+  function dLong(key) { var p = key.split('-'); return WDL[dowOf(key)] + ', ' + (+p[2]) + '.' + (+p[1]) + '.' + p[0] }
+  function polRow(r) {
+    return '<a href="' + esc(r.url) + '"><span class="d"><b class="' + (r.red ? 'mm' : '') + '">' + esc(r.lbl) + '</b>' + dLabel(r.date) + '</span>' +
+      '<span class="c"><span class="t">' + esc(r.title) + '</span>' + (r.sub ? '<span class="l">' + esc(r.sub) + '</span>' : '') + '</span></a>';
+  }
+  function bar(label, pct, ans) {
+    if (pct == null) return '<div class="vbar"><span class="vl">' + label + '</span><span class="vt muted">noch offen</span></div>';
+    return '<div class="vbar"><span class="vl">' + label + '</span><span class="vtrack" role="img" aria-label="' + label + ': ' + pct.toLocaleString('de-CH') + ' % Ja"><span style="width:' + pct + '%"></span></span>' +
+      '<span class="vt"><b class="' + (ans === 'accepted' ? 'yes' : 'no') + '">' + (ans === 'accepted' ? 'Ja' : 'Nein') + '</b> ' + pct.toLocaleString('de-CH') + ' %</span></div>';
+  }
+  function renderPolitik(P) {
+    var L = P.links || {}, tk = todayKey();
+    // Nächste GGR-Sitzung aus den Meldungen der Stadt
+    var sess = D.pol.news.map(function (n) { return { d: sessionDate(n.title), n: n } }).filter(function (x) { return x.d && x.d >= tk && /Sitzung/.test(x.n.title) })
+      .sort(function (a, b) { return a.d < b.d ? -1 : 1 })[0];
+    var nv = P.nextVoteDate, up = (P.upcoming || []).filter(function (v) { return v.date === nv });
+    $('polTiles').innerHTML =
+      '<a class="ptile dark" href="' + esc(sess ? sess.n.url : L.livestream) + '"><span class="pk">Nächste GGR-Sitzung</span><strong>' + (sess ? dLong(sess.d) : 'Termin folgt') + '</strong>' +
+        '<span>Kantonsratssaal · öffentlich mit Livestream</span><em>' + (sess ? 'Traktanden ansehen →' : 'Zum Livestream →') + '</em></a>' +
+      '<a class="ptile" href="#pAbst"><span class="pk">Nächste Abstimmung</span><strong>' + (nv ? dLong(nv) : 'Termin folgt') + '</strong>' +
+        '<span>' + (up.length ? up.length + (up.length === 1 ? ' Vorlage' : ' Vorlagen') : 'Vorlagen werden aufgeschaltet') + '</span><em>Zu den Abstimmungen →</em></a>' +
+      '<a class="ptile" href="' + esc(L.wahlen) + '"><span class="pk">Neue Legislatur</span><strong>' + esc((P.ggr || {}).legislatur || '2027–2030') + '</strong>' +
+        '<span>Gewählt am 4. Oktober 2026</span><em>Wahlresultate →</em></a>';
+    // Aus dem Parlament: Meldungen der Stadt + Publikationen im Amtsblatt
+    var rows = D.pol.news.map(function (n) { return { date: n.date, lbl: n.type || 'News', red: /Medien/.test(n.type || ''), title: n.title, sub: n.lead, url: n.url } })
+      .concat(D.pol.amt.map(function (a) { return { date: a.date, lbl: 'Amtsblatt · ' + a.label, title: a.title, sub: '', url: a.url } }))
+      .sort(function (a, b) { return a.date < b.date ? 1 : -1 });
+    $('polParl').innerHTML = rows.slice(0, 8).map(polRow).join('') || '<p class="note">Zurzeit keine Meldungen.</p>';
+    $('pRis').href = L.ris || '#';
+    $('polLinks').innerHTML = [[L.ris, 'Geschäfte & Vorstösse (Ratsinfo)'], [L.vorstoesse, 'Hängige Vorstösse'], [L.personen, 'Ratsmitglieder'], [L.livestream, 'Livestream & Archiv']]
+      .filter(function (x) { return x[0] }).map(function (x) { return '<a class="btn" href="' + esc(x[0]) + '">' + x[1] + ' ' + EXT + '</a>' }).join('');
+    // Sitzverteilung
+    var g = P.ggr || { parteien: [] };
+    $('polSeats').innerHTML = '<p class="psub">Legislatur ' + esc(g.legislatur) + ' · ' + g.sitze + ' Sitze</p>' +
+      '<div class="seats" role="img" aria-label="Sitzverteilung: ' + esc(g.parteien.map(function (p) { return p[0] + ' ' + p[1] }).join(', ')) + '">' +
+      g.parteien.map(function (p) { return '<span style="flex:' + p[1] + ';background:' + p[3] + '"></span>' }).join('') + '</div>' +
+      '<ul class="seatl">' + g.parteien.map(function (p) {
+        return '<li><i style="background:' + p[3] + '"></i>' + esc(p[0]) + '<b>' + p[1] + '</b><span>' + (p[2] > 0 ? '+' + p[2] : p[2] < 0 ? '−' + (-p[2]) : '±0') + '</span></li>' }).join('') + '</ul>' +
+      '<p class="psrc">' + esc(g.hinweis || '') + ' · Veränderung zu 2023–2026 · <a href="' + esc(g.quelle) + '">Quelle</a></p>';
+    $('polSr').innerHTML = '<ul class="srl">' + (P.stadtrat || []).map(function (r) {
+      return '<li><span><b>' + esc(r[0]) + '</b>' + (r[2] ? ' · ' + esc(r[2]) : '') + '</span><span>' + esc(r[1]) + '</span></li>' }).join('') + '</ul>';
+    // Abstimmungen
+    $('pAbstA').href = L.abstimmungen || '#';
+    var V = P.votes || [], html = '';
+    if (nv) html += '<div class="vcard next"><span class="pk">Als Nächstes · ' + dLong(nv) + '</span>' +
+      (up.length ? up.map(function (v) { return '<a href="' + esc(v.url) + '"><span class="vdom">' + (DOM[v.domain] || '') + '</span>' + esc(v.title) + '</a>' }).join('') : '<p>Die Vorlagen werden aufgeschaltet, sobald der Kanton sie publiziert.</p>') +
+      '<p class="muted">Am Abstimmungssonntag erscheint hier das Resultat der Stadt Zug.</p></div>';
+    html += V.map(function (v) {
+      return '<div class="vcard"><span class="pk">' + (DOM[v.domain] || '') + ' · ' + dLabel(v.date) + '</span><a class="vt2" href="' + esc(v.url) + '">' + esc(v.title) + '</a>' +
+        (v.city ? bar('Stadt Zug', v.city.yeas, v.city.answer) : '') + bar('Kanton Zug', v.yeas, v.answer) + '</div>' }).join('');
+    $('polVotes').innerHTML = html ? '<div class="votes">' + html + '</div>' : '<p class="note">Resultate werden geladen, sobald wab.zug.ch erreichbar ist.</p>';
+    // Parteien
+    $('polParties').innerHTML = (P.parteien || []).map(function (p) { return '<a href="' + esc(p[1]) + '"><strong>' + esc(p[0]) + '</strong><span>Website ' + EXT + '</span></a>' }).join('');
+  }
+
   // ---------- Suche (News, Agenda, Amtlich; alles im Browser)
   function norm(t) { return String(t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') }
   function searchInit() {
@@ -382,8 +447,10 @@
   searchInit();
   Promise.all(['news', 'agenda', 'amtlich', 'meta'].map(get)).then(function (r) {
     D = { news: r[0] || [], agenda: r[1] || [], amtlich: r[2] || [], meta: r[3] || {} };
-    // GGR-Sitzungen vorerst ausblenden (später eigener Reiter «Politik»; Daten bleiben im JSON)
+    // GGR-Meldungen erscheinen nur unter «Politik», nicht auf den anderen Seiten
     var GGR = /Grosse[nr]? Gemeinderat|\bGGR\b/i, noGgr = function (x) { return !GGR.test(x.title || '') };
+    D.pol = { news: D.news.filter(function (x) { return x.topic === 'politik' || GGR.test(x.title || '') }),
+      amt: D.amtlich.filter(function (x) { return GGR.test(x.title || '') || /Abstimmung|Wahlen/.test(x.label || '') }) };
     D.news = D.news.filter(noGgr); D.amtlich = D.amtlich.filter(noGgr); D.agenda = D.agenda.filter(noGgr);
     D.events = D.agenda.filter(function (e) { return !e.ongoing });
     D.ongoing = D.agenda.filter(function (e) { return e.ongoing });
@@ -396,5 +463,6 @@
     }
     if (page === 'news') renderNewsPage();
     if (page === 'amtlich') renderAmtPage();
+    if (page === 'politik') get('politik').then(function (p) { renderPolitik(p || {}) });
   });
 })();

@@ -13,6 +13,8 @@ Quellen:
   Amtlich  https://amtsblatt.zg.ch/api/v1/publications       (eSHAB REST-API, Absender «Stadt Zug»)
   Theater  https://www.theatercasino.ch/programm/veranstaltungen (HTML-Spielplan, in die Agenda gemischt)
   Galvanik https://galvanik-zug.ch/programm/                 (HTML-Programm + Detailseite für Uhrzeit/Bild)
+  Politik  https://wab.zug.ch/archive/<jahr>/json            (OneGov Wahlen & Abstimmungen, Resultat Stadt Zug aus /data-json)
+           + feste Angaben (Sitzverteilung GGR, Stadtrat, Parteien) unten in POLITIK_FIX
 Bibliothek, Museum Burg, Kunsthaus, Musikschule sind in der OneGov-Agenda enthalten
 und werden über Ort/Kategorie als Institution markiert.
 """
@@ -38,6 +40,11 @@ ICAL_URL = "https://veranstaltungen.zug.ch/events/ical"
 AMTSBLATT_URL = ("https://amtsblatt.zg.ch/api/v1/publications?publicationStates=PUBLISHED"
                  "&cantons=ZG&pageRequest.size=300&pageRequest.sortOrders=publicationDate:DESC")
 AMTSBLATT_DETAIL = "https://amtsblatt.zg.ch/#!/search/publications/detail/{id}"
+
+WAB_URL = "https://wab.zug.ch"   # Wahlen & Abstimmungen Kanton Zug (OneGov ElectionDay)
+ZUG_BFS = 1711                   # Gemeindenummer Stadt Zug
+# Eidg. Abstimmungstermine als Rückfall, solange wab.zug.ch die Vorlagen noch nicht aufgeschaltet hat (nachführen)
+VOTE_DATES = ["2026-11-29"]
 
 AGENDA_DAYS = 60          # so weit voraus
 EVENT_IMAGES_MAX = 150    # Bilder (og:image) für die nächsten n Anlässe; gecacht, nur neue werden abgerufen
@@ -577,6 +584,96 @@ def parse_amtsblatt(data: dict) -> list[dict]:
     return out
 
 
+# ---------------------------------------------------------------- Politik
+
+# Feste Angaben, nach Wahlen von Hand nachführen. Quelle: stadtzug.ch (Gesamterneuerungswahlen 4.10.2026)
+POLITIK_FIX = {
+    "ggr": {
+        "legislatur": "2027–2030", "gewaehlt": "2026-10-04", "sitze": 40,
+        # Partei/Fraktion, Sitze, Veränderung zu 2023–2026, Farbe (wie wab.zug.ch)
+        "parteien": [["FDP", 9, -1, "#4068C8"], ["SVP", 9, 2, "#3F841A"], ["Die Mitte", 7, 0, "#FF6300"],
+                     ["ALG-CSP", 7, 0, "#A74C97"], ["SP", 5, 0, "#DB3C27"], ["GLP", 3, 0, "#AECA00"]],
+        "hinweis": "Parteilose: 0 Sitze (bisher 1)",
+        "quelle": "https://stadtzug.ch/de/news/2026/oktober-2026/die-ergebnisse-im-ueberblick",
+    },
+    "stadtrat": [["André Wicki", "SVP", "Stadtpräsident"], ["Urs Raschle", "Die Mitte", ""], ["Barbara Gysel", "SP", ""],
+                 ["Etienne Schumpf", "FDP", ""], ["Eliane Birchmeier", "FDP", ""]],
+    "parteien": [  # alphabetisch, wie auf stadtzug.ch/de/org-weiteres/politische-parteien
+        ["Alternative – die Grünen (ALG)", "https://gruene-zug.ch/"],
+        ["Aufrecht Zug", "https://aufrecht-zug.ch/"],
+        ["Christlichsoziale Partei (CSP)", "https://csp-zug.ch/"],
+        ["Die Mitte Stadt Zug", "https://stadtzug-diemitte.ch/"],
+        ["EDU", "https://www.edu-schweiz.ch/"],
+        ["EVP Kanton Zug", "https://www.evp-zg.ch"],
+        ["FDP.Die Liberalen Stadt Zug", "https://www.fdp-zg.ch/partei/sektionen/fdpdie-liberalen-stadt-zug/willkommen/"],
+        ["Grünliberale (GLP)", "https://zg.grunliberale.ch/"],
+        ["SP Stadt Zug", "https://stadtzug.sp-zug.ch/"],
+        ["SVP Stadt Zug", "https://www.svp-zug.ch/sektion/svp-stadt-zug/"],
+    ],
+    "links": {
+        "ris": "https://ratsinfo.stadtzug.ch/gremium/1/geschaefte?itemsPerPage=50&ordering=-begin_date&page=1",
+        "personen": "https://ratsinfo.stadtzug.ch/personen?itemsPerPage=50&ordering=last_name&page=1",
+        "livestream": "https://stadtzug.ch/de/politik/livestream",
+        "vorstoesse": "https://stadtzug.ch/de/politik/geschaefte_und_vorstoesse",
+        "wahlen": "https://stadtzug.ch/de/politik/gesamterneuerungswahlen-2026",
+        "abstimmungen": "https://stadtzug.ch/de/politik/abstimmungen",
+    },
+}
+
+
+def _de(t) -> str:
+    if isinstance(t, dict):
+        return t.get("de_CH") or t.get("de") or next(iter(t.values()), "")
+    return str(t or "")
+
+
+def _rows(data) -> list:
+    """OneGov liefert je nach Endpunkt eine Liste oder ein Objekt mit Liste ("results")."""
+    if isinstance(data, list):
+        return data
+    if isinstance(data, dict):
+        if isinstance(data.get("results"), list):
+            return data["results"]
+        for v in data.values():
+            if isinstance(v, list):
+                return v
+    return []
+
+
+def parse_wab_summary(data) -> list[dict]:
+    out = []
+    for r in _rows(data):
+        if not isinstance(r, dict) or r.get("type") != "vote":
+            continue
+        y = r.get("yeas_percentage")
+        out.append({
+            "title": _de(r.get("title")).strip(),
+            "date": str(r.get("date", ""))[:10],
+            "domain": r.get("domain") or "",
+            "url": r.get("url") or "",
+            "completed": bool(r.get("completed")),
+            "answer": r.get("answer"),
+            "yeas": round(float(y), 1) if y not in (None, "") else None,
+        })
+    return out
+
+
+def wab_city_result(data) -> dict | None:
+    """Resultat der Stadt Zug aus /vote/<id>/data-json (Hauptvorlage)."""
+    for r in _rows(data):
+        if not isinstance(r, dict):
+            continue
+        if str(r.get("entity_id")) != str(ZUG_BFS) and r.get("name") != "Zug":
+            continue
+        if r.get("type", "proposal") != "proposal":
+            continue
+        y, n = int(r.get("yeas") or 0), int(r.get("nays") or 0)
+        if not r.get("counted", True) or y + n == 0:
+            return None
+        return {"yeas": round(100 * y / (y + n), 1), "answer": "accepted" if y > n else "rejected"}
+    return None
+
+
 # ---------------------------------------------------------------- Ablauf
 
 def load_json(path: Path, default):
@@ -690,15 +787,55 @@ def run(offline: Path | None, only: set[str]) -> int:
     def amtlich():
         return parse_amtsblatt(json.loads(get(AMTSBLATT_URL, "amtsblatt.json", "application/json")))
 
+    def politik():
+        """Feste Angaben immer; Abstimmungen von wab.zug.ch (fällt die Quelle aus, bleibt der letzte Stand)."""
+        today = date(2026, 10, 29) if offline else now.date()
+        prev = load_json(OUT / "politik.json", {})
+        out = {**POLITIK_FIX, "votes": prev.get("votes", []), "upcoming": prev.get("upcoming", [])}
+        try:
+            votes = []
+            for y in (today.year, today.year - 1):
+                try:
+                    votes += parse_wab_summary(json.loads(get(f"{WAB_URL}/archive/{y}/json", f"wab_archive_{y}.json", "application/json")))
+                except Exception as e:   # Vorjahr optional; ohne Daten insgesamt → Fehler unten
+                    print(f"    wab {y}: {e}", file=sys.stderr)
+            if not votes:
+                raise ValueError("keine Vorlagen gefunden")
+            done = [v for v in votes if v["completed"] and v["date"] <= today.isoformat()]
+            last = max((v["date"] for v in done), default=None)
+            recent = sorted([v for v in done if v["date"] == last], key=lambda v: (v["domain"] != "federation", v["title"]))
+            for v in recent[:6]:
+                key = "wab:" + v["url"]
+                if key not in cache and v["url"]:
+                    try:
+                        cache[key] = wab_city_result(json.loads(get(v["url"].rstrip("/") + "/data-json", "wab_vote.json", "application/json")))
+                    except Exception:
+                        cache[key] = None
+                v["city"] = cache.get(key)
+            up = sorted([v for v in votes if v["date"] > today.isoformat() or (v["date"] == today.isoformat() and not v["completed"])],
+                        key=lambda v: (v["date"], v["domain"] != "federation"))
+            out["votes"] = recent[:6]
+            out["upcoming"] = up
+            meta["sources"]["wab"] = {"ok": True, "updated": now.isoformat(timespec="minutes"), "count": len(recent) + len(up)}
+            print(f"  ✓ wab: {len(recent)} Resultate ({last}), {len(up)} kommende Vorlagen")
+        except Exception as e:
+            meta["sources"]["wab"] = {**meta["sources"].get("wab", {}), "ok": False,
+                                      "error": f"{type(e).__name__}: {e}", "failed": now.isoformat(timespec="minutes")}
+            print(f"  ✗ wab: {e}", file=sys.stderr)
+        nxt = next((d for d in VOTE_DATES if d >= today.isoformat()), None)
+        out["nextVoteDate"] = (out["upcoming"][0]["date"] if out["upcoming"] else nxt)
+        return out
+
     source("news", news)
     source("agenda", agenda)
     source("amtlich", amtlich)
+    source("politik", politik)
 
     meta["generated"] = now.isoformat(timespec="minutes")
     write_json("meta.json", meta)
     # Cache klein halten
     write_json("image_cache.json", dict(list(cache.items())[-400:]))
-    return 1 if errors == 3 else 0
+    return 1 if errors >= 3 else 0
 
 
 if __name__ == "__main__":

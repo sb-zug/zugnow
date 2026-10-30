@@ -11,6 +11,9 @@ Live-Website für die Stadt Zug. Ein Sammler holt zweimal täglich echte Daten a
 | Institutionen | Bibliothek, Burg, Kunsthaus, Musikschule | stecken in der OneGov-Agenda | Ort / Kategorie |
 | Amtlich | amtsblatt.zg.ch | **eSHAB REST-API** `/api/v1/publications` | Absender «Stadt Zug – …», ohne Privatpersonen |
 | Wetter | Open-Meteo | im Browser, ohne Schlüssel | – |
+| Politik: Abstimmungen | wab.zug.ch | **OneGov ElectionDay** `/archive/<jahr>/json`, Stadt-Resultat aus `/vote/<id>/data-json` | Gemeinde 1711 (Zug) |
+| Politik: GGR | stadtzug.ch-News + Amtsblatt | aus News/Amtlich (Titel mit «GGR»/«Grosser Gemeinderat») | – |
+| Politik: fest | Sitzverteilung, Stadtrat, Parteien | `POLITIK_FIX` in collector/collect.py, nach Wahlen von Hand nachführen | – |
 
 Fällt eine Quelle aus, bleibt der letzte Stand stehen; `site/data/meta.json` zeigt den Status.
 
@@ -28,7 +31,7 @@ Eigene Domain (z. B. zugnow.ch): unter Settings → Pages → Custom domain eint
 
 ```
 python3 collector/collect.py                         # live
-python3 collector/collect.py --offline tests/fixtures  # mit gespeicherten echten Rohdaten
+python3 collector/collect.py --offline tests/fixtures  # mit gespeicherten Rohdaten (wab_*.json sind nachgebaut)
 cd site && python3 -m http.server 8000                # dann http://localhost:8000
 ```
 
