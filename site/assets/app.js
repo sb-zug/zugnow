@@ -55,6 +55,7 @@
       '<p class="scount" id="sCount" aria-live="polite"></p><div class="sres" id="sRes"></div></div></div>' +
       '<div class="band"><div class="wrap"><span class="live" id="liveDate"></span><span id="wx" hidden>Luft <strong id="wxT"></strong></span>' +
       '<span>Sonnenuntergang <strong id="sunT">–</strong></span><span id="cnt"></span></div></div>';
+    var intro = $('intro'); if (intro) $('hdr').insertBefore(intro, $('hdr').querySelector('.band'));
     $('ftr').innerHTML =
       '<footer><div class="wrap"><div class="col"><span style="font-family:var(--display);font-weight:800;font-size:22px;color:var(--fg)">zug<span style="color:var(--red)">.</span>now</span>' +
       '<span>Unabhängig. Automatisch aktualisiert. Jede Meldung mit Quelle und Link zum Original.</span>' +
@@ -87,10 +88,10 @@
 
   function renderLead() {
     var n = leadNews(), el = $('lead'); if (!el) return;
-    if (!n) { el.innerHTML = '<h1>Keine Meldungen</h1>'; return }
+    if (!n) { el.innerHTML = '<h2>Keine Meldungen</h2>'; return }
     el.innerHTML = '<div class="ph" style="aspect-ratio:16/9;position:relative">' + img(n.image) + (n.image ? '<span class="credit">Bild: Stadt Zug</span>' : '') + '</div>' +
       '<span class="eyebrow">Stadt Zug · ' + esc(n.type || 'News') + ' · ' + dLabel(n.date) + '</span>' +
-      '<h1><a href="' + esc(n.url) + '">' + esc(n.title) + '</a></h1><p>' + esc(n.lead) + '</p>' +
+      '<h2><a href="' + esc(n.url) + '">' + esc(n.title) + '</a></h2><p>' + esc(n.lead) + '</p>' +
       '<a href="' + esc(n.url) + '" style="font-weight:600;font-size:15px">Zur Meldung auf stadtzug.ch →</a>';
   }
 
