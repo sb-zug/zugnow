@@ -402,6 +402,8 @@ GALVANIK_URL = "https://galvanik-zug.ch/programm/"
 GALVANIK_BASE = "https://galvanik-zug.ch"
 
 _TCZ_TOKEN = re.compile(r'id="month-(\d{4})-(\d{2})"|<div id="node-([0-9a-f-]+)" class="event-date-entry\b')
+# Interne Anlässe (Vereinsversammlungen, Gönner-/Mitgliederanlässe) gehören nicht in die öffentliche Agenda
+_TCZ_INTERNAL = re.compile(r"Generalversammlung|Mitgliederversammlung|Jahresversammlung|Vereinsversammlung|Gönner|nur für Mitglieder|Mitgliederanlass", re.I)
 _MONTHS_DE = {"jan": 1, "feb": 2, "mär": 3, "mar": 3, "apr": 4, "mai": 5, "jun": 6, "jul": 7,
               "aug": 8, "sep": 9, "okt": 10, "nov": 11, "dez": 12}
 
@@ -436,10 +438,13 @@ def parse_theatercasino(page: str) -> list[dict]:
         sub = re.search(r'<p class="fs-lg[^"]*">(.*?)</p>', chunk, re.S)
         cats = re.search(r'data-categories="([^"]*)"', page[m.start(): m.end() + 400])
         junges = re.search(r'data-junges="([^"]+)"', page[m.start(): m.end() + 400])
-        t = _text(title.group(1))
+        t = _text(title.group(1)).replace("\u00ad", "")
+        subtxt = re.sub(r"\s+", " ", _text(sub.group(1))) if sub else ""
+        if _TCZ_INTERNAL.search(t + " " + subtxt):
+            continue
         tags = [c for c in (cats.group(1).split(",") if cats else []) if c]
         out.append(_house_event(
-            "tcz-" + m.group(3), t, re.sub(r"\s+", " ", _text(sub.group(1))) if sub else "", start, not hm,
+            "tcz-" + m.group(3), t, subtxt, start, not hm,
             html.unescape(link.group(1)) if link else TCZ_URL,
             "kinder" if junges or _KIDS.search(t) else "kultur", tags, "theatercasino",
             "Theater Casino Zug", "Theater Casino Zug, Artherstrasse 2–4, 6300 Zug", "theatercasino.ch",
