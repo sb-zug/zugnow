@@ -122,7 +122,7 @@
     var list = sel.slice(0, hDay === 'heute' ? 12 : 18), filled = false;
     // Wenig los heute: mit den nächsten Anlässen auffüllen (mit Tag angeschrieben)
     if (hDay === 'heute' && list.length < 6) { list = list.concat(src.filter(function (e) { return parts(e.start).key > tk }).slice(0, 6 - list.length + (list.length ? 0 : 3))); filled = !sel.length }
-    $('hTitle').textContent = filled ? 'Als Nächstes in Zug' : { heute: 'Heute in Zug', morgen: 'Morgen in Zug', wochenende: 'Wochenende in Zug' }[hDay];
+    $('hTitle').textContent = 'Agenda';
     if ($('hMore')) $('hMore').href = 'agenda.html#' + hDay;
     el.setAttribute('aria-label', 'Anlässe ' + { heute: 'heute', morgen: 'morgen', wochenende: 'am Wochenende' }[hDay]);
     var oneDay = hDay !== 'wochenende';
