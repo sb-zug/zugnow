@@ -47,7 +47,12 @@
   function frame() {
     $('hdr').innerHTML =
       '<header><div class="wrap"><a class="logo" href="index.html" aria-label="zug.now Startseite">zug<span class="dot">.</span><span class="now">now</span></a>' +
-      '<nav aria-label="Hauptnavigation">' + PAGES.map(function (p) { return '<a href="' + p[0] + '"' + (p[1] === page ? ' aria-current="page"' : '') + '>' + p[2] + '</a>' }).join('') + '</nav></div></header>' +
+      '<nav aria-label="Hauptnavigation">' + PAGES.map(function (p) { return '<a href="' + p[0] + '"' + (p[1] === page ? ' aria-current="page"' : '') + '>' + p[2] + '</a>' }).join('') + '</nav>' +
+      '<button type="button" class="sbtn" id="sBtn" aria-expanded="false" aria-controls="sPanel" aria-label="Suchen">' + LUPE + '</button></div></header>' +
+      '<div class="search" id="sPanel" role="search" hidden><div class="wrap"><label class="vh" for="sIn">Suche in News, Agenda und Amtlichem</label>' +
+      '<div class="sfield">' + LUPE + '<input id="sIn" type="search" placeholder="News, Anlässe, Amtliches durchsuchen" autocomplete="off" enterkeyhint="search">' +
+      '<button type="button" class="sclose" id="sClose">Schliessen</button></div>' +
+      '<p class="scount" id="sCount" aria-live="polite"></p><div class="sres" id="sRes"></div></div></div>' +
       '<div class="band"><div class="wrap"><span class="live" id="liveDate"></span><span id="wx" hidden>Luft <strong id="wxT"></strong></span>' +
       '<span>Sonnenuntergang <strong id="sunT">–</strong></span><span id="cnt"></span></div></div>';
     $('ftr').innerHTML =
@@ -183,6 +188,7 @@
     return 'data:text/calendar;charset=utf-8,' + encodeURIComponent(L.join('\r\n'));
   }
   var CAL = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg>';
+  var LUPE = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="M15.5 15.5L20 20"></path></svg>';
   var CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>';
 
   function evRow(e) {
@@ -217,13 +223,58 @@
     var el = $('ev-' + id); if (el) { el.open = true; el.scrollIntoView({ block: 'start' }) }
   }
 
+  // ---------- Suche (News, Agenda, Amtlich; alles im Browser)
+  function norm(t) { return String(t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') }
+  function searchInit() {
+    var btn = $('sBtn'), pan = $('sPanel'), inp = $('sIn'), res = $('sRes'), cnt = $('sCount'), timer;
+    function open() { pan.hidden = false; btn.setAttribute('aria-expanded', 'true'); inp.focus(); run() }
+    function close() { pan.hidden = true; btn.setAttribute('aria-expanded', 'false'); btn.focus() }
+    btn.onclick = function () { pan.hidden ? open() : close() };
+    $('sClose').onclick = close;
+    res.addEventListener('click', function (ev) { if (ev.target.closest('a')) { pan.hidden = true; btn.setAttribute('aria-expanded', 'false') } });
+    pan.addEventListener('keydown', function (ev) { if (ev.key === 'Escape') close() });
+    inp.addEventListener('input', function () { clearTimeout(timer); timer = setTimeout(run, 120) });
+    function hit(q, title, rest) {
+      var t = norm(title), all = t + ' ' + norm(rest);
+      if (!q.every(function (w) { return all.indexOf(w) >= 0 })) return -1;
+      return q.filter(function (w) { return t.indexOf(w) >= 0 }).length;
+    }
+    function group(name, items, more) {
+      return items.length ? '<section><h3>' + name + '</h3>' + items.join('') + (more ? '<a class="sall" href="' + more[0] + '">' + more[1] + '</a>' : '') + '</section>' : '';
+    }
+    function row(href, lbl, title, sub) { return '<a class="srow" href="' + esc(href) + '"><span class="sl">' + lbl + '</span><span class="st">' + esc(title) + '</span>' + (sub ? '<span class="ss">' + esc(sub) + '</span>' : '') + '</a>' }
+    function run() {
+      var q = norm(inp.value).trim().split(/\s+/).filter(Boolean);
+      if (!D.news) { cnt.textContent = 'Daten werden geladen …'; res.innerHTML = ''; return }
+      if (!q.length || q.join('').length < 2) { cnt.textContent = ''; res.innerHTML = ''; return }
+      var today = todayKey();
+      function sort(a, b) { return b.s - a.s || (a.k < b.k ? -1 : 1) }
+      var ev = D.agenda.map(function (e) { return { e: e, s: hit(q, e.title, [e.teaser, e.place, e.location, e.catLabel, e.institution].join(' ')), k: e.ongoing ? '0' : e.start } })
+        .filter(function (x) { return x.s >= 0 && (x.e.ongoing || parts(x.e.start).key >= today) }).sort(sort);
+      var nw = D.news.map(function (n) { return { e: n, s: hit(q, n.title, n.lead + ' ' + n.type), k: '~' + n.date } }).filter(function (x) { return x.s >= 0 })
+        .sort(function (a, b) { return b.s - a.s || (a.e.date < b.e.date ? 1 : -1) });
+      var am = D.amtlich.map(function (a) { return { e: a, s: hit(q, a.title, a.label + ' ' + a.office), k: a.date } }).filter(function (x) { return x.s >= 0 })
+        .sort(function (a, b) { return b.s - a.s || (a.e.date < b.e.date ? 1 : -1) });
+      var n = ev.length + nw.length + am.length;
+      cnt.textContent = n ? n + (n === 1 ? ' Treffer' : ' Treffer') + ' für «' + inp.value.trim() + '»' : 'Keine Treffer für «' + inp.value.trim() + '». Versuche einen anderen Begriff.';
+      res.innerHTML =
+        group('Agenda', ev.slice(0, 6).map(function (x) { var e = x.e, p = parts(e.start);
+          return row(e.ongoing ? 'agenda.html#laufend' : 'agenda.html#ev-' + e.id, e.ongoing ? 'Laufend' : dShort(p.key) + ' ' + (e.allday ? '' : p.hm), e.title, e.place) }), ev.length > 6 ? ['agenda.html', 'Ganze Agenda →'] : null) +
+        group('News', nw.slice(0, 5).map(function (x) { return row(x.e.url, esc(x.e.type) + ' · ' + dLabel(x.e.date), x.e.title, '') }), nw.length > 5 ? ['news.html', 'Alle News →'] : null) +
+        group('Amtlich', am.slice(0, 5).map(function (x) { return row(x.e.url, esc(x.e.label) + ' · ' + dLabel(x.e.date), x.e.title, '') }), am.length > 5 ? ['amtlich.html', 'Alle Publikationen →'] : null);
+    }
+    searchInit.run = run;
+  }
+
   // ---------- Start
   frame();
+  searchInit();
   Promise.all(['news', 'agenda', 'amtlich', 'meta'].map(get)).then(function (r) {
     D = { news: r[0] || [], agenda: r[1] || [], amtlich: r[2] || [], meta: r[3] || {} };
     D.events = D.agenda.filter(function (e) { return !e.ongoing });
     D.ongoing = D.agenda.filter(function (e) { return e.ongoing });
     band();
+    if (!$('sPanel').hidden) searchInit.run();
     if (page === 'start') { renderLead(); renderToday(); renderWeekend(); renderNewsTeaser(); renderLauf(3); renderAmtTeaser() }
     if (page === 'agenda') {
       var open = agendaFromHash(); renderFilters(); renderList(); renderLauf(); if (open) openEvent(open);
