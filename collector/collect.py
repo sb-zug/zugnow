@@ -82,6 +82,42 @@ def parse_news_list(page: str) -> list[dict]:
     return items
 
 
+# News-Themen: Stichwortregeln (Teilwort, Gross/klein egal). Titel zählt doppelt; Gleichstand → Reihenfolge hier.
+# Anpassen: Begriff in die passende Liste eintragen. Zahl nach «:» = Gewicht (Standard 1).
+NEWS_TOPICS = [
+    ("politik", "Politik & Verwaltung", "ggr, gemeinderat, stadtrat, stadtpräsident, abstimmung, urnengang, wahlen, parlament, "
+     "motion, interpellation, postulat, initiative, referendum, vernehmlassung, budget, voranschlag, jahresrechnung, "
+     "finanzplan, steuer, legislatur, kommission, stadtverwaltung, stadtkanzlei, rechtssammlung, reglement"),
+    ("bauen", "Bauen & Planung", "baugesuch:2, bebauungsplan:2, gestaltungsplan:2, ortsplanung:2, zonenplan, richtplan, "
+     "gebietsplanung, stadtentwicklung, areal, überbauung, bauprojekt, neubau, umbau, sanierung, baustelle, hochhaus, "
+     "wohnungen, wohnraum, siedlung, liegenschaft, planauflage, öffentlich aufgelegt"),
+    ("mobilitaet", "Mobilität & Verkehr", "verkehr, velo, fussverkehr, fussgänger, schulweg:2, strasse, trottoir, parkier, "
+     "parkplatz, tempo 30, buslinie, bushaltestelle, ortsbus, bahnhof, stadtbahn, zugerland verkehrsbetriebe, sperrung, umleitung, signalisation, "
+     "winterdienst:2, mobilität, e-scooter, ladestation"),
+    ("bildung", "Bildung & Schule", "schule, schulhaus, kindergarten, schüler, lehrperson, bildung, tagesschule, "
+     "schulergänzende, kita, betreuungsgutschein, lehrstelle, ausbildung"),
+    ("kultur", "Kultur & Freizeit", "kultur, museum, kunst, konzert, theater, ausstellung, bibliothek, festival, "
+     "stadtfest, seefest, chilbi, fasnacht, jubiläum, sport, sportanlage, strandbad, hallenbad, badi, eishalle, "
+     "freizeit, spielplatz, verein, märt"),
+    ("umwelt", "Umwelt & Energie", "umwelt, energie, klima, abfall, entsorgung, recycling, sammelstelle, grüngut, "
+     "wasserversorgung, natur, biodiversität, bäume, baumpflanz, wald, solar, fernwärme, energiestadt, lärm, littering"),
+    ("soziales", "Soziales & Gesundheit", "sozial, quartier, senior, alterszentrum, altersheim, jugend, familie, "
+     "gesundheit, integration, asyl, spitex, pflege, freiwillig, gesellschaft, gleichstellung, prävention"),
+]
+_NEWS_TOPICS = [(cid, label, [(k.split(":")[0].strip().lower(), int(k.split(":")[1]) if ":" in k else 1)
+                              for k in keys.split(",")]) for cid, label, keys in NEWS_TOPICS]
+
+
+def news_topic(title: str, lead: str = "") -> tuple[str, str]:
+    t, l = (title or "").lower(), (lead or "").lower()
+    best, score = ("weitere", "Weitere"), 0
+    for cid, label, keys in _NEWS_TOPICS:
+        sc = sum(w * (2 * (k in t) + (k in l)) for k, w in keys)
+        if sc > score:
+            best, score = (cid, label), sc
+    return best
+
+
 _FOOTER_IMG = re.compile(r"Unicef|Energiestadt|SwissApps|Label%20Employer|Favicon", re.I)
 _CDN_IMG = re.compile(r"https://cdn\.zg\.ch/\.imaging/flex/[^\"'\s\\]+?/width/(\d+)/[^\"'\s\\]+?\.(?:jpe?g|png|webp)", re.I)
 
@@ -459,6 +495,8 @@ def run(offline: Path | None, only: set[str]) -> int:
 
     def news():
         items = parse_news_list(get(NEWS_URL, "news_list.html"))
+        for it in items:
+            it["topic"], it["topicLabel"] = news_topic(it["title"], it["lead"])
         for it in items[:NEWS_IMAGES_MAX]:
             fx = "news_article.html" if it["id"] == "z-fuess-fahrsch-besser" else None
             it["image"] = image_for(it["url"], fx, pick_article_image)

@@ -140,21 +140,32 @@
 
   function newsRow(n) {
     var mm = /Medien/.test(n.type || '');
-    return '<a href="' + esc(n.url) + '" class="' + (n.image ? 'img' : '') + '"><span class="d"><b class="' + (mm ? 'mm' : '') + '">' + esc(n.type || 'News') + '</b>' + dLabel(n.date) + '</span>' +
+    return '<a href="' + esc(n.url) + '" class="' + (n.image ? 'img' : '') + '"><span class="d"><b class="' + (mm ? 'mm' : '') + '">' + esc(n.type || 'News') + '</b>' + dLabel(n.date) + (n.topicLabel ? '<i class="ntop">' + esc(n.topicLabel) + '</i>' : '') + '</span>' +
       '<span class="c"><span class="t">' + esc(n.title) + '</span><span class="l">' + esc(n.lead) + '</span></span>' +
       (n.image ? '<span class="i">' + img(n.image) + '</span>' : '') + '</a>';
   }
   function renderNewsTeaser() {
     var el = $('newsGrid'); if (!el) return;
     el.innerHTML = D.news.slice(0, 5).map(function (n) {
-      return '<a href="' + esc(n.url) + '"><span class="hc"><span class="hd">' + dLabel(n.date) + '</span><span class="ht">' + esc(n.title) + '</span>' +
+      return '<a href="' + esc(n.url) + '"><span class="hc"><span class="hd">' + dLabel(n.date) + (n.topicLabel ? '<b class="ntop">' + esc(n.topicLabel) + '</b>' : '') + '</span><span class="ht">' + esc(n.title) + '</span>' +
         (n.lead ? '<span class="hl">' + esc(n.lead) + '</span>' : '') + '</span>' +
         '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>';
     }).join('') || '<p style="color:var(--soft)">Keine Meldungen.</p>';
   }
+  var NTOPICS = [['alle', 'Alle'], ['politik', 'Politik & Verwaltung'], ['bauen', 'Bauen & Planung'], ['mobilitaet', 'Mobilität & Verkehr'], ['bildung', 'Bildung & Schule'], ['kultur', 'Kultur & Freizeit'], ['umwelt', 'Umwelt & Energie'], ['soziales', 'Soziales & Gesundheit'], ['weitere', 'Weitere']];
   function renderNewsPage() {
     var el = $('newsList'); if (!el) return;
-    el.innerHTML = D.news.map(newsRow).join('') || '<p style="color:var(--soft)">Keine Meldungen.</p>';
+    var h = location.hash.slice(1); if (NTOPICS.some(function (t) { return t[0] === h })) st.ntopic = h;
+    st.ntopic = st.ntopic || 'alle';
+    function cnt(v) { return D.news.filter(function (n) { return v === 'alle' || n.topic === v }).length }
+    var ch = $('topicChips');
+    if (ch) {
+      ch.innerHTML = NTOPICS.filter(function (d) { return d[0] === 'alle' || cnt(d[0]) }).map(function (d) {
+        return '<button type="button" class="chip" data-v="' + d[0] + '" aria-pressed="' + (st.ntopic === d[0]) + '">' + d[1] + '<span class="n">' + cnt(d[0]) + '</span></button>'
+      }).join('');
+      ch.onclick = function (ev) { var b = ev.target.closest('.chip'); if (!b) return; st.ntopic = b.dataset.v; history.replaceState(null, '', st.ntopic === 'alle' ? location.pathname : '#' + st.ntopic); renderNewsPage() };
+    }
+    el.innerHTML = D.news.filter(function (n) { return st.ntopic === 'alle' || n.topic === st.ntopic }).map(newsRow).join('') || '<p style="color:var(--soft);padding:18px 0">Keine Meldungen in dieser Kategorie.</p>';
   }
 
   function laufItems() {

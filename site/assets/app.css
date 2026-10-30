@@ -312,3 +312,8 @@ nav a[aria-current="page"]::after{transform:scaleX(1);opacity:1}
 .hnews svg{flex-shrink:0;color:var(--brand)}
 .hnews a:hover .ht{text-decoration:underline}
 @media (max-width:560px){.hnews a{gap:12px;padding:16px 0}.hnews .ht{font-size:18px}.hnews .hl{font-size:15px}}
+
+/* News-Themen */
+.ntop{display:inline-block;margin-left:10px;padding:2px 9px;border-radius:999px;background:var(--tint);color:var(--brand);font-size:12px;font-weight:600;font-style:normal;letter-spacing:.01em;white-space:nowrap}
+.nlist .d .ntop{margin:4px 0 0;align-self:flex-start}
+@media (max-width:620px){.nlist .d .ntop{margin:0}}
