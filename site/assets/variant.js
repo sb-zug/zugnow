@@ -2,7 +2,8 @@
 (function () {
   var VARIANTS = {
     b: { css: 'assets/v-b.css?v=202610301200', label: 'Variante B · Vibrant',
-         fonts: 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Righteous&display=swap' }
+         fonts: 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Righteous&display=swap' },
+    c: { css: 'assets/v-c.css?v=202610301200', label: 'Variante C · Apple' }
   };
   var v = null;
   try {
@@ -18,7 +19,7 @@
   if (!cfg) return;
   document.documentElement.setAttribute('data-v', v);
   function link(href) { var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = href; document.head.appendChild(l) }
-  link(cfg.fonts);
+  if (cfg.fonts) link(cfg.fonts);
   link(cfg.css);
   document.addEventListener('DOMContentLoaded', function () {
     var p = document.createElement('div');
