@@ -413,3 +413,5 @@ nav a[aria-current="page"]::after{transform:scaleX(1);opacity:1}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .ptile:not(.dark),:root:not([data-theme="light"]) .polcard,:root:not([data-theme="light"]) .vcard{background:var(--tint-2);box-shadow:0 0 0 1px var(--line)}}
 :root[data-theme="dark"] .ptile:not(.dark),:root[data-theme="dark"] .polcard,:root[data-theme="dark"] .vcard{background:var(--tint-2);box-shadow:0 0 0 1px var(--line)}
 @media (max-width:480px){.vbar{grid-template-columns:76px minmax(0,1fr) auto;gap:8px}}
+.psrc2{display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:600;color:var(--brand)}
+.polh3{font-weight:800;font-size:22px;margin:48px 0 16px}

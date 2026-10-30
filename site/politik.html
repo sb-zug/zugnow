@@ -9,7 +9,7 @@
 <meta property="og:description" content="Grosser Gemeinderat, Stadtrat, Abstimmungen und Parteien der Stadt Zug – an einem Ort.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..800&family=Inter:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="assets/app.css?v=202610302230">
+<link rel="stylesheet" href="assets/app.css?v=202610302300">
 </head>
 <body data-page="politik">
 <div id="hdr"><header><div class="wrap"><a class="logo" href="index.html" aria-label="zug.now Startseite">zug<span class="dot">.</span><span class="now">now</span></a><nav aria-label="Hauptnavigation"><a href="index.html">Start</a><a href="agenda.html">Agenda</a><a href="news.html">News</a><a href="amtlich.html">Amtlich</a><a href="politik.html" aria-current="page">Politik</a></nav><button type="button" class="sbtn" id="sBtn" aria-expanded="false" aria-controls="sPanel" aria-label="Suchen"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="M15.5 15.5L20 20"></path></svg></button></div></header><div class="search" id="sPanel" role="search" hidden><div class="wrap"><label class="vh" for="sIn">Suche in News, Agenda und Amtlichem</label><div class="sfield"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="M15.5 15.5L20 20"></path></svg><input id="sIn" type="search" placeholder="News, Anlässe, Amtliches durchsuchen" autocomplete="off" enterkeyhint="search"><button type="button" class="sclose" id="sClose">Schliessen</button></div><p class="scount" id="sCount" aria-live="polite"></p><div class="sres" id="sRes"></div></div></div></div>
@@ -32,12 +32,15 @@
     <div id="polVotes"></div>
   </section>
   <section class="block" aria-labelledby="pPart">
-    <div class="shead"><h2 id="pPart">Parteien in der Stadt Zug</h2></div>
+    <div class="shead"><h2 id="pPart">Aus den Parteien</h2></div>
+    <div class="chips" id="polPChips" role="group" aria-label="Partei"></div>
+    <div class="nlist" id="polPosts"></div>
+    <p class="note">Automatisch von den Websites der Parteien übernommen: neueste zuerst, höchstens vier pro Partei, unverändert mit Link zum Original. zug.now wählt nicht aus und wertet nicht.</p>
+    <h3 class="polh3">Parteien in der Stadt Zug</h3>
     <div class="polparties" id="polParties"></div>
-    <p class="note">Alphabetisch, wie auf stadtzug.ch. Meldungen der Parteien folgen in einem nächsten Schritt – gleich behandelt, chronologisch, mit Link zum Original.</p>
   </section>
 </main>
 <div id="ftr"><footer><div class="wrap"><div class="col"><span style="font-family:var(--display);font-weight:800;font-size:22px;color:var(--fg)">zug<span style="color:var(--red)">.</span>now</span><span>Unabhängig. Automatisch aktualisiert. Jede Meldung mit Quelle und Link zum Original.</span></div><div class="col"><span style="font-weight:600;color:var(--fg)">Quellen</span><span>stadtzug.ch · ratsinfo.stadtzug.ch · wab.zug.ch · amtsblatt.zg.ch</span><span id="srcState"></span></div></div></footer></div>
-<script src="assets/app.js?v=202610302230"></script>
+<script src="assets/app.js?v=202610302300"></script>
 </body>
 </html>

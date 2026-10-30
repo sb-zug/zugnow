@@ -14,6 +14,7 @@ Quellen:
   Theater  https://www.theatercasino.ch/programm/veranstaltungen (HTML-Spielplan, in die Agenda gemischt)
   Galvanik https://galvanik-zug.ch/programm/                 (HTML-Programm + Detailseite für Uhrzeit/Bild)
   Politik  https://wab.zug.ch/archive/<jahr>/json            (OneGov Wahlen & Abstimmungen, Resultat Stadt Zug aus /data-json)
+           Parteimeldungen über RSS/Atom der Partei-Websites (Feed wird pro Website gesucht)
            + feste Angaben (Sitzverteilung GGR, Stadtrat, Parteien) unten in POLITIK_FIX
 Bibliothek, Museum Burg, Kunsthaus, Musikschule sind in der OneGov-Agenda enthalten
 und werden über Ort/Kategorie als Institution markiert.
@@ -25,6 +26,7 @@ import html
 import json
 import re
 import sys
+import urllib.parse
 import urllib.request
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
@@ -45,6 +47,9 @@ WAB_URL = "https://wab.zug.ch"   # Wahlen & Abstimmungen Kanton Zug (OneGov Elec
 ZUG_BFS = 1711                   # Gemeindenummer Stadt Zug
 # Eidg. Abstimmungstermine als Rückfall, solange wab.zug.ch die Vorlagen noch nicht aufgeschaltet hat (nachführen)
 VOTE_DATES = ["2026-11-29"]
+PARTY_DAYS = 120          # Parteimeldungen: so weit zurück
+PARTY_MAX = 4             # pro Partei höchstens so viele (gleich behandelt)
+PARTY_SKIP = {"EDU"}      # nur nationale Website verlinkt → keine Meldungen übernehmen
 
 AGENDA_DAYS = 60          # so weit voraus
 EVENT_IMAGES_MAX = 150    # Bilder (og:image) für die nächsten n Anlässe; gecacht, nur neue werden abgerufen
@@ -598,17 +603,18 @@ POLITIK_FIX = {
     },
     "stadtrat": [["André Wicki", "SVP", "Stadtpräsident"], ["Urs Raschle", "Die Mitte", ""], ["Barbara Gysel", "SP", ""],
                  ["Etienne Schumpf", "FDP", ""], ["Eliane Birchmeier", "FDP", ""]],
-    "parteien": [  # alphabetisch, wie auf stadtzug.ch/de/org-weiteres/politische-parteien
-        ["Alternative – die Grünen (ALG)", "https://gruene-zug.ch/"],
-        ["Aufrecht Zug", "https://aufrecht-zug.ch/"],
-        ["Christlichsoziale Partei (CSP)", "https://csp-zug.ch/"],
-        ["Die Mitte Stadt Zug", "https://stadtzug-diemitte.ch/"],
-        ["EDU", "https://www.edu-schweiz.ch/"],
-        ["EVP Kanton Zug", "https://www.evp-zg.ch"],
-        ["FDP.Die Liberalen Stadt Zug", "https://www.fdp-zg.ch/partei/sektionen/fdpdie-liberalen-stadt-zug/willkommen/"],
-        ["Grünliberale (GLP)", "https://zg.grunliberale.ch/"],
-        ["SP Stadt Zug", "https://stadtzug.sp-zug.ch/"],
-        ["SVP Stadt Zug", "https://www.svp-zug.ch/sektion/svp-stadt-zug/"],
+    # alphabetisch wie stadtzug.ch: Name, Website, Kürzel, Ebene der Website (Stadt/Kanton/Schweiz)
+    "parteien": [
+        ["Alternative – die Grünen (ALG)", "https://gruene-zug.ch/", "ALG", "Kanton"],
+        ["Aufrecht Zug", "https://aufrecht-zug.ch/", "Aufrecht", "Kanton"],
+        ["Christlichsoziale Partei (CSP)", "https://csp-zug.ch/", "CSP", "Stadt"],
+        ["Die Mitte Stadt Zug", "https://stadtzug-diemitte.ch/", "Mitte", "Stadt"],
+        ["EDU", "https://www.edu-schweiz.ch/", "EDU", "Schweiz"],
+        ["EVP Kanton Zug", "https://www.evp-zg.ch", "EVP", "Kanton"],
+        ["FDP.Die Liberalen Stadt Zug", "https://www.fdp-zg.ch/partei/sektionen/fdpdie-liberalen-stadt-zug/willkommen/", "FDP", "Stadt"],
+        ["Grünliberale (GLP)", "https://zg.grunliberale.ch/", "GLP", "Kanton"],
+        ["SP Stadt Zug", "https://stadtzug.sp-zug.ch/", "SP", "Stadt"],
+        ["SVP Stadt Zug", "https://www.svp-zug.ch/sektion/svp-stadt-zug/", "SVP", "Stadt"],
     ],
     "links": {
         "ris": "https://ratsinfo.stadtzug.ch/gremium/1/geschaefte?itemsPerPage=50&ordering=-begin_date&page=1",
@@ -672,6 +678,67 @@ def wab_city_result(data) -> dict | None:
             return None
         return {"yeas": round(100 * y / (y + n), 1), "answer": "accepted" if y > n else "rejected"}
     return None
+
+
+# ---------------------------------------------------------------- Parteimeldungen (RSS/Atom)
+
+_FEED_LINK = re.compile(r'<link[^>]+type="application/(?:rss|atom)\+xml"[^>]*>', re.I)
+
+
+def discover_feeds(page: str, base: str) -> list[str]:
+    """Feed-Links aus <link rel="alternate">, ohne Kommentar-Feeds; danach WordPress-Standard /feed/."""
+    out = []
+    for tag in _FEED_LINK.findall(page):
+        m = re.search(r'href="([^"]+)"', tag)
+        if m and not re.search(r"comment|kommentar", m.group(1) + tag, re.I):
+            out.append(urllib.parse.urljoin(base, html.unescape(m.group(1))))
+    root = re.match(r"https?://[^/]+", base).group(0)
+    if base.rstrip("/") != root:          # Unterseite (z. B. Sektion Stadt Zug): deren eigener Feed zuerst
+        out.insert(0, base.rstrip("/") + "/feed/")
+    out += [root + "/feed/"]
+    seen, res = set(), []
+    for u in out:
+        if u not in seen:
+            seen.add(u); res.append(u)
+    return res
+
+
+def parse_feed(xml: str) -> list[dict]:
+    import xml.etree.ElementTree as ET
+    from email.utils import parsedate_to_datetime
+    root = ET.fromstring(xml.encode("utf-8") if isinstance(xml, str) else xml)
+    if not re.search(r"(rss|feed|RDF)$", root.tag):
+        raise ValueError(f"kein Feed ({root.tag})")
+    ns = {"a": "http://www.w3.org/2005/Atom"}
+    items = []
+    for it in root.iter("item"):                       # RSS 2.0
+        d = it.findtext("pubDate") or ""
+        try:
+            dt = parsedate_to_datetime(d)
+        except (TypeError, ValueError):
+            dt = None
+        items.append({"title": it.findtext("title") or "", "url": (it.findtext("link") or "").strip(),
+                      "dt": dt, "lead": it.findtext("description") or ""})
+    for it in root.findall(".//a:entry", ns):           # Atom
+        link = it.find("a:link[@rel='alternate']", ns)
+        if link is None:
+            link = it.find("a:link", ns)
+        d = it.findtext("a:published", default="", namespaces=ns) or it.findtext("a:updated", default="", namespaces=ns)
+        try:
+            dt = datetime.fromisoformat(d.replace("Z", "+00:00"))
+        except ValueError:
+            dt = None
+        items.append({"title": it.findtext("a:title", default="", namespaces=ns), "url": link.get("href") if link is not None else "",
+                      "dt": dt, "lead": it.findtext("a:summary", default="", namespaces=ns)})
+    out = []
+    for x in items:
+        if not x["title"] or not x["url"] or not x["dt"]:
+            continue
+        lead = _text(html.unescape(re.sub(r"<[^>]+>", " ", x["lead"])))
+        lead = re.sub(r"\s*(\[…\]|\[\.\.\.\]|Der Beitrag .* erschien zuerst auf .*)$", "", lead).strip()
+        out.append({"title": _text(html.unescape(x["title"])), "url": x["url"],
+                    "date": x["dt"].astimezone(TZ).date().isoformat(), "lead": lead[:220]})
+    return out
 
 
 # ---------------------------------------------------------------- Ablauf
@@ -822,6 +889,51 @@ def run(offline: Path | None, only: set[str]) -> int:
             meta["sources"]["wab"] = {**meta["sources"].get("wab", {}), "ok": False,
                                       "error": f"{type(e).__name__}: {e}", "failed": now.isoformat(timespec="minutes")}
             print(f"  ✗ wab: {e}", file=sys.stderr)
+        # Parteimeldungen: pro Partei Feed suchen; fällt eine Website aus, bleiben ihre letzten Meldungen stehen
+        prev_posts = {}
+        for x in prev.get("posts", []):
+            prev_posts.setdefault(x["party"], []).append(x)
+        posts, status = [], {}
+        since = (today - timedelta(days=PARTY_DAYS)).isoformat()
+        for name, site, short, level in POLITIK_FIX["parteien"]:
+            if short in PARTY_SKIP:
+                continue
+            try:
+                if offline:
+                    cands = ["party_feed.xml"] if short == "SP" else []
+                    found = parse_feed((offline / cands[0]).read_text("utf-8")) if cands else []
+                    used = cands[0] if cands else None
+                else:
+                    found, used = [], None
+                    try:
+                        cands = discover_feeds(fetch(site), site)
+                    except Exception:
+                        cands = discover_feeds("", site)
+                    for u in cands:
+                        try:
+                            found = parse_feed(fetch(u, "application/rss+xml, application/atom+xml, application/xml;q=0.9, */*;q=0.5"))
+                        except Exception:
+                            continue
+                        used = u
+                        break
+                if used is None:
+                    raise ValueError("kein Feed gefunden")
+                keep = sorted([f for f in found if f["date"] >= since], key=lambda f: f["date"], reverse=True)[:PARTY_MAX]
+                root = re.match(r"https?://[^/]+", site).group(0)
+                if level == "Stadt" and site.rstrip("/") != root and used and not used.startswith(site.rstrip("/")) \
+                        and urllib.parse.urlparse(used).netloc == urllib.parse.urlparse(site).netloc:
+                    level = "Kanton"          # Sektionsseite ohne eigenen Feed → Feed der ganzen Website
+                for f in keep:
+                    f.update(party=short, partyName=name, level=level)
+                posts += keep
+                status[short] = {"ok": True, "feed": used, "count": len(keep)}
+                print(f"  ✓ Partei {short}: {len(keep)} Meldungen ({used})")
+            except Exception as e:
+                posts += prev_posts.get(short, [])
+                status[short] = {"ok": False, "error": f"{type(e).__name__}: {e}"}
+                print(f"  ✗ Partei {short}: {e}", file=sys.stderr)
+        out["posts"] = sorted(posts, key=lambda f: f["date"], reverse=True)
+        out["postStatus"] = status
         nxt = next((d for d in VOTE_DATES if d >= today.isoformat()), None)
         out["nextVoteDate"] = (out["upcoming"][0]["date"] if out["upcoming"] else nxt)
         return out

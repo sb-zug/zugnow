@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Testdaten (nachgebaut), keine echte Parteimeldung -->
+<rss version="2.0"><channel><title>Test</title>
+<item><title>Testmeldung &amp; Parole</title><link>https://example.org/a</link><pubDate>Mon, 26 Oct 2026 10:00:00 +0100</pubDate><description><![CDATA[<p>Kurzer Lead der Testmeldung.</p> [&#8230;]]]></description></item>
+<item><title>Alte Meldung</title><link>https://example.org/b</link><pubDate>Mon, 02 Feb 2026 10:00:00 +0100</pubDate><description>alt</description></item>
+</channel></rss>

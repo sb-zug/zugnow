@@ -395,7 +395,19 @@
       return '<div class="vcard"><span class="pk">' + (DOM[v.domain] || '') + ' · ' + dLabel(v.date) + '</span><a class="vt2" href="' + esc(v.url) + '">' + esc(v.title) + '</a>' +
         (v.city ? bar('Stadt Zug', v.city.yeas, v.city.answer) : '') + bar('Kanton Zug', v.yeas, v.answer) + '</div>' }).join('');
     $('polVotes').innerHTML = html ? '<div class="votes">' + html + '</div>' : '<p class="note">Resultate werden geladen, sobald wab.zug.ch erreichbar ist.</p>';
-    // Parteien
+    // Parteien: Meldungen (RSS der Partei-Websites), chronologisch, alle gleich behandelt
+    var posts = P.posts || [], pf = 'alle', LV = { Kanton: 'Kantonalpartei', Schweiz: 'Schweiz', Stadt: '' };
+    function postsRender() {
+      var with_ = (P.parteien || []).filter(function (p) { return posts.some(function (x) { return x.party === p[2] }) });
+      $('polPChips').innerHTML = posts.length ? [['alle', 'Alle']].concat(with_.map(function (p) { return [p[2], p[2]] })).map(function (c) {
+        return '<button type="button" class="chip" data-v="' + esc(c[0]) + '" aria-pressed="' + (pf === c[0]) + '">' + esc(c[1]) + '</button>' }).join('') : '';
+      $('polPosts').innerHTML = posts.filter(function (x) { return pf === 'alle' || x.party === pf }).slice(0, pf === 'alle' ? 12 : 99).map(function (x) {
+        return '<a href="' + esc(x.url) + '"><span class="d"><b>' + esc(x.party) + '</b>' + dLabel(x.date) + (LV[x.level] ? '<i class="ntop">' + LV[x.level] + '</i>' : '') + '</span>' +
+          '<span class="c"><span class="t">' + esc(x.title) + '</span>' + (x.lead ? '<span class="l">' + esc(x.lead) + '</span>' : '') + '<span class="psrc2">' + esc(x.partyName) + ' ' + EXT + '</span></span></a>' }).join('') ||
+        '<p class="note">Noch keine Meldungen der Parteien gesammelt.</p>';
+    }
+    $('polPChips').onclick = function (ev) { var b = ev.target.closest('.chip'); if (!b) return; pf = b.dataset.v; postsRender() };
+    postsRender();
     $('polParties').innerHTML = (P.parteien || []).map(function (p) { return '<a href="' + esc(p[1]) + '"><strong>' + esc(p[0]) + '</strong><span>Website ' + EXT + '</span></a>' }).join('');
   }
 
