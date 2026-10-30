@@ -351,9 +351,9 @@
     D.ongoing = D.agenda.filter(function (e) { return e.ongoing });
     band();
     if (!$('sPanel').hidden) searchInit.run();
-    if (page === 'start') { renderToday(); renderWeekend(); renderNewsTeaser(); renderLauf(3); renderAmtTeaser() }
+    if (page === 'start') { renderToday(); renderNewsTeaser(); renderAmtTeaser() }
     if (page === 'agenda') {
-      var open = agendaFromHash(); renderFilters(); renderList(); renderLauf(); if (open) openEvent(open);
+      var open = agendaFromHash(); renderFilters(); renderList(); renderWeekend(); renderLauf(); if (open) openEvent(open);
       window.addEventListener('hashchange', function () { var o = agendaFromHash(); renderFilters(); renderList(); if (o) openEvent(o) });
     }
     if (page === 'news') renderNewsPage();
