@@ -1,6 +1,6 @@
 /* Layout: eine 1200px-Spalte; blaue Live-Leiste; Hero + «Heute» nebeneinander, dann News-Raster, Agenda-Liste, drei Kacheln */
 :root{
-  --bg:#FFFFFF; --fg:#0E1A26; --muted:#33475B; --soft:#4A5D70; --line:#E3E8EE; --line-strong:#C9D3DD;
+  --bg:#FDFDFD; --surface:#FFFFFF; --fg:#0E1A26; --muted:#33475B; --soft:#4A5D70; --line:#E3E8EE; --line-strong:#C9D3DD;
   --tint:#EEF3F9; --tint-2:#F4F6F9; --ph:#E8EEF5;
   --blue:#0B3D7A; --blue-2:#164C8C; --on-blue:#FFFFFF; --on-blue-soft:#C9DAF0;
   --red:#D9481F; --live:#FF8A5C; --brand:#1F55C4;
@@ -8,12 +8,12 @@
   --body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0D141C; --fg:#E8EEF4; --muted:#B4C2D0; --soft:#93A4B5; --line:#223140; --line-strong:#34475A;
+  --bg:#0D141C; --surface:#0D141C; --fg:#E8EEF4; --muted:#B4C2D0; --soft:#93A4B5; --line:#223140; --line-strong:#34475A;
   --tint:#15212E; --tint-2:#121C27; --ph:#1A2735;
   --blue:#5B9BE6; --blue-2:#1C3A5E; --on-blue:#FFFFFF; --on-blue-soft:#C9DAF0;
   --red:#F07B55; --live:#FF8A5C; --brand:#6FA4F0; color-scheme:dark }}
 :root[data-theme="dark"]{
-  --bg:#0D141C; --fg:#E8EEF4; --muted:#B4C2D0; --soft:#93A4B5; --line:#223140; --line-strong:#34475A;
+  --bg:#0D141C; --surface:#0D141C; --fg:#E8EEF4; --muted:#B4C2D0; --soft:#93A4B5; --line:#223140; --line-strong:#34475A;
   --tint:#15212E; --tint-2:#121C27; --ph:#1A2735;
   --blue:#5B9BE6; --blue-2:#1C3A5E; --on-blue:#FFFFFF; --on-blue-soft:#C9DAF0;
   --red:#F07B55; --live:#FF8A5C; --brand:#6FA4F0; color-scheme:dark }
@@ -33,14 +33,14 @@ h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0}
 header{background:var(--bg)}
 header .wrap{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px 32px;padding-block:18px}
 header nav{justify-self:end}
-.sbtn{width:52px;height:52px;border-radius:50%;border:0;display:grid;place-items:center;cursor:pointer;background:var(--bg);color:var(--fg);box-shadow:0 2px 14px rgba(14,26,38,.10),0 0 0 1px rgba(14,26,38,.04)}
+.sbtn{width:52px;height:52px;border-radius:50%;border:0;display:grid;place-items:center;cursor:pointer;background:var(--surface);color:var(--fg);box-shadow:0 2px 14px rgba(14,26,38,.10),0 0 0 1px rgba(14,26,38,.04)}
 .sbtn:hover{box-shadow:0 4px 18px rgba(14,26,38,.16),0 0 0 1px rgba(14,26,38,.06)}
 .sbtn[aria-expanded="true"]{background:var(--tint);color:var(--brand)}
 @media (max-width:720px){header .wrap{grid-template-columns:1fr auto}header nav{grid-column:1/-1;grid-row:2;justify-self:start}.sbtn{width:46px;height:46px}}
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .search{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bg);box-shadow:0 12px 24px -16px rgba(14,26,38,.25);position:relative;z-index:20}
 .search .wrap{padding-block:20px 28px}
-.sfield{display:flex;align-items:center;gap:12px;padding:0 8px 0 18px;min-height:56px;border:2px solid var(--line-strong);border-radius:28px;background:var(--bg);color:var(--soft)}
+.sfield{display:flex;align-items:center;gap:12px;padding:0 8px 0 18px;min-height:56px;border:2px solid var(--line-strong);border-radius:28px;background:var(--surface);color:var(--soft)}
 .sfield:focus-within{border-color:var(--brand)}
 .sfield input{flex:1;min-width:0;border:0;outline:0;background:transparent;font:500 18px var(--body);color:var(--fg);padding:14px 0}
 .sfield input::-webkit-search-cancel-button{cursor:pointer}
@@ -237,7 +237,7 @@ nav a[aria-current="page"]::after{transform:scaleX(1);opacity:1}
 
 /* --- Infoleiste: Wetter, Sonnenuntergang, Anlässe heute --- */
 .infobar .wrap{padding-block:8px 8px}
-.ibox{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:center;padding:14px 8px;border-radius:20px;background:var(--bg);box-shadow:0 2px 18px rgba(14,26,38,.07),0 0 0 1px rgba(14,26,38,.05)}
+.ibox{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:center;padding:14px 8px;border-radius:20px;background:var(--surface);box-shadow:0 2px 18px rgba(14,26,38,.07),0 0 0 1px rgba(14,26,38,.05)}
 .iitem{display:flex;align-items:center;gap:16px;padding:6px 24px;min-width:0;color:var(--fg);text-decoration:none}
 .iitem+.iitem{border-left:1px solid var(--line)}
 .iitem[hidden]{display:none}
