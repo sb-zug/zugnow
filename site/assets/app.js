@@ -116,7 +116,11 @@
         '<div class="tb"><span class="tm">' + (p.key === tk ? t : dShort(p.key) + ' · ' + t) + '</span><strong>' + esc(e.title) + '</strong>' +
         '<span class="ts"><span>' + esc(e.place) + ' · ' + esc(e.catLabel) + '</span><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></div></a>';
     }).join('') || '<p style="color:var(--soft)">Keine Anlässe gefunden.</p>';
-    var prev = $('tPrev'), next = $('tNext');
+    swiper(el, $('tPrev'), $('tNext'));
+  }
+  // Pfeile für wischbare Leisten
+  function swiper(el, prev, next) {
+    if (!prev || !next) return;
     function step() { var c = el.querySelector('.tcard'); return c ? c.getBoundingClientRect().width + 20 : el.clientWidth }
     function upd() { prev.disabled = el.scrollLeft < 4; next.disabled = el.scrollLeft + el.clientWidth >= el.scrollWidth - 4 }
     prev.onclick = function () { el.scrollBy({ left: -step(), behavior: 'smooth' }) };
@@ -144,9 +148,22 @@
       '<span class="c"><span class="t">' + esc(n.title) + '</span><span class="l">' + esc(n.lead) + '</span></span>' +
       (n.image ? '<span class="i">' + img(n.image) + '</span>' : '') + '</a>';
   }
+  var CHEVR = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
   function renderNewsTeaser() {
     var el = $('newsGrid'); if (!el) return;
-    el.innerHTML = D.news.slice(0, 5).map(function (n) {
+    // Top-Themen: Meldungen mit Bild als Karten; der Rest als Liste
+    var top = D.news.filter(function (n) { return n.image }).slice(0, 6), tEl = $('topNews');
+    if (tEl && top.length) {
+      $('topSec').hidden = false;
+      tEl.innerHTML = top.map(function (n) {
+        return '<a class="tcard" href="' + esc(n.url) + '"><div class="tim">' + img(n.image) + '</div>' +
+          '<div class="tb"><span class="tm">' + dLabel(n.date) + (n.topicLabel ? '<b class="ntop">' + esc(n.topicLabel) + '</b>' : '') + '</span><strong>' + esc(n.title) + '</strong>' +
+          (n.lead ? '<span class="tl">' + esc(n.lead) + '</span>' : '') +
+          '<span class="ts"><span>' + esc(n.type || 'News') + ' · Stadt Zug</span>' + CHEVR + '</span></div></a>';
+      }).join('');
+      swiper(tEl, $('nPrev'), $('nNext'));
+    } else { $('nTitle').textContent = 'Aktuelle News' }
+    el.innerHTML = D.news.filter(function (n) { return top.indexOf(n) < 0 }).slice(0, 5).map(function (n) {
       return '<a href="' + esc(n.url) + '"><span class="hc"><span class="hd">' + dLabel(n.date) + (n.topicLabel ? '<b class="ntop">' + esc(n.topicLabel) + '</b>' : '') + '</span><span class="ht">' + esc(n.title) + '</span>' +
         (n.lead ? '<span class="hl">' + esc(n.lead) + '</span>' : '') + '</span>' +
         '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>';

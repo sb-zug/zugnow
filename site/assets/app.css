@@ -317,3 +317,8 @@ nav a[aria-current="page"]::after{transform:scaleX(1);opacity:1}
 .ntop{display:inline-block;margin-left:10px;padding:2px 9px;border-radius:999px;background:var(--tint);color:var(--brand);font-size:12px;font-weight:600;font-style:normal;letter-spacing:.01em;white-space:nowrap}
 .nlist .d .ntop{margin:4px 0 0;align-self:flex-start}
 @media (max-width:620px){.nlist .d .ntop{margin:0}}
+
+/* Top-Themen-Karten */
+.tb .tl{font-size:15px;line-height:1.5;color:var(--soft);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.tb .tm .ntop{vertical-align:1px}
+.hn2{margin-top:40px}

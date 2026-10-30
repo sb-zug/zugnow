@@ -9,7 +9,7 @@
 <meta property="og:description" content="Was heute in der Stadt Zug läuft: News der Stadt, Agenda, Ausstellungen und Amtliches, automatisch aktualisiert.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..800&family=Inter:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="assets/app.css?v=202610301415">
+<link rel="stylesheet" href="assets/app.css?v=202610301430">
 </head>
 <body data-page="start">
 <div id="hdr"></div>
@@ -30,8 +30,18 @@
     <div class="swipe" id="todayList" role="region" aria-label="Anlässe heute" tabindex="0"></div>
   </section>
 
-  <section class="block hn" aria-labelledby="nTitle">
-    <div class="shead"><h2 id="nTitle">Aktuelle News</h2><a href="news.html">Alle News →</a></div>
+  <section class="block hn" id="topSec" aria-labelledby="tnTitle" hidden>
+    <div class="shead"><h2 id="tnTitle">Top-Themen</h2>
+      <div class="sctl"><a href="news.html">Alle News →</a>
+        <button type="button" class="sarr" id="nPrev" aria-label="Zurück" aria-controls="topNews"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+        <button type="button" class="sarr" id="nNext" aria-label="Weiter" aria-controls="topNews"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+      </div>
+    </div>
+    <div class="swipe" id="topNews" role="region" aria-label="Top-Themen" tabindex="0"></div>
+  </section>
+
+  <section class="block hn hn2" aria-labelledby="nTitle">
+    <div class="shead"><h2 id="nTitle">Weitere Meldungen</h2><a href="news.html">Alle News →</a></div>
     <div class="hnews" id="newsGrid"></div>
   </section>
 
@@ -50,6 +60,6 @@
   </section>
 </main>
 <div id="ftr"></div>
-<script src="assets/app.js?v=202610301415"></script>
+<script src="assets/app.js?v=202610301430"></script>
 </body>
 </html>
