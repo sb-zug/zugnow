@@ -2,53 +2,49 @@
  "sources": {
   "news": {
    "ok": true,
-   "updated": "2026-10-31T21:47+01:00",
+   "updated": "2026-10-31T21:51+01:00",
    "count": 10
   },
   "agenda": {
    "ok": true,
-   "updated": "2026-10-31T21:47+01:00",
-   "count": 319
+   "updated": "2026-10-31T21:51+01:00",
+   "count": 342
   },
   "amtlich": {
    "ok": true,
-   "updated": "2026-10-31T21:47+01:00",
+   "updated": "2026-10-31T21:51+01:00",
    "count": 8
   },
   "theatercasino": {
    "ok": true,
-   "updated": "2026-10-31T21:47+01:00",
+   "updated": "2026-10-31T21:51+01:00",
    "count": 29
   },
   "galvanik": {
-   "ok": false,
-   "updated": "2026-10-31T21:40+01:00",
-   "count": 15,
-   "error": "HTTPError: HTTP Error 415: Unsupported Media Type",
-   "failed": "2026-10-31T21:47+01:00"
+   "ok": true,
+   "updated": "2026-10-31T21:51+01:00",
+   "count": 15
   },
   "wab": {
    "ok": true,
-   "updated": "2026-10-31T21:47+01:00",
+   "updated": "2026-10-31T21:51+01:00",
    "count": 2
   },
   "politik": {
    "ok": true,
-   "updated": "2026-10-31T21:47+01:00",
+   "updated": "2026-10-31T21:51+01:00",
    "count": 9
   },
   "kino": {
-   "ok": false,
-   "updated": "2026-10-31T21:40+01:00",
-   "count": 49,
-   "error": "ValueError: keine Vorstellungen erkannt (Seitenaufbau geändert?)",
-   "failed": "2026-10-31T21:47+01:00"
+   "ok": true,
+   "updated": "2026-10-31T21:51+01:00",
+   "count": 49
   },
   "eventfrog": {
    "ok": true,
-   "updated": "2026-10-31T21:47+01:00",
-   "count": 149
+   "updated": "2026-10-31T21:51+01:00",
+   "count": 144
   }
  },
- "generated": "2026-10-31T21:47+01:00"
+ "generated": "2026-10-31T21:51+01:00"
 }
