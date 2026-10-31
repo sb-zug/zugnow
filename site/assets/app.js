@@ -175,7 +175,7 @@
   function topicOf(n) { return !n.topicLabel || n.topic === 'weitere' ? 'Stadtleben' : n.topicLabel }
   function renderNewsTeaser() {
     var el = $('newsGrid'); if (!el) return;
-    // «Das bewegt Zug»: neueste Meldung mit Bild gross links, daneben die nächsten Meldungen (ohne Baugesuch-Listen)
+    // «Das bewegt die Stadt Zug»: neueste Meldung mit Bild gross links, daneben die nächsten Meldungen (ohne Baugesuch-Listen)
     var pool = D.news.filter(function (n) { return !/^Baugesuche vom/i.test(n.title) });
     var lead = pool.filter(function (n) { return n.image })[0] || pool[0];
     if (!lead) { el.innerHTML = '<p style="color:var(--soft)">Keine Meldungen.</p>'; return }
