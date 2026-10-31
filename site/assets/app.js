@@ -109,6 +109,8 @@
 
   var hDay = 'heute';
   var HDAYS = [['heute', 'Heute'], ['morgen', 'Morgen'], ['wochenende', 'Wochenende']];
+  var CATICON = {"kultur": "<path d='M9 18V5l12-2v13'/><circle cx='6' cy='18' r='3'/><circle cx='18' cy='16' r='3'/>", "kinder": "<circle cx='12' cy='7' r='3'/><path d='M5 21v-2a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v2'/>", "sport": "<path d='M3 20l6-10 4 6 3-4 5 8z'/><circle cx='17' cy='6' r='2'/>", "treff": "<path d='M21 12a8 8 0 0 1-11.6 7.1L4 21l1.9-5.4A8 8 0 1 1 21 12z'/>", "maerkte": "<path d='M3 9l2-5h14l2 5'/><path d='M4 9h16v11H4z'/><path d='M9 20v-6h6v6'/>", "weitere": "<rect x='3' y='5' width='18' height='16' rx='2'/><path d='M16 3v4M8 3v4M3 11h18'/>"};
+  function catTile(e) { var c = CATICON[e.cat] ? e.cat : 'weitere'; return '<div class="tim nob c-' + c + '"><svg viewBox="0 0 24 24" width="56" height="56" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + CATICON[c] + '</svg><span>' + esc(e.catLabel) + '</span></div>' }
   function renderToday() {
     var el = $('todayList'); if (!el) return;
     var seg = $('hSeg');
@@ -122,13 +124,15 @@
     var list = sel.slice(0, hDay === 'heute' ? 12 : 18), filled = false;
     // Wenig los heute: mit den nächsten Anlässen auffüllen (mit Tag angeschrieben)
     if (hDay === 'heute' && list.length < 6) { list = list.concat(src.filter(function (e) { return parts(e.start).key > tk }).slice(0, 6 - list.length + (list.length ? 0 : 3))); filled = !sel.length }
+    // Anlässe mit Bild zuerst, innerhalb chronologisch
+    list = list.filter(function (e) { return e.image }).concat(list.filter(function (e) { return !e.image }));
     $('hTitle').textContent = 'Agenda';
     if ($('hMore')) $('hMore').href = 'agenda.html#' + hDay;
     el.setAttribute('aria-label', 'Anlässe ' + { heute: 'heute', morgen: 'morgen', wochenende: 'am Wochenende' }[hDay]);
     var oneDay = hDay !== 'wochenende';
     el.innerHTML = list.map(function (e) {
       var p = parts(e.start), t = e.allday ? 'ganztags' : p.hm;
-      return '<a class="tcard" href="agenda.html#ev-' + esc(e.id) + '"><div class="tim">' + (e.image ? img(e.image) : '<span>' + esc(e.catLabel) + '</span>') + '</div>' +
+      return '<a class="tcard" href="agenda.html#ev-' + esc(e.id) + '">' + (e.image ? '<div class="tim">' + img(e.image) + '</div>' : catTile(e)) +
         '<div class="tb"><span class="tm">' + (oneDay && inTime(e, hDay) ? t : dShort(p.key) + ' · ' + t) + '</span><strong>' + esc(e.title) + '</strong>' +
         '<span class="ts"><span>' + esc(e.place) + ' · ' + esc(e.catLabel) + '</span><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></div></a>';
     }).join('') || '<p style="color:var(--soft)">Noch keine Anlässe gemeldet.</p>';
