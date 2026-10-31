@@ -252,5 +252,9 @@
  "wab:https://wab.zug.ch/vote/neutralitaetsinitiative": {
   "yeas": 25.1,
   "answer": "rejected"
- }
+ },
+ "https://veranstaltungen.zug.ch/event/augmented-reality-skulpturenweg-auf-schweizer-seen-2026-10-31": "https://veranstaltungen.zug.ch/storage/fe203700fbeec4bcf805d26766c9ffc82ad3fbfc7a3db9861df9d0a31d7598da",
+ "https://veranstaltungen.zug.ch/event/ausstellung-100-jahre-institut-montana-eine-reise-durch-die-geschichte-2026-10-31": "https://veranstaltungen.zug.ch/storage/a04d21ecc730563774af0f469888d05033673a743d175e2f8b6a5562af3961bf",
+ "https://veranstaltungen.zug.ch/event/kyra-tabea-balderer-raphael-egil-chamber-chamber-1-2026-11-03": "https://veranstaltungen.zug.ch/storage/963d755d55d19d842e4583942b9766beafbd3195de0e35b86aeefa9966c59bb5",
+ "https://veranstaltungen.zug.ch/event/dauerausstellung-museum-burg-zug-2026-11-03": null
 }
