@@ -560,6 +560,34 @@ _EF_CAT = [  # Stichwort in Rubrik (de, inkl. Oberrubrik) → Kategorie
 ]
 
 
+_EF_SKIP = re.compile(r"Sitzplatzreservation|Tischreservation|\bReservation\b|Gutschein|Saisonabo|Saisonkarte|Jahresabo", re.I)
+
+
+def ef_condense(extra: list[dict], base: list[dict]) -> list[dict]:
+    """Eventfrog aufräumen: Buchungs-Slots weg, Anlässe die wir schon kennen weg (auch laufende Ausstellungen),
+    Serien (Ausstellung/Angebot an vielen Tagen) auf den nächsten Termin mit Hinweis zusammenfassen."""
+    known = {_norm_title(e["title"]) for e in base}
+    def is_known(n):
+        return n in known or any(min(len(n), len(o)) >= 10 and (n in o or o in n) for o in known)
+    series: dict[tuple, list[dict]] = {}
+    for e in sorted(extra, key=lambda e: e["start"]):
+        if _EF_SKIP.search(e["title"]) or is_known(_norm_title(e["title"])):
+            continue
+        series.setdefault((_norm_title(e["title"]), e["place"]), []).append(e)
+    out = []
+    for evs in series.values():
+        if len(evs) > 3:
+            first, last = evs[0], evs[-1]
+            d = date.fromisoformat(last["start"][:10])
+            note = f"Weitere Termine bis {d.day}.{d.month}."
+            first["teaser"] = (first["teaser"] + " · " + note).strip(" ·")
+            first["text"] = (first["text"] + "\n\n" + note).strip()
+            out.append(first)
+        else:
+            out += evs
+    return out
+
+
 def ef_get(path: str, params: list[tuple[str, str]], key: str) -> dict:
     url = f"{EF_API}/{path}?" + urllib.parse.urlencode(params)
     req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "application/json",
@@ -608,10 +636,11 @@ def parse_eventfrog(events: dict, locations: dict, rub_cat: dict[int, str]) -> l
         teaser = _text(_ml(e.get("shortDescription") or {}))
         if e.get("soldOut"):
             teaser = (teaser + " · Ausverkauft").strip(" ·")
-        ev = _house_event("ef-" + e["id"], title, teaser, start, False, e["url"], cat, [], None,
+        allday = start.hour == 0 and start.minute == 0          # 00:00 = ganztägig (z. B. Ausstellung, Schnitzeljagd)
+        ev = _house_event("ef-" + e["id"], title, teaser, start, allday, e["url"], cat, [], None,
                           place, location, "eventfrog.ch", cancelled=bool(e.get("cancelled")))
         ev["institution"] = institution({"location": location, "tags": []})
-        if e.get("end"):
+        if e.get("end") and not allday:
             ev["end"] = datetime.fromisoformat(e["end"]).astimezone(TZ).isoformat()
         out.append(ev)
     return out
@@ -1038,11 +1067,12 @@ def run(offline: Path | None, only: set[str]) -> int:
                     for k in range(0, len(ids), 100):
                         lcs["locations"] += ef_get("locations", [("id", i) for i in ids[k:k + 100]], key).get("locations", [])
                     rbs = ef_get("rubrics", [], key)
-                extra = parse_eventfrog(evs, lcs, ef_rubric_cats(rbs))
+                found = parse_eventfrog(evs, lcs, ef_rubric_cats(rbs))
+                extra = ef_condense(found, items)
                 n0 = len(items)
                 items = merge_events(items, extra, today)
                 meta["sources"]["eventfrog"] = {"ok": True, "updated": now.isoformat(timespec="minutes"), "count": len(items) - n0}
-                print(f"  ✓ eventfrog: {len(evs.get('events', []))} geliefert, {len(extra)} in der Stadt, {len(items) - n0} übernommen")
+                print(f"  ✓ eventfrog: {len(evs.get('events', []))} geliefert, {len(found)} in der Stadt, {len(extra)} nach Aufräumen, {len(items) - n0} übernommen")
             except Exception as e:
                 meta["sources"]["eventfrog"] = {**meta["sources"].get("eventfrog", {}), "ok": False,
                                                 "error": f"{type(e).__name__}: {e}", "failed": now.isoformat(timespec="minutes")}
