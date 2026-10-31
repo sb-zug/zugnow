@@ -487,6 +487,8 @@
   }
 
   // ---------- Start
+  // Vorgerenderte Anlässe (Rubrikseiten), die inzwischen vorbei sind, ausblenden
+  [].forEach.call(document.querySelectorAll('[data-end]'), function (el) { if (new Date(el.dataset.end) < new Date()) el.hidden = true });
   frame();
   searchInit();
   Promise.all(['news', 'agenda', 'amtlich', 'meta'].map(get)).then(function (r) {

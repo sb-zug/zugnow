@@ -436,3 +436,6 @@ nav a[aria-current="page"]::after{transform:scaleX(1);opacity:1}
 .ktimes a:hover{text-decoration:underline}
 .km{font-size:13px;color:var(--soft)}
 #kNote a{color:var(--brand);font-weight:600}
+
+/* Vorbei (data-end) ausgeblendet */
+.ev[hidden]{display:none}

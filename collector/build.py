@@ -92,7 +92,8 @@ def ev_row(e):
     d = dt(e["start"]).date()
     meta = time_label(e) + (" · " + esc(e["rhythm"]) if e.get("rhythm") else "") + " · " + esc(e.get("place"))
     side = '<span class="tag off">Abgesagt</span>' if e.get("cancelled") else f'<span class="tag">{esc(e.get("catLabel"))}</span>'
-    return (f'<details class="ev" id="ev-{esc(e["id"])}"><summary><div class="date" aria-label="{dlabel(d)}">'
+    end = "" if e.get("allday") else f' data-end="{esc(e.get("end") or e["start"])}"'
+    return (f'<details class="ev" id="ev-{esc(e["id"])}"{end}><summary><div class="date" aria-label="{dlabel(d)}">'
             f'<span class="wd">{WD[d.weekday()]}</span><span class="d">{d.day}</span><span class="mo">{MO[d.month - 1]}</span></div>'
             + (f'<div class="thumb">{img(e["image"])}</div>' if e.get("image") else "")
             + f'<div class="evmain"><span class="ttl">{esc(e["title"])}</span><span class="meta">{meta}</span></div>'
@@ -222,8 +223,13 @@ def build():
         f'<a href="{esc(x[1])}"><strong>{esc(x[0])}</strong><span>Website {EXT}</span></a>' for x in (politik.get("parteien") or [])))
     pages["politik.html"] = p
 
+    import hubs
+    pages.update(hubs.build_hubs(pages["agenda.html"], events=events, ongoing=ongoing, amtlich=amtlich, all_news=load("news", [])))
     for name, doc in pages.items():
+        doc = doc.replace("</div></div></footer>", "</div>" + hubs.FOOTER_COL + "</div></footer>", 1)
+        (OUT / name).parent.mkdir(parents=True, exist_ok=True)
         (OUT / name).write_text(doc, encoding="utf-8")
+    (OUT / "sitemap.xml").write_text(hubs.sitemap(pages), encoding="utf-8")
     print(f"Vorgerendert: {len(events)} Anlässe ({min(20, len(events))} in der Liste), {len(news)} News, {len(amtlich)} Amtlich, "
           f"{len(rows)} Politik-Meldungen → {OUT.relative_to(ROOT)}/")
 
