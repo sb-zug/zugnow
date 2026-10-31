@@ -156,6 +156,7 @@
     var seen = {}, pick = [];
     list.filter(function (e) { return e.image }).concat(list.filter(function (e) { return !e.image })).forEach(function (e) { if (!seen[e.title] && pick.length < 6) { seen[e.title] = 1; pick.push(e) } });
     pick.sort(function (a, b) { return a.start < b.start ? -1 : 1 });
+    if ($('wkBadgeN')) $('wkBadgeN').textContent = list.length + (list.length === 1 ? ' Anlass →' : ' Anlässe →');
     var r = range('wochenende'); $('wkTitle').textContent = r[0] === todayKey() && dowOf(r[0]) === 0 ? 'Heute, Sonntag' : 'Dieses Wochenende';
     el.innerHTML = pick.map(function (e) {
       var p = parts(e.start);
