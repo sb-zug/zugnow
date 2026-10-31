@@ -418,16 +418,14 @@ nav a[aria-current="page"]::after{transform:scaleX(1);opacity:1}
 
 /* Kino */
 .kino{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:0 40px}
-.kf{display:flex;gap:16px;padding:18px 0;border-top:1px solid var(--line);min-width:0}
-.kimg{width:112px;aspect-ratio:16/10;flex-shrink:0;border-radius:6px;overflow:hidden;background:var(--ph)}
-.kimg img{width:100%;height:100%;object-fit:cover;display:block}
-.kc{min-width:0;flex:1;display:flex;flex-direction:column;gap:6px}
-.kt{font-family:var(--display);font-weight:700;font-size:19px;line-height:1.25;color:var(--fg);text-decoration:none}
+.kf{padding:12px 0;border-top:1px solid var(--line);min-width:0}
+.kh{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.kt{font-weight:600;font-size:16px;line-height:1.3;color:var(--fg);text-decoration:none}
 .kt:hover{text-decoration:underline}
-.km{font-size:14px;color:var(--soft)}
-.ktag{align-self:flex-start;font-size:12px;font-weight:600;padding:2px 9px;border-radius:10px;background:var(--tint);color:var(--brand)}
-.ktimes{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
-.ktimes a{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 14px;border-radius:20px;border:1px solid var(--line-strong);text-decoration:none;color:var(--muted);font-size:14px;font-variant-numeric:tabular-nums}
-.ktimes a b{color:var(--fg);font-weight:700}
-.ktimes a:hover{border-color:var(--brand);color:var(--brand)}
-@media (max-width:480px){.kimg{width:84px}}
+.ktag{font-size:11px;font-weight:600;padding:1px 8px;border-radius:9px;background:var(--tint);color:var(--brand)}
+.ktimes{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px;margin-top:4px;font-size:14px}
+.ktimes a{color:var(--brand);font-weight:600;text-decoration:none;font-variant-numeric:tabular-nums;padding:4px 0}
+.ktimes a small{font-weight:500;color:var(--soft);margin-left:3px;font-size:12px}
+.ktimes a:hover{text-decoration:underline}
+.km{font-size:13px;color:var(--soft)}
+#kNote a{color:var(--brand);font-weight:600}

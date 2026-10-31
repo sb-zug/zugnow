@@ -425,15 +425,17 @@
     $('kTitle').textContent = day === tk ? 'Heute im Kino' : day === addDays(tk, 1) ? 'Morgen im Kino' : 'Im Kino am ' + dShort(day);
     var films = [], by = {};
     shows.forEach(function (s) { if (!by[s.film]) { by[s.film] = { f: s, shows: [] }; films.push(by[s.film]) } by[s.film].shows.push(s) });
-    el.innerHTML = films.slice(0, 10).map(function (x) {
+    var MAX = 6;
+    el.innerHTML = films.slice(0, MAX).map(function (x) {
       var f = x.f, meta = [f.duration, f.age].filter(Boolean).join(' · ');
       var labels = x.shows.map(function (s) { return s.special ? s.label : '' }).filter(function (v, i, a) { return v && a.indexOf(v) === i });
-      return '<div class="kf"><a class="kimg" href="' + esc(f.url) + '" tabindex="-1" aria-hidden="true">' + img(f.image) + '</a>' +
-        '<div class="kc">' + labels.map(function (l) { return '<span class="ktag">' + esc(l) + '</span>' }).join('') +
-        '<a class="kt" href="' + esc(f.url) + '">' + esc(niceTitle(f.title)) + '</a>' + (meta ? '<span class="km">' + esc(meta) + '</span>' : '') +
+      return '<div class="kf"><div class="kh"><a class="kt" href="' + esc(f.url) + '">' + esc(niceTitle(f.title)) + '</a>' +
+        labels.map(function (l) { return '<span class="ktag">' + esc(l) + '</span>' }).join('') + '</div>' +
         '<div class="ktimes">' + x.shows.map(function (s) {
-          return '<a href="' + esc(s.ticket || s.url) + '" title="' + esc([s.langText].concat(s.notes || []).filter(Boolean).join(' · ')) + '"><b>' + parts(s.start).hm + '</b>' + esc(s.hall) + ' · ' + esc(s.lang) + '</a>' }).join('') +
-        '</div></div></div>' }).join('');
+          return '<a href="' + esc(s.ticket || s.url) + '" title="' + esc([s.hall, s.langText].concat(s.notes || []).filter(Boolean).join(' · ')) + '">' + parts(s.start).hm + '<small>' + esc(s.lang) + '</small></a>' }).join('') +
+        (meta ? '<span class="km">' + esc(meta) + '</span>' : '') + '</div></div>' }).join('');
+    var more = films.length - MAX;
+    $('kNote').innerHTML = (more > 0 ? '<a href="https://kinozug.ch/de/programm/spielzeiten">+ ' + more + ' weitere Filme</a> · ' : '') + 'Kino Seehof und Gotthard · Tickets auf kinozug.ch';
     sec.hidden = false;
   }
 
