@@ -32,6 +32,7 @@ Eigene Domain (z. B. zugnow.ch): unter Settings → Pages → Custom domain eint
 ```
 python3 collector/collect.py                         # live
 python3 collector/collect.py --offline tests/fixtures  # mit gespeicherten Rohdaten (wab_*.json sind nachgebaut)
+python3 collector/build.py                           # Seiten vorrendern → _site/ (wird veröffentlicht, nicht eingecheckt)
 cd site && python3 -m http.server 8000                # dann http://localhost:8000
 ```
 
