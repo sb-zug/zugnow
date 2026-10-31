@@ -12,7 +12,7 @@
   "notes": [
    "Reduzierter Eintrittspreis für alle: Tickets ab CHF 14.- (3D ab CHF 16.-)"
   ],
-  "ticket": "https://ticketonline.kinozug.ch/KinoZug/Show/332546",
+  "ticket": null,
   "url": "https://kinozug.ch/de/programm/filmdetail?EventId=132402",
   "image": "https://progi.kinozug.ch/image.php?ImageId=160370",
   "duration": "100 Min.",
@@ -31,7 +31,7 @@
   "notes": [
    "Reduzierter Eintrittspreis für alle: Tickets ab CHF 14.- (3D ab CHF 16.-)"
   ],
-  "ticket": "https://ticketonline.kinozug.ch/KinoZug/Show/332570",
+  "ticket": null,
   "url": "https://kinozug.ch/de/programm/filmdetail?EventId=132203",
   "image": "https://progi.kinozug.ch/image.php?ImageId=159668",
   "duration": "90 Min.",
@@ -50,7 +50,7 @@
   "notes": [
    "U25-Vorstellung: Nur CHF 10.- für unter 25-jährige (nur vor Ort erhältlich)"
   ],
-  "ticket": "https://ticketonline.kinozug.ch/KinoZug/Show/332580",
+  "ticket": null,
   "url": "https://kinozug.ch/de/programm/filmdetail?EventId=132585",
   "image": "https://progi.kinozug.ch/image.php?ImageId=160918",
   "duration": "78 Min.",
@@ -67,7 +67,7 @@
   "hall": "Seehof 1",
   "cinema": "Kino Seehof",
   "notes": [],
-  "ticket": "https://ticketonline.kinozug.ch/KinoZug/Show/332544",
+  "ticket": null,
   "url": "https://kinozug.ch/de/programm/filmdetail?EventId=132222",
   "image": "https://progi.kinozug.ch/image.php?ImageId=159725",
   "duration": "101 Min.",
@@ -84,7 +84,7 @@
   "hall": "Gotthard",
   "cinema": "Kino Gotthard",
   "notes": [],
-  "ticket": "https://ticketonline.kinozug.ch/KinoZug/Show/332573",
+  "ticket": null,
   "url": "https://kinozug.ch/de/programm/filmdetail?EventId=132368",
   "image": "https://progi.kinozug.ch/image.php?ImageId=160252",
   "duration": "96 Min.",
@@ -101,7 +101,7 @@
   "hall": "Seehof 2",
   "cinema": "Kino Seehof",
   "notes": [],
-  "ticket": "https://ticketonline.kinozug.ch/KinoZug/Show/332561",
+  "ticket": null,
   "url": "https://kinozug.ch/de/programm/filmdetail?EventId=132532",
   "image": "https://progi.kinozug.ch/image.php?ImageId=160735",
   "duration": "114 Min.",
