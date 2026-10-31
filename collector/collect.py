@@ -13,6 +13,7 @@ Quellen:
   Amtlich  https://amtsblatt.zg.ch/api/v1/publications       (eSHAB REST-API, Absender «Stadt Zug»)
   Theater  https://www.theatercasino.ch/programm/veranstaltungen (HTML-Spielplan, in die Agenda gemischt)
   Galvanik https://galvanik-zug.ch/programm/                 (HTML-Programm + Detailseite für Uhrzeit/Bild)
+  Eventfrog https://api.eventfrog.net/public/v1/events      (Public API, Schlüssel in EVENTFROG_API_KEY; PLZ Stadt Zug)
   Politik  https://wab.zug.ch/archive/<jahr>/json            (OneGov Wahlen & Abstimmungen, Resultat Stadt Zug aus /data-json)
            Parteimeldungen über RSS/Atom der Partei-Websites (Feed wird pro Website gesucht)
            + feste Angaben (Sitzverteilung GGR, Stadtrat, Parteien) unten in POLITIK_FIX
@@ -24,6 +25,7 @@ from __future__ import annotations
 import argparse
 import html
 import json
+import os
 import re
 import sys
 import urllib.parse
@@ -539,6 +541,80 @@ def merge_events(base: list[dict], extra: list[dict], today: date) -> list[dict]
     return out
 
 
+# ---------------------------------------------------------------- Eventfrog (Public API)
+# Ergänzt Anlässe, die weder in OneGov noch bei den Kulturhäusern stehen (Chollerhalle, Kino-Spezialvorstellungen,
+# Schifffahrt usw.). Schlüssel: Eventfrog-Konto → Einstellungen → API-Schlüssel (Typ «Public API»),
+# als GitHub-Secret EVENTFROG_API_KEY. Limit 30 Anfragen/Min., 2000/Tag – wir brauchen ~4 pro Lauf.
+# Bilder: Eventfrog untersagt Hotlinking → vorerst ohne Bild.
+
+EF_API = "https://api.eventfrog.net/public/v1"
+EF_ZIPS = ["6300", "6301", "6302", "6303", "6317"]
+_EF_CAT = [  # Stichwort in Rubrik (de, inkl. Oberrubrik) → Kategorie
+    ("kinder", re.compile(r"Kinder|Familie|Jugend", re.I)),
+    ("maerkte", re.compile(r"Markt|Märkte|Fest(?!ival)|Brauchtum|Fasnacht|Kulinarik|Essen", re.I)),
+    ("sport", re.compile(r"Sport|Fitness|Natur|Wander|Gesundheit", re.I)),
+    ("kultur", re.compile(r"Konzert|Musik|Theater|Bühne|Kunst|Ausstellung|Museum|Film|Kino|Tanz|Literatur|Lesung|Comedy|Kabarett|Festival|Klassik|Oper|Zirkus", re.I)),
+    ("treff", re.compile(r"Party|Treff|Verein|Gesellschaft|Religion|Kirche|Politik", re.I)),
+]
+
+
+def ef_get(path: str, params: list[tuple[str, str]], key: str) -> dict:
+    url = f"{EF_API}/{path}?" + urllib.parse.urlencode(params)
+    req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "application/json",
+                                               "Authorization": f"Bearer {key}"})
+    with urllib.request.urlopen(req, timeout=30) as r:
+        return json.loads(r.read().decode("utf-8"))
+
+
+def _ml(d, *langs) -> str:
+    """Mehrsprachiges Feld {de:…, en:…} → bevorzugt Deutsch."""
+    if not isinstance(d, dict):
+        return (d or "").strip()
+    for l in langs or ("de", "en", "fr", "it"):
+        if d.get(l):
+            return d[l].strip()
+    return next((v.strip() for v in d.values() if v), "")
+
+
+def ef_rubric_cats(data: dict) -> dict[int, str]:
+    by_id = {r["id"]: r for r in data.get("rubrics", [])}
+    out = {}
+    for rid, r in by_id.items():
+        txt = _ml(r["title"]) + " " + _ml(by_id.get(r.get("parentId"), {}).get("title", {}))
+        out[rid] = next((c for c, rx in _EF_CAT if rx.search(txt)), "weitere")
+    return out
+
+
+def parse_eventfrog(events: dict, locations: dict, rub_cat: dict[int, str]) -> list[dict]:
+    locs = {str(l["id"]): l for l in locations.get("locations", [])}
+    out = []
+    for e in events.get("events", []):
+        if not e.get("visible", True) or not e.get("published", True):
+            continue
+        loc = next((locs[i] for i in e.get("locationIds", []) if i in locs), None)
+        if not loc or (loc.get("zip") or "") not in EF_ZIPS:
+            continue          # nur Stadt Zug (Ort sicher bestimmt)
+        title = _ml(e["title"])
+        if not title:
+            continue
+        place = _ml(e.get("locationAlias") or {}) or _ml(loc["title"])
+        location = ", ".join(x for x in (place, loc.get("addressLine"), f'{loc.get("zip", "")} {loc.get("city", "")}'.strip()) if x)
+        start = datetime.fromisoformat(e["begin"]).astimezone(TZ)
+        cat = rub_cat.get(e.get("rubricId"), "weitere")
+        if _KIDS.search(title):
+            cat = "kinder"
+        teaser = _text(_ml(e.get("shortDescription") or {}))
+        if e.get("soldOut"):
+            teaser = (teaser + " · Ausverkauft").strip(" ·")
+        ev = _house_event("ef-" + e["id"], title, teaser, start, False, e["url"], cat, [], None,
+                          place, location, "eventfrog.ch", cancelled=bool(e.get("cancelled")))
+        ev["institution"] = institution({"location": location, "tags": []})
+        if e.get("end"):
+            ev["end"] = datetime.fromisoformat(e["end"]).astimezone(TZ).isoformat()
+        out.append(ev)
+    return out
+
+
 # ---------------------------------------------------------------- Amtlich (eSHAB API)
 
 RUBRIC_LABEL = {
@@ -856,6 +932,37 @@ def run(offline: Path | None, only: set[str]) -> int:
                         h, mi = map(int, det["hm"].split(":"))
                         it["start"] = datetime.fromisoformat(it["start"]).replace(hour=h, minute=mi).isoformat()
                         it["allday"] = False
+        # Eventfrog zuletzt: eigene Quellen haben Vorrang, Doppel fallen weg
+        key = os.environ.get("EVENTFROG_API_KEY", "").strip()
+        if offline and (offline / "eventfrog_events.json").exists():
+            key = key or "offline"
+        if key:
+            try:
+                if offline:
+                    evs = json.loads((offline / "eventfrog_events.json").read_text("utf-8"))
+                    lcs = json.loads((offline / "eventfrog_locations.json").read_text("utf-8"))
+                    rbs = json.loads((offline / "eventfrog_rubrics.json").read_text("utf-8"))
+                else:
+                    params = [("zip", z) for z in EF_ZIPS] + [
+                        ("from", today.isoformat()), ("to", (today + timedelta(days=AGENDA_DAYS)).isoformat()),
+                        ("perPage", "1000")]
+                    evs = ef_get("events", params, key)
+                    ids = sorted({i for e in evs.get("events", []) for i in e.get("locationIds", [])})
+                    lcs = {"locations": []}
+                    for k in range(0, len(ids), 100):
+                        lcs["locations"] += ef_get("locations", [("id", i) for i in ids[k:k + 100]], key).get("locations", [])
+                    rbs = ef_get("rubrics", [], key)
+                extra = parse_eventfrog(evs, lcs, ef_rubric_cats(rbs))
+                n0 = len(items)
+                items = merge_events(items, extra, today)
+                meta["sources"]["eventfrog"] = {"ok": True, "updated": now.isoformat(timespec="minutes"), "count": len(items) - n0}
+                print(f"  ✓ eventfrog: {len(evs.get('events', []))} geliefert, {len(extra)} in der Stadt, {len(items) - n0} übernommen")
+            except Exception as e:
+                meta["sources"]["eventfrog"] = {**meta["sources"].get("eventfrog", {}), "ok": False,
+                                                "error": f"{type(e).__name__}: {e}", "failed": now.isoformat(timespec="minutes")}
+                print(f"  ✗ eventfrog: {e}", file=sys.stderr)
+        else:
+            print("  – eventfrog: kein API-Schlüssel (EVENTFROG_API_KEY), übersprungen")
         items.sort(key=lambda e: e["start"])
         return items
 

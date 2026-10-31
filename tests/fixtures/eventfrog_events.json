@@ -1,0 +1,75 @@
+{
+ "totalNumberOfResources": 3,
+ "events": [
+  {
+   "id": "7400000000000000001",
+   "rubricId": 908,
+   "title": {
+    "de": "MozART Group"
+   },
+   "url": "https://eventfrog.ch/de/p/konzert/mozart-group-7400000000000000001.html",
+   "begin": "2026-11-07T20:00:00+01:00",
+   "end": "2026-11-07T22:00:00+01:00",
+   "cancelled": false,
+   "visible": true,
+   "published": true,
+   "soldOut": false,
+   "agendaEntryOnly": false,
+   "locationIds": [
+    "111"
+   ],
+   "modifyDate": "2026-10-01T10:00:00+02:00",
+   "littleTicketsLeft": false,
+   "shortDescription": {
+    "de": "Klassik mit Humor."
+   },
+   "descriptionAsHTML": {
+    "de": "<p>x</p>"
+   }
+  },
+  {
+   "id": "7400000000000000002",
+   "rubricId": 917,
+   "title": {
+    "de": "How The Other Half Loves"
+   },
+   "url": "https://eventfrog.ch/de/p/theater/x-7400000000000000002.html",
+   "begin": "2026-11-19T19:30:00+01:00",
+   "cancelled": false,
+   "visible": true,
+   "published": true,
+   "soldOut": true,
+   "agendaEntryOnly": false,
+   "locationIds": [
+    "222"
+   ],
+   "modifyDate": "2026-10-01T10:00:00+02:00",
+   "littleTicketsLeft": false,
+   "shortDescription": {
+    "en": "English Theatre Group of Zug"
+   },
+   "descriptionAsHTML": {}
+  },
+  {
+   "id": "7400000000000000003",
+   "rubricId": 908,
+   "title": {
+    "de": "Konzert in Baar"
+   },
+   "url": "https://eventfrog.ch/de/p/x-7400000000000000003.html",
+   "begin": "2026-11-08T20:00:00+01:00",
+   "cancelled": false,
+   "visible": true,
+   "published": true,
+   "soldOut": false,
+   "agendaEntryOnly": false,
+   "locationIds": [
+    "333"
+   ],
+   "modifyDate": "2026-10-01T10:00:00+02:00",
+   "littleTicketsLeft": false,
+   "shortDescription": {},
+   "descriptionAsHTML": {}
+  }
+ ]
+}

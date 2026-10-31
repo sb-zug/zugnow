@@ -1,0 +1,40 @@
+{
+ "locations": [
+  {
+   "id": "111",
+   "title": {
+    "de": "Chollerhalle"
+   },
+   "url": "x",
+   "descriptionAsHTML": {},
+   "modifyDate": "x",
+   "addressLine": "Chollerstrasse 4",
+   "zip": "6300",
+   "city": "Zug"
+  },
+  {
+   "id": "222",
+   "title": {
+    "de": "Burgbachsaal"
+   },
+   "url": "x",
+   "descriptionAsHTML": {},
+   "modifyDate": "x",
+   "addressLine": "Dorfstrasse 12",
+   "zip": "6300",
+   "city": "Zug"
+  },
+  {
+   "id": "333",
+   "title": {
+    "de": "Gemeindesaal"
+   },
+   "url": "x",
+   "descriptionAsHTML": {},
+   "modifyDate": "x",
+   "addressLine": "x",
+   "zip": "6340",
+   "city": "Baar"
+  }
+ ]
+}

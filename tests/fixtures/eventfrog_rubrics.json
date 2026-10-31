@@ -1,0 +1,26 @@
+{
+ "totalNumberOfResources": 3,
+ "rubrics": [
+  {
+   "id": 900,
+   "parentId": 0,
+   "title": {
+    "de": "Musik"
+   }
+  },
+  {
+   "id": 908,
+   "parentId": 900,
+   "title": {
+    "de": "Konzert"
+   }
+  },
+  {
+   "id": 917,
+   "parentId": 0,
+   "title": {
+    "de": "Theater & Bühne"
+   }
+  }
+ ]
+}

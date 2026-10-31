@@ -30,6 +30,8 @@ jobs:
           python-version: "3.12"
 
       - name: Sammler ausführen
+        env:
+          EVENTFROG_API_KEY: ${{ secrets.EVENTFROG_API_KEY }}
         run: python collector/collect.py
 
       - name: Neue Daten speichern
