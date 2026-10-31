@@ -58,7 +58,7 @@ def _frame(agenda_html):
     return fonts, head_css, hdr, ftr, script
 
 
-def _page(frame, path, title, desc, body, nav=None, index=True):
+def _page(frame, path, title, desc, body, nav=None, index=True, image=None):
     fonts, css, hdr, ftr, script = frame
     url = SITE + path
     if nav:
@@ -81,6 +81,12 @@ def _page(frame, path, title, desc, body, nav=None, index=True):
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="zug.now">
 <meta property="og:locale" content="de_CH">
+<meta property="og:image" content="{B.esc(image) if image else SITE + 'assets/og-image.png'}">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#1F55C4">
 {fonts}
 {css}
 </head>

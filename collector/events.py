@@ -148,9 +148,8 @@ def page(frame, e, same_day):
     body += f'<section class="block"><p>{" · ".join(links)}</p></section>'
     title = f'{e["title"]} – {d.day}.{d.month}.{d.year}, {e.get("place") or "Zug"}'
     desc = (txt[:150].rsplit(" ", 1)[0] + " …") if len(txt) > 155 else (txt or f'{when} in {e.get("place") or "Zug"}.')
-    html = H._page(frame, e["page"], f"{title} | zug.now", f"{when} · {desc}", body, nav="agenda.html", index=idx)
-    html = html.replace("</head>", f'<script type="application/ld+json">{jsonld(e)}</script>\n'
-                        + (f'<meta property="og:image" content="{B.esc(e["image"])}">\n' if e.get("image") else "") + "</head>", 1)
+    html = H._page(frame, e["page"], f"{title} | zug.now", f"{when} · {desc}", body, nav="agenda.html", index=idx, image=e.get("image"))
+    html = html.replace("</head>", f'<script type="application/ld+json">{jsonld(e)}</script>\n</head>', 1)
     if idx:
         _indexed.append(e["page"])
     return html
