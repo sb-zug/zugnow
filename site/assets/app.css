@@ -458,3 +458,17 @@ nav a[aria-current="page"]::after{transform:scaleX(1);opacity:1}
 @media (max-width:640px){.pagehead.withv{grid-template-columns:minmax(0,1fr)}.violator{width:132px;justify-self:end;margin-top:-8px}.violator .v2{font-size:18px}.violator .v1,.violator .v3{font-size:12px}}
 @media (prefers-reduced-motion:reduce){.violator{transition:none}}
 @media (max-width:640px){.pagehead.withv .violator{justify-self:end}}
+
+/* Einzelseite Anlass */
+.evhead{gap:12px}
+.evhead h1{font-size:clamp(32px,5vw,52px)}
+.evhead .evwhen{font-size:19px;font-weight:600;color:var(--fg)}
+.evd{margin-top:32px}
+.evd .evbody{display:flex;flex-direction:column;gap:16px;min-width:0}
+.evd .evbody > p{margin:0;font-size:17px;line-height:1.6;max-width:68ch}
+.evd:has(.evimg){display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:40px;align-items:start}
+.evimg img{width:100%;border-radius:16px;display:block}
+.evfacts{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:8px 20px;margin:8px 0 0;padding:18px 20px;background:var(--surface);border-radius:14px;box-shadow:0 1px 4px rgba(16,24,40,.06)}
+.evfacts dt{font-size:14px;color:var(--soft)}
+.evfacts dd{margin:0;font-size:15px}
+@media (max-width:760px){.evd:has(.evimg){grid-template-columns:minmax(0,1fr)}.evimg{order:-1}}

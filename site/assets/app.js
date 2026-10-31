@@ -26,6 +26,8 @@
   function dLabel(key) { var p = key.split('-'); return +p[2] + '.' + (+p[1]) + '.' + p[0] }
   function dShort(key) { var p = key.split('-'); return WDL[dowOf(key)] + ' ' + (+p[2]) + '.' + (+p[1]) + '.' }
   function timeLabel(e) { if (e.allday) return 'ganztags'; var a = parts(e.start).hm; return e.end ? a + '–' + parts(e.end).hm : a }
+  // Eigene Seite pro Anlass (vom Build vergeben), sonst Anker in der Agenda
+  function evHref(e) { return e.page || 'agenda.html#ev-' + e.id }
   function img(src) { return src ? '<img src="' + esc(src) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">' : '' }
   function get(n) { return fetch('data/' + n + '.json', { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json() }).catch(function () { return null }) }
 
@@ -132,7 +134,7 @@
     var oneDay = hDay !== 'wochenende';
     el.innerHTML = list.map(function (e) {
       var p = parts(e.start), t = e.allday ? 'ganztags' : p.hm;
-      return '<a class="tcard" href="agenda.html#ev-' + esc(e.id) + '">' + (e.image ? '<div class="tim">' + img(e.image) + '</div>' : catTile(e)) +
+      return '<a class="tcard" href="' + esc(evHref(e)) + '">' + (e.image ? '<div class="tim">' + img(e.image) + '</div>' : catTile(e)) +
         '<div class="tb"><span class="tm">' + (oneDay && inTime(e, hDay) ? t : dShort(p.key) + ' · ' + t) + '</span><strong>' + esc(e.title) + '</strong>' +
         '<span class="ts"><span>' + esc(e.place) + ' · ' + esc(e.catLabel) + '</span><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></div></a>';
     }).join('') || '<p style="color:var(--soft)">Noch keine Anlässe gemeldet.</p>';
@@ -160,7 +162,7 @@
     var r = range('wochenende'); $('wkTitle').textContent = r[0] === todayKey() && dowOf(r[0]) === 0 ? 'Heute, Sonntag' : 'Dieses Wochenende';
     el.innerHTML = pick.map(function (e) {
       var p = parts(e.start);
-      return '<a href="agenda.html#ev-' + esc(e.id) + '"><div class="ph">' + img(e.image) + '<span class="when">' + dShort(p.key) + ' · ' + (e.allday ? 'ganztags' : p.hm) + '</span></div><span class="eyebrow">' + esc(e.catLabel) + '</span><strong>' + esc(e.title) + '</strong><span class="s">' + esc(e.place) + '</span></a>'
+      return '<a href="' + esc(evHref(e)) + '"><div class="ph">' + img(e.image) + '<span class="when">' + dShort(p.key) + ' · ' + (e.allday ? 'ganztags' : p.hm) + '</span></div><span class="eyebrow">' + esc(e.catLabel) + '</span><strong>' + esc(e.title) + '</strong><span class="s">' + esc(e.place) + '</span></a>'
     }).join('') || '<p style="color:var(--soft)">Für dieses Wochenende sind noch keine Anlässe gemeldet.</p>';
   }
 
@@ -315,7 +317,7 @@
       '<div class="evside">' + (e.cancelled ? '<span class="tag off">Abgesagt</span>' : '<span class="tag">' + esc(e.catLabel) + '</span>') + '<small>Quelle: ' + esc(e.source) + '</small></div>' + CHEV + '</summary>' +
       '<div class="panel' + (e.image ? ' withimg' : '') + '"><div style="display:flex;flex-direction:column;gap:14px;min-width:0">' +
       '<p>' + esc(e.text || e.teaser || 'Keine Beschreibung vorhanden.') + '</p><span class="facts">' + esc(e.location) + '</span>' +
-      '<div class="actions"><a class="btn primary" href="' + esc(e.url) + '">Zum Anlass →</a>' + (e.cancelled ? '' : '<a class="btn" href="' + icsHref(e) + '" download="' + esc(slug) + '.ics">' + CAL + 'In Kalender</a>') + '</div>' +
+      '<div class="actions">' + (e.page ? '<a class="btn primary" href="' + esc(e.page) + '">Details →</a><a class="btn" href="' + esc(e.url) + '">Zur Quelle ↗</a>' : '<a class="btn primary" href="' + esc(e.url) + '">Zum Anlass →</a>') + (e.cancelled ? '' : '<a class="btn" href="' + icsHref(e) + '" download="' + esc(slug) + '.ics">' + CAL + 'In Kalender</a>') + '</div>' +
       '</div>' + (e.image ? '<div class="pimg">' + img(e.image) + '</div>' : '') + '</div></details>';
   }
 
@@ -480,7 +482,7 @@
       cnt.textContent = n ? n + (n === 1 ? ' Treffer' : ' Treffer') + ' für «' + inp.value.trim() + '»' : 'Keine Treffer für «' + inp.value.trim() + '». Versuche einen anderen Begriff.';
       res.innerHTML =
         group('Agenda', ev.slice(0, 6).map(function (x) { var e = x.e, p = parts(e.start);
-          return row(e.ongoing ? 'agenda.html#laufend' : 'agenda.html#ev-' + e.id, e.ongoing ? 'Laufend' : dShort(p.key) + ' ' + (e.allday ? '' : p.hm), e.title, e.place) }), ev.length > 6 ? ['agenda.html', 'Ganze Agenda →'] : null) +
+          return row(e.ongoing ? 'agenda.html#laufend' : evHref(e), e.ongoing ? 'Laufend' : dShort(p.key) + ' ' + (e.allday ? '' : p.hm), e.title, e.place) }), ev.length > 6 ? ['agenda.html', 'Ganze Agenda →'] : null) +
         group('News', nw.slice(0, 5).map(function (x) { return row(x.e.url, esc(x.e.type) + ' · ' + dLabel(x.e.date), x.e.title, '') }), nw.length > 5 ? ['news.html', 'Alle News →'] : null) +
         group('Amtlich', am.slice(0, 5).map(function (x) { return row(x.e.url, esc(x.e.label) + ' · ' + dLabel(x.e.date), x.e.title, '') }), am.length > 5 ? ['amtlich.html', 'Alle Publikationen →'] : null);
     }

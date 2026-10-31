@@ -29,6 +29,8 @@ CHEVR = ('<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="cu
          'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>')
 CHEV = ('<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" '
         'stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>')
+CAL = ('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" '
+       'aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg>')
 NTOPICS = [("politik", "Politik & Verwaltung"), ("bauen", "Bauen & Planung"), ("mobilitaet", "Mobilität & Verkehr"),
            ("bildung", "Bildung & Schule"), ("kultur", "Kultur & Freizeit"), ("umwelt", "Umwelt & Energie"),
            ("soziales", "Soziales & Gesundheit")]
@@ -100,7 +102,7 @@ def ev_row(e):
             f'<div class="evside">{side}<small>Quelle: {esc(e.get("source"))}</small></div>{CHEV}</summary>'
             f'<div class="panel{" withimg" if e.get("image") else ""}"><div style="display:flex;flex-direction:column;gap:14px;min-width:0">'
             f'<p>{esc(e.get("text") or e.get("teaser") or "Keine Beschreibung vorhanden.")}</p><span class="facts">{esc(e.get("location"))}</span>'
-            f'<div class="actions"><a class="btn primary" href="{esc(e.get("url"))}">Zum Anlass →</a></div></div>'
+            '<div class="actions">' + (f'<a class="btn primary" href="{esc(e["page"])}">Details →</a><a class="btn" href="{esc(e.get("url"))}">Zur Quelle ↗</a>' if e.get("page") else f'<a class="btn primary" href="{esc(e.get("url"))}">Zum Anlass →</a>') + '</div></div>'
             + (f'<div class="pimg">{img(e["image"])}</div>' if e.get("image") else "") + "</div></details>")
 
 
@@ -120,7 +122,7 @@ def tcard(e, show_day):
     d = dt(e["start"]).date()
     t = "ganztags" if e.get("allday") else hm(e["start"])
     im = f'<div class="tim">{img(e["image"])}</div>' if e.get("image") else f'<div class="tim nob c-{esc(e.get("cat") or "weitere")}"><span>{esc(e.get("catLabel"))}</span></div>'
-    return (f'<a class="tcard" href="agenda.html#ev-{esc(e["id"])}">{im}<div class="tb"><span class="tm">{(dshort(d) + " · " + t) if show_day else t}</span>'
+    return (f'<a class="tcard" href="{esc(e.get("page") or "agenda.html#ev-" + e["id"])}">{im}<div class="tb"><span class="tm">{(dshort(d) + " · " + t) if show_day else t}</span>'
             f'<strong>{esc(e["title"])}</strong><span class="ts"><span>{esc(e.get("place"))} · {esc(e.get("catLabel"))}</span>{CHEVR}</span></div></a>')
 
 
@@ -143,6 +145,8 @@ def build():
     news, amtlich, agenda = [n for n in news if no_ggr(n)], [a for a in amtlich if no_ggr(a)], [e for e in agenda if no_ggr(e)]
     events = [e for e in agenda if not e.get("ongoing") and dt(e["start"]).date() >= TODAY]
     ongoing = [e for e in agenda if e.get("ongoing")]
+    import events as evpages
+    evpages.assign(events)
 
     if OUT.exists():
         shutil.rmtree(OUT)
@@ -188,7 +192,7 @@ def build():
     pick.sort(key=lambda e: e["start"])
     p = fill(p, "wkBadgeN", f'{len(wk)} {"Anlass" if len(wk) == 1 else "Anlässe"} →')
     p = fill(p, "wkCards", "".join(
-        f'<a href="agenda.html#ev-{esc(e["id"])}"><div class="ph">{img(e.get("image"))}<span class="when">{dshort(dt(e["start"]).date())} · {"ganztags" if e.get("allday") else hm(e["start"])}</span></div>'
+        f'<a href="{esc(e.get("page") or "agenda.html#ev-" + e["id"])}"><div class="ph">{img(e.get("image"))}<span class="when">{dshort(dt(e["start"]).date())} · {"ganztags" if e.get("allday") else hm(e["start"])}</span></div>'
         f'<span class="eyebrow">{esc(e.get("catLabel"))}</span><strong>{esc(e["title"])}</strong><span class="s">{esc(e.get("place"))}</span></a>' for e in pick))
     lauf, keys = [], set()
     for e in ongoing:
@@ -225,9 +229,17 @@ def build():
     pages["politik.html"] = p
 
     import hubs
+    pages.update(evpages.pages(pages["agenda.html"], events))
+    pg = {e["id"]: e["page"] for e in events}
+    raw = load("agenda", [])
+    for e in raw:
+        if e["id"] in pg:
+            e["page"] = pg[e["id"]]
+    (OUT / "data" / "agenda.json").write_text(json.dumps(raw, ensure_ascii=False), encoding="utf-8")
     pages.update(hubs.build_hubs(pages["agenda.html"], events=events, ongoing=ongoing, amtlich=amtlich, all_news=load("news", [])))
     for name, doc in pages.items():
-        doc = doc.replace("</div></div></footer>", "</div>" + hubs.FOOTER_COL + "</div></footer>", 1)
+        if name.endswith(".html"):
+            doc = doc.replace("</div></div></footer>", "</div>" + hubs.FOOTER_COL + "</div></footer>", 1)
         (OUT / name).parent.mkdir(parents=True, exist_ok=True)
         (OUT / name).write_text(doc, encoding="utf-8")
     (OUT / "sitemap.xml").write_text(hubs.sitemap(pages), encoding="utf-8")
