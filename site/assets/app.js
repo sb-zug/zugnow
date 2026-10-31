@@ -6,7 +6,7 @@
   var WDL = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
   var CATS = [['alle', 'Alle'], ['kinder', 'Kinder & Familie'], ['kultur', 'Kultur & Musik'], ['maerkte', 'Märkte & Feste'], ['treff', 'Treffpunkte'], ['sport', 'Sport & Natur'], ['weitere', 'Weitere']];
   var TIMES = [['alle', 'Alle Termine'], ['heute', 'Heute'], ['morgen', 'Morgen'], ['wochenende', 'Wochenende'], ['woche', 'Diese Woche']];
-  var PLACES = [['alle', 'Alle Orte'], ['bibliothek', 'Bibliothek Zug'], ['kunsthaus', 'Kunsthaus Zug'], ['burg', 'Museum Burg Zug'], ['musikschule', 'Musikschule'], ['theatercasino', 'Theater Casino'], ['galvanik', 'Galvanik']];
+  var PLACES = [['alle', 'Alle Orte'], ['bibliothek', 'Bibliothek Zug'], ['kunsthaus', 'Kunsthaus Zug'], ['burg', 'Museum Burg Zug'], ['musikschule', 'Musikschule'], ['theatercasino', 'Theater Casino'], ['galvanik', 'Galvanik'], ['kino', 'Kino']];
   var PAGES = [['index.html', 'start', 'Start'], ['agenda.html', 'agenda', 'Agenda'], ['news.html', 'news', 'News'], ['amtlich.html', 'amtlich', 'Amtlich'], ['politik.html', 'politik', 'Politik']];
   var page = document.body.dataset.page || 'start';
   var D = {};
@@ -68,7 +68,7 @@
       '<footer><div class="wrap"><div class="col"><span style="font-family:var(--display);font-weight:800;font-size:22px;color:var(--fg)">zug<span style="color:var(--red)">.</span>now</span>' +
       '<span>Unabhängig. Automatisch aktualisiert. Jede Meldung mit Quelle und Link zum Original.</span>' +
       '</div>' +
-      '<div class="col"><span style="font-weight:600;color:var(--fg)">Quellen</span><span>stadtzug.ch · veranstaltungen.zug.ch · amtsblatt.zg.ch · Open-Meteo</span><span id="srcState"></span></div></div></footer>';
+      '<div class="col"><span style="font-weight:600;color:var(--fg)">Quellen</span><span>stadtzug.ch · veranstaltungen.zug.ch · amtsblatt.zg.ch · Kulturhäuser · kinozug.ch · eventfrog.ch · Open-Meteo</span><span id="srcState"></span></div></div></footer>';
   }
 
   function band() {
@@ -413,6 +413,30 @@
     $('polParties').innerHTML = (P.parteien || []).map(function (p) { return '<a href="' + esc(p[1]) + '"><strong>' + esc(p[0]) + '</strong><span>Website ' + EXT + '</span></a>' }).join('');
   }
 
+  // ---------- Kino (kinozug.ch): heute noch kommende Vorstellungen, sonst nächster Spieltag
+  function niceTitle(t) { return t === t.toUpperCase() ? t.toLowerCase().replace(/(^|[\s\-–(:"„/&])(\p{L})/gu, function (m, a, b) { return a + b.toUpperCase() }) : t }
+  function renderKino(K) {
+    var sec = $('kinoSec'), el = $('kinoList'); if (!sec || !K || !K.length) return;
+    var now = new Date(), tk = todayKey();
+    var up = K.filter(function (s) { return new Date(s.start) > now });
+    if (!up.length) return;
+    var day = up.some(function (s) { return parts(s.start).key === tk }) ? tk : parts(up[0].start).key;
+    var shows = up.filter(function (s) { return parts(s.start).key === day });
+    $('kTitle').textContent = day === tk ? 'Heute im Kino' : day === addDays(tk, 1) ? 'Morgen im Kino' : 'Im Kino am ' + dShort(day);
+    var films = [], by = {};
+    shows.forEach(function (s) { if (!by[s.film]) { by[s.film] = { f: s, shows: [] }; films.push(by[s.film]) } by[s.film].shows.push(s) });
+    el.innerHTML = films.slice(0, 10).map(function (x) {
+      var f = x.f, meta = [f.duration, f.age].filter(Boolean).join(' · ');
+      var labels = x.shows.map(function (s) { return s.special ? s.label : '' }).filter(function (v, i, a) { return v && a.indexOf(v) === i });
+      return '<div class="kf"><a class="kimg" href="' + esc(f.url) + '" tabindex="-1" aria-hidden="true">' + img(f.image) + '</a>' +
+        '<div class="kc">' + labels.map(function (l) { return '<span class="ktag">' + esc(l) + '</span>' }).join('') +
+        '<a class="kt" href="' + esc(f.url) + '">' + esc(niceTitle(f.title)) + '</a>' + (meta ? '<span class="km">' + esc(meta) + '</span>' : '') +
+        '<div class="ktimes">' + x.shows.map(function (s) {
+          return '<a href="' + esc(s.ticket || s.url) + '" title="' + esc([s.langText].concat(s.notes || []).filter(Boolean).join(' · ')) + '"><b>' + parts(s.start).hm + '</b>' + esc(s.hall) + ' · ' + esc(s.lang) + '</a>' }).join('') +
+        '</div></div></div>' }).join('');
+    sec.hidden = false;
+  }
+
   // ---------- Suche (News, Agenda, Amtlich; alles im Browser)
   function norm(t) { return String(t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') }
   function searchInit() {
@@ -470,7 +494,7 @@
     D.ongoing = D.agenda.filter(function (e) { return e.ongoing });
     band();
     if (!$('sPanel').hidden) searchInit.run();
-    if (page === 'start') { renderToday(); renderNewsTeaser(); renderThemes() }
+    if (page === 'start') { renderToday(); renderNewsTeaser(); renderThemes(); get('kino').then(renderKino) }
     if (page === 'agenda') {
       var open = agendaFromHash(); renderFilters(); renderList(); renderWeekend(); renderLauf(); if (open) openEvent(open);
       window.addEventListener('hashchange', function () { var o = agendaFromHash(); renderFilters(); renderList(); if (o) openEvent(o) });

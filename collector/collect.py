@@ -14,6 +14,7 @@ Quellen:
   Theater  https://www.theatercasino.ch/programm/veranstaltungen (HTML-Spielplan, in die Agenda gemischt)
   Galvanik https://galvanik-zug.ch/programm/                 (HTML-Programm + Detailseite für Uhrzeit/Bild)
   Eventfrog https://api.eventfrog.net/public/v1/events      (Public API, Schlüssel in EVENTFROG_API_KEY; PLZ Stadt Zug)
+  Kino     https://kinozug.ch/de/programm/spielzeiten          (HTML-Tabelle Seehof/Gotthard → kino.json; Spezialvorstellungen in die Agenda)
   Politik  https://wab.zug.ch/archive/<jahr>/json            (OneGov Wahlen & Abstimmungen, Resultat Stadt Zug aus /data-json)
            Parteimeldungen über RSS/Atom der Partei-Websites (Feed wird pro Website gesucht)
            + feste Angaben (Sitzverteilung GGR, Stadtrat, Parteien) unten in POLITIK_FIX
@@ -293,6 +294,7 @@ INSTITUTIONS = [
     ("musikschule", "Musikschule Zug", re.compile(r"Musikschule", re.I), "Musikschule"),
     ("theatercasino", "Theater Casino Zug", re.compile(r"Theater Casino", re.I), None),
     ("galvanik", "Galvanik", re.compile(r"Galvanik", re.I), None),
+    ("kino", "Kinos Zug", re.compile(r"Kino Seehof|Kino Gotthard", re.I), None),
 ]
 
 
@@ -615,6 +617,85 @@ def parse_eventfrog(events: dict, locations: dict, rub_cat: dict[int, str]) -> l
     return out
 
 
+# ---------------------------------------------------------------- Kino (kinozug.ch, Kino Hürlimann AG)
+# Spielzeiten-Tabelle: Datumszeilen + Vorstellungen (Zeit/Ticket, Film/EventId, Sprache, Hinweis, Saal).
+# Lux steht in Baar → weg. Filmdetail (Laufzeit, Alter, Bild, Text) einmal pro Film, gecacht.
+# Spezialvorstellungen (Zusatz neben dem Titel, z. B. Vorpremiere, Lunch-Kino) kommen zusätzlich in die Agenda.
+
+KINO_BASE = "https://kinozug.ch"
+KINO_URL = KINO_BASE + "/de/programm/spielzeiten"
+KINO_HALLS = {"Seehof 1": "Kino Seehof", "Seehof 2": "Kino Seehof", "Gotthard": "Kino Gotthard"}
+KINO_ADDR = {"Kino Seehof": "Kino Seehof, Schmidgasse 8, 6300 Zug", "Kino Gotthard": "Kino Gotthard, Gotthardstrasse 18, 6300 Zug"}
+_KINO_NOSPECIAL = re.compile(r"kurze Zeit|letzte|^neu$", re.I)
+_KINO_ROW = re.compile(r'<tr class="tbl_spielzeiten_(head|body)">(.*?)</tr>', re.S)
+
+
+def _cell(row: str, cls: str) -> str:
+    m = re.search(r'<td class="' + cls + r'">(.*?)</td>', row, re.S)
+    return m.group(1) if m else ""
+
+
+def parse_kino(page: str) -> list[dict]:
+    out, day = [], None
+    for kind, row in _KINO_ROW.findall(page):
+        if kind == "head":
+            m = re.search(r"(\d{2})\.(\d{2})\.(\d{4})", row)
+            day = date(int(m.group(3)), int(m.group(2)), int(m.group(1))) if m else None
+            continue
+        hall = _text(_cell(row, "show-audi"))
+        if day is None or hall not in KINO_HALLS:
+            continue
+        tcell, ncell, lcell = _cell(row, "show-time"), _cell(row, "show-name"), _cell(row, "show-lang")
+        hm = re.search(r"(\d{1,2}):(\d{2})", _text(tcell))
+        fid = re.search(r"EventId=(\d+)", ncell)
+        if not hm or not fid:
+            continue
+        ticket = re.search(r'href="([^"]+)"', tcell)
+        title = _text(re.sub(r"<i\b.*?</i>", "", ncell, flags=re.S))
+        label = _text(" ".join(re.findall(r"<i\b[^>]*>(.*?)</i>", ncell, re.S)))
+        lang_t = re.search(r'title:([^"]+)"', lcell)
+        notes = [html.unescape(t) for t in re.findall(r'<img[^>]+title="([^"]+)"', _cell(row, "show-icon"))]
+        start = datetime(day.year, day.month, day.day, int(hm.group(1)), int(hm.group(2)), tzinfo=TZ)
+        out.append({"start": start.isoformat(), "film": fid.group(1), "title": title, "label": label,
+                    "special": bool(label) and not _KINO_NOSPECIAL.search(label),
+                    "lang": _text(lcell), "langText": lang_t.group(1).strip() if lang_t else "",
+                    "hall": hall, "cinema": KINO_HALLS[hall], "notes": notes,
+                    "ticket": html.unescape(ticket.group(1)) if ticket else None,
+                    "url": f"{KINO_BASE}/de/programm/filmdetail?EventId={fid.group(1)}"})
+    return out
+
+
+def kino_detail(page: str) -> dict:
+    img = re.search(r'<img src="(https://progi\.kinozug\.ch/image\.php\?ImageId=\d+)"', page)
+    desc = re.search(r'<p class="flm-description">(.*?)</p>', page, re.S)
+    parts_ = [p.strip() for p in _text(desc.group(1)).split("|")] if desc else []
+    mins = next((p for p in parts_ if re.search(r"\d+\s*Min", p)), "")
+    age = next((p for p in parts_ if re.search(r"ab \d+|Jahren|frei", p, re.I)), "")
+    who = re.search(r"<p><strong>(.*?)</strong></p>\s*<p>(.*?)</p>", page, re.S)
+    return {"image": html.unescape(img.group(1)) if img else None, "duration": mins, "age": age,
+            "credits": _text(who.group(1)) if who else "", "text": _text(who.group(2))[:600] if who else ""}
+
+
+def kino_agenda(shows: list[dict], films: dict) -> list[dict]:
+    """Spezialvorstellungen als Agenda-Einträge."""
+    out = []
+    for s in shows:
+        if not s["special"]:
+            continue
+        f = films.get(s["film"], {})
+        sub = " · ".join(x for x in (s["label"], f.get("credits", "")) if x)
+        ev = _house_event("kino-" + s["ticket"].rsplit("/", 1)[-1] if s["ticket"] else "kino-" + s["film"] + s["start"][:16],
+                          f'{s["title"].title() if s["title"].isupper() else s["title"]} – {s["label"]}', sub,
+                          datetime.fromisoformat(s["start"]), False, s["url"], "kultur", ["Film"], None,
+                          f'{s["cinema"]} ({s["hall"]})' if s["cinema"] == "Kino Seehof" else s["cinema"],
+                          KINO_ADDR[s["cinema"]], "kinozug.ch")
+        ev["text"] = (sub + ("\n\n" + f["text"] if f.get("text") else ""))[:1200]
+        ev["image"] = f.get("image")
+        ev["institution"] = "kino"
+        out.append(ev)
+    return out
+
+
 # ---------------------------------------------------------------- Amtlich (eSHAB API)
 
 RUBRIC_LABEL = {
@@ -932,6 +1013,11 @@ def run(offline: Path | None, only: set[str]) -> int:
                         h, mi = map(int, det["hm"].split(":"))
                         it["start"] = datetime.fromisoformat(it["start"]).replace(hour=h, minute=mi).isoformat()
                         it["allday"] = False
+        # Kino: Spezialvorstellungen (Daten aus kino() derselben Lauf-Runde)
+        if kino_state.get("extra"):
+            n0 = len(items)
+            items = merge_events(items, kino_state["extra"], today)
+            print(f"  ✓ kino: {len(kino_state['extra'])} Spezialvorstellungen, {len(items) - n0} in die Agenda")
         # Eventfrog zuletzt: eigene Quellen haben Vorrang, Doppel fallen weg
         key = os.environ.get("EVENTFROG_API_KEY", "").strip()
         if offline and (offline / "eventfrog_events.json").exists():
@@ -965,6 +1051,31 @@ def run(offline: Path | None, only: set[str]) -> int:
             print("  – eventfrog: kein API-Schlüssel (EVENTFROG_API_KEY), übersprungen")
         items.sort(key=lambda e: e["start"])
         return items
+
+    kino_state: dict = {}
+
+    def kino():
+        shows = parse_kino(get(KINO_URL, "kino.html"))
+        if not shows:
+            raise ValueError("keine Vorstellungen erkannt (Seitenaufbau geändert?)")
+        films = {}
+        for fid in dict.fromkeys(s["film"] for s in shows):
+            key, url = "kino:" + fid, f"{KINO_BASE}/de/programm/filmdetail?EventId={fid}"
+            if key in cache:
+                films[fid] = cache[key]
+            elif offline:
+                fx = offline / "kino_film.html"
+                films[fid] = kino_detail(fx.read_text("utf-8")) if fid == "132402" and fx.exists() else {}
+            else:
+                try:
+                    films[fid] = cache[key] = kino_detail(fetch(url))
+                except Exception:
+                    films[fid] = {}
+        kino_state["extra"] = kino_agenda(shows, films)
+        for s in shows:
+            f = films.get(s["film"], {})
+            s.update({"image": f.get("image"), "duration": f.get("duration", ""), "age": f.get("age", "")})
+        return shows
 
     def amtlich():
         return parse_amtsblatt(json.loads(get(AMTSBLATT_URL, "amtsblatt.json", "application/json")))
@@ -1039,6 +1150,7 @@ def run(offline: Path | None, only: set[str]) -> int:
         return out
 
     source("news", news)
+    source("kino", kino)          # vor der Agenda: liefert die Spezialvorstellungen
     source("agenda", agenda)
     source("amtlich", amtlich)
     source("politik", politik)
