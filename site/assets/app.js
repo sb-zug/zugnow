@@ -382,14 +382,41 @@
     $('pRis').href = L.ris || '#';
     $('polLinks').innerHTML = [[L.ris, 'Geschäfte & Vorstösse (Ratsinfo)'], [L.vorstoesse, 'Hängige Vorstösse'], [L.personen, 'Ratsmitglieder'], [L.livestream, 'Livestream & Archiv']]
       .filter(function (x) { return x[0] }).map(function (x) { return '<a class="btn" href="' + esc(x[0]) + '">' + x[1] + ' ' + EXT + '</a>' }).join('');
-    // Sitzverteilung
-    var g = P.ggr || { parteien: [] };
-    $('polSeats').innerHTML = '<p class="psub">Legislatur ' + esc(g.legislatur) + ' · ' + g.sitze + ' Sitze</p>' +
-      '<div class="seats" role="img" aria-label="Sitzverteilung: ' + esc(g.parteien.map(function (p) { return p[0] + ' ' + p[1] }).join(', ')) + '">' +
-      g.parteien.map(function (p) { return '<span style="flex:' + p[1] + ';background:' + p[3] + '"></span>' }).join('') + '</div>' +
-      '<ul class="seatl">' + g.parteien.map(function (p) {
-        return '<li><i style="background:' + p[3] + '"></i>' + esc(p[0]) + '<b>' + p[1] + '</b><span>' + (p[2] > 0 ? '+' + p[2] : p[2] < 0 ? '−' + (-p[2]) : '±0') + '</span></li>' }).join('') + '</ul>' +
-      '<p class="psrc">' + esc(g.hinweis || '') + ' · Veränderung zu 2023–2026 · <a href="' + esc(g.quelle) + '">Quelle</a></p>';
+    // Sitzverteilung als Halbkreis; Klick auf Partei hebt Sitze hervor und filtert «Aus den Parteien»
+    var g = P.ggr || { parteien: [] }, ORD = ['ALG-CSP', 'SP', 'GLP', 'Die Mitte', 'FDP', 'SVP'];
+    var PCODE = { 'ALG-CSP': ['ALG', 'CSP'], 'Die Mitte': ['Mitte'] };
+    var parts = g.parteien.slice().sort(function (a, b) { var i = ORD.indexOf(a[0]), j = ORD.indexOf(b[0]); return (i < 0 ? 99 : i) - (j < 0 ? 99 : j) });
+    function hemi(sel) {
+      var n = parts.reduce(function (s, p) { return s + p[1] }, 0), R = [0.48, 0.65, 0.82, 1], tot = R.reduce(function (a, b) { return a + b }, 0), seats = [], left = n;
+      R.forEach(function (r, i) {
+        var k = i === R.length - 1 ? left : Math.round(n * r / tot); left -= k;
+        for (var j = 0; j < k; j++) { var a = Math.PI * (1 - (k === 1 ? .5 : j / (k - 1))); seats.push({ a: a, x: 150 + 132 * r * Math.cos(a), y: 146 - 132 * r * Math.sin(a) }) }
+      });
+      seats.sort(function (a, b) { return b.a - a.a });
+      var out = '', idx = 0;
+      parts.forEach(function (p) {
+        var on = !sel || sel === p[0];
+        for (var j = 0; j < p[1]; j++, idx++) { var s = seats[idx]; out += '<circle cx="' + s.x.toFixed(1) + '" cy="' + s.y.toFixed(1) + '" r="8.6" fill="' + p[3] + '" opacity="' + (on ? 1 : .18) + '"><title>' + esc(p[0]) + '</title></circle>' }
+      });
+      var cur = sel ? parts.filter(function (p) { return p[0] === sel })[0] : null;
+      out += '<text x="150" y="128" text-anchor="middle" class="hnum">' + (cur ? cur[1] : n) + '</text><text x="150" y="146" text-anchor="middle" class="hlbl">' + esc(cur ? cur[0] : 'Sitze') + '</text>';
+      return out;
+    }
+    var seatSel = null;
+    function seatsRender() {
+      $('polSeats').innerHTML = '<p class="psub">Legislatur ' + esc(g.legislatur) + ' · ' + g.sitze + ' Sitze · Partei antippen</p>' +
+        '<svg class="hemi" viewBox="0 0 300 156" role="img" aria-label="Sitzverteilung: ' + esc(parts.map(function (p) { return p[0] + ' ' + p[1] }).join(', ')) + '">' + hemi(seatSel) + '</svg>' +
+        '<ul class="seatl">' + parts.map(function (p) {
+          return '<li><button type="button" data-p="' + esc(p[0]) + '" aria-pressed="' + (seatSel === p[0]) + '"><i style="background:' + p[3] + '"></i>' + esc(p[0]) + '<b>' + p[1] + '</b><span>' + (p[2] > 0 ? '+' + p[2] : p[2] < 0 ? '−' + (-p[2]) : '±0') + '</span></button></li>' }).join('') + '</ul>' +
+        '<p class="psrc">' + esc(g.hinweis || '') + ' · Veränderung zu 2023–2026 · <a href="' + esc(g.quelle) + '">Quelle</a></p>';
+    }
+    $('polSeats').onclick = function (ev) {
+      var b = ev.target.closest('button[data-p]'); if (!b) return;
+      seatSel = seatSel === b.dataset.p ? null : b.dataset.p; seatsRender();
+      pf = seatSel ? (PCODE[seatSel] || [seatSel]).join('|') : 'alle'; postsRender();
+      if (seatSel && posts.some(function (x) { return pf.split('|').indexOf(x.party) >= 0 })) $('pPart').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+    seatsRender();
     $('polSr').innerHTML = '<ul class="srl">' + (P.stadtrat || []).map(function (r) {
       return '<li><span><b>' + esc(r[0]) + '</b>' + (r[2] ? ' · ' + esc(r[2]) : '') + '</span><span>' + esc(r[1]) + '</span></li>' }).join('') + '</ul>';
     // Abstimmungen
@@ -407,15 +434,15 @@
     function postsRender() {
       var with_ = (P.parteien || []).filter(function (p) { return posts.some(function (x) { return x.party === p[2] }) });
       $('polPChips').innerHTML = posts.length ? [['alle', 'Alle']].concat(with_.map(function (p) { return [p[2], p[2]] })).map(function (c) {
-        return '<button type="button" class="chip" data-v="' + esc(c[0]) + '" aria-pressed="' + (pf === c[0]) + '">' + esc(c[1]) + '</button>' }).join('') : '';
-      $('polPosts').innerHTML = posts.filter(function (x) { return pf === 'alle' || x.party === pf }).slice(0, pf === 'alle' ? 12 : 99).map(function (x) {
+        return '<button type="button" class="chip" data-v="' + esc(c[0]) + '" aria-pressed="' + (pf === c[0] || (pf !== 'alle' && pf.split('|').indexOf(c[0]) >= 0)) + '">' + esc(c[1]) + '</button>' }).join('') : '';
+      $('polPosts').innerHTML = posts.filter(function (x) { return pf === 'alle' || pf.split('|').indexOf(x.party) >= 0 }).slice(0, pf === 'alle' ? 12 : 99).map(function (x) {
         return '<a href="' + esc(x.url) + '"><span class="d"><b>' + esc(x.party) + '</b>' + dLabel(x.date) + (LV[x.level] ? '<i class="ntop">' + LV[x.level] + '</i>' : '') + '</span>' +
           '<span class="c"><span class="t">' + esc(x.title) + '</span>' + (x.lead ? '<span class="l">' + esc(x.lead) + '</span>' : '') + '<span class="psrc2">' + esc(x.partyName) + ' ' + EXT + '</span></span></a>' }).join('') ||
         '<p class="note">Noch keine Meldungen der Parteien gesammelt.</p>';
     }
     var miss = (P.parteien || []).filter(function (p) { return !posts.some(function (x) { return x.party === p[2] }) }).map(function (p) { return p[2] });
     $('polMiss').textContent = miss.length ? 'Zurzeit ohne Meldungen (nur nationale Website oder nichts Neues in den letzten 4 Monaten): ' + miss.join(', ') + '.' : '';
-    $('polPChips').onclick = function (ev) { var b = ev.target.closest('.chip'); if (!b) return; pf = b.dataset.v; postsRender() };
+    $('polPChips').onclick = function (ev) { var b = ev.target.closest('.chip'); if (!b) return; pf = b.dataset.v; seatSel = null; seatsRender(); postsRender() };
     postsRender();
     $('polParties').innerHTML = (P.parteien || []).map(function (p) { return '<a href="' + esc(p[1]) + '"><strong>' + esc(p[0]) + '</strong><span>Website ' + EXT + '</span></a>' }).join('');
   }

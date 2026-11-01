@@ -531,3 +531,32 @@ nav a[aria-current="page"]::after{transform:scaleX(1);opacity:1}
 .wfacts div{display:flex;flex-direction:column;gap:2px;padding:16px 18px;border-radius:12px;background:var(--tint-2)}
 .wfacts span{font-size:13px;color:var(--soft)}
 .wfacts strong{font-family:var(--display);font-size:22px;line-height:1.2}
+/* Politik: Halbkreis-Sitzverteilung */
+.hemi{display:block;width:100%;max-width:340px;margin:0 auto}
+.hemi circle{transition:opacity .2s}
+.hemi .hnum{font-family:var(--display);font-weight:800;font-size:34px;fill:var(--fg)}
+.hemi .hlbl{font-size:12px;fill:var(--soft);text-transform:uppercase;letter-spacing:.05em}
+.seatl button{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:8px;width:100%;min-height:40px;padding:4px 8px;margin:0 -8px;border-radius:8px;cursor:pointer}
+.seatl button:hover{background:var(--tint)}
+.seatl button[aria-pressed="true"]{background:var(--tint);font-weight:600}
+.seatl button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.seatl{gap:2px}
+/* Politik: Themendossiers */
+.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.dcard{display:flex;flex-direction:column;gap:8px;padding:20px 22px;border-radius:16px;background:var(--surface);box-shadow:0 10px 30px rgba(14,26,38,.06),0 2px 6px rgba(14,26,38,.03);text-decoration:none;color:var(--fg)}
+.dcard strong{font-family:var(--display);font-weight:800;font-size:21px;line-height:1.2}
+.dcard .sub{font-size:15px;color:var(--muted);line-height:1.45}
+.dcard .cnt{margin-top:auto;padding-top:6px;font-size:13px;color:var(--soft);font-variant-numeric:tabular-nums}
+.dcard .nx{font-size:14px;color:var(--fg)}.dcard .nx b{color:var(--red)}
+.dcard:hover strong{text-decoration:underline}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .dcard{background:var(--tint-2);box-shadow:0 0 0 1px var(--line)}}
+:root[data-theme="dark"] .dcard{background:var(--tint-2);box-shadow:0 0 0 1px var(--line)}
+.gsteps{list-style:none;display:flex;gap:3px;margin:10px 0 4px;padding:0}
+.gsteps li{flex:1;height:6px;border-radius:3px;background:var(--line-strong)}
+.gsteps li.on{background:var(--blue)}.gsteps li.cur{background:var(--red)}
+.glist{display:flex;flex-direction:column;gap:14px}
+.gitem{padding:18px 22px;border-radius:14px;border:1px solid var(--line-strong)}
+.gitem h3{margin:0 0 4px;font-family:var(--display);font-size:20px}
+.gitem p{margin:6px 0 0;font-size:15px;color:var(--muted)}
+.gitem .gl{font-size:13px;color:var(--soft)}
+.gitem .nx{font-size:15px;color:var(--fg);margin-top:8px}.gitem .nx b{color:var(--red)}

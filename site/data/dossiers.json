@@ -1,0 +1,69 @@
+{
+  "_hinweis": "Politische Themendossiers (von Hand gepflegt). keywords = Stichworte (Kleinschreibung) für die automatische Zuordnung von News, Amtsblatt, Parteimeldungen und Abstimmungen. vorhaben = slugs aus wandel.json. geschaefte = politische Geschäfte ausserhalb von /wandel/; schritt 1 Stadtrat, 2 Kommission, 3 Parlament, 4 Volk, 5 Erledigt; meilensteine wie in wandel.json.",
+  "stand": "2026-11-01",
+  "themen": [
+    {
+      "slug": "wohnen",
+      "titel": "Wohnen & Stadtentwicklung",
+      "kurz": "Wo und wie in Zug gebaut wird, wie viel preisgünstiger Wohnraum entsteht und welche Regeln künftig gelten. Hier laufen Ortsplanung, Bebauungspläne und die grossen Areale zusammen.",
+      "vorhaben": ["lg-areal", "ortsplanung", "aeussere-lorzenallmend", "metalli"],
+      "keywords": ["wohnen", "wohnung", "wohnraum", "miete", "preisgünstig", "genossenschaft", "ortsplanung", "bebauungsplan", "hochhaus", "lg-areal", "metalli", "lorzenallmend", "zonenplan", "bauordnung"]
+    },
+    {
+      "slug": "finanzen",
+      "titel": "Finanzen & Steuern",
+      "kurz": "Budget, Steuerfuss, Investitionen und Finanzausgleich: wie viel Geld die Stadt einnimmt und wofür sie es ausgibt. Das Budget beschliesst jedes Jahr der Grosse Gemeinderat.",
+      "vorhaben": [],
+      "geschaefte": [
+        {
+          "titel": "Budget 2027",
+          "kurz": "Der Stadtrat budgetiert einen Überschuss von 15,6 Mio. Franken bei einem unveränderten Steuerfuss von 52 Prozent. Netto-Investitionen 86,4 Mio. Franken, knapp 30 Mio. davon für Schulen.",
+          "schritt": 2,
+          "fakten": [["Überschuss", "15,6 Mio. Fr."], ["Steuerfuss", "52 % (unverändert)"], ["Aufwand", "431,1 Mio. Fr."], ["Investitionen netto", "86,4 Mio. Fr."]],
+          "meilensteine": [
+            {"datum": "2026-09-30", "text": "Stadtrat legt Budget 2027 vor", "quelle": "https://www.radiocentral.ch/news/schweiz/stadt-zug-budgetiert-fuer-2027-einen-ueberschuss-165592015"},
+            {"datum": "2026-10", "text": "Vorberatung in der Kommission"},
+            {"datum": "2026-12", "text": "Grosser Gemeinderat berät und beschliesst Budget und Steuerfuss (voraussichtlich)"}
+          ],
+          "links": [["Geschäfte im Ratsinfo", "https://ratsinfo.stadtzug.ch/gremium/1/geschaefte?itemsPerPage=50&ordering=-begin_date&page=1"]]
+        }
+      ],
+      "keywords": ["budget", "steuer", "finanz", "jahresrechnung", "überschuss", "defizit", "investition"]
+    },
+    {
+      "slug": "verkehr",
+      "titel": "Verkehr & Mobilität",
+      "kurz": "Velo, Bus, Parkplätze, Tempo und Strassenraum: wie sich die Menschen in Zug bewegen und wie die Stadt den Verkehr lenkt.",
+      "vorhaben": [],
+      "keywords": ["verkehr", "velo", "parkplatz", "parkier", "parkgebühr", "tempo 30", "bushof", "busspur", "mobilität", "stadttunnel", "strassenraum", "fussgänger"]
+    },
+    {
+      "slug": "schule",
+      "titel": "Schule & Familie",
+      "kurz": "Neue Schulhäuser, Betreuung, Kitas und Angebote für Kinder und Jugendliche. Die Stadt Zug baut derzeit an mehreren Schulanlagen gleichzeitig.",
+      "vorhaben": ["schulanlage-guthirt", "schulanlage-loreto", "schulanlage-herti"],
+      "keywords": ["schule", "schulhaus", "schulanlage", "kita", "betreuung", "familie", "jugend", "tagesschule", "volksschule"]
+    },
+    {
+      "slug": "klima",
+      "titel": "Klima & Umwelt",
+      "kurz": "Energie, Fernwärme, Bäume, Biodiversität und Hitze in der Stadt: was Zug für Klima und Umwelt unternimmt.",
+      "vorhaben": ["brueggli"],
+      "keywords": ["klima", "energie", "fernwärme", "solar", "netto-null", "biodiversität", "bäume", "stadtbäume", "hitze", "umwelt", "circulago"]
+    },
+    {
+      "slug": "freizeit",
+      "titel": "Sport & Freizeit",
+      "kurz": "Hallenbad, Seeufer, Sportanlagen und Erholungsräume: wo Zug sich bewegt und erholt.",
+      "vorhaben": ["hallenbad-herti", "brueggli"],
+      "keywords": ["hallenbad", "sportanlage", "sport", "strandbad", "seeufer", "badi", "erholungsraum", "spielplatz"]
+    },
+    {
+      "slug": "demokratie",
+      "titel": "Demokratie & Transparenz",
+      "kurz": "Wahlen, Abstimmungen, Mitwirkung und Transparenz in der Politik: wie in Zug entschieden wird und wer mitreden kann.",
+      "vorhaben": [],
+      "keywords": ["transparenz", "wahlen", "stimmrecht", "mitwirkung", "e-mitwirkung", "volksinitiative", "referendum", "legislatur"]
+    }
+  ]
+}
