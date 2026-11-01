@@ -34,7 +34,14 @@
         "gibz",
         "hochhaus pi",
         "gewoba",
-        "awzug"
+        "awzug",
+        "wohnungsbau",
+        "2000 wohnungen",
+        "2000-wohnung",
+        "aufstocken",
+        "hertizentrum",
+        "nutzungsplanung",
+        "gewässerraum"
       ]
     },
     {
@@ -95,7 +102,14 @@
         "jahresrechnung",
         "überschuss",
         "defizit",
-        "investition"
+        "investition",
+        "finanzplan",
+        "vorfinanzierung",
+        "gebundenen ausgaben",
+        "steuerrabatt",
+        "rechnungsüberschuss",
+        "jahresüberschuss",
+        "gebühren"
       ]
     },
     {
@@ -115,7 +129,16 @@
         "mobilität",
         "stadttunnel",
         "strassenraum",
-        "fussgänger"
+        "fussgänger",
+        "buslinie",
+        "öv",
+        "takt",
+        "parkregime",
+        "parkkarte",
+        "gratisparkieren",
+        "stierenmarkt",
+        "schulweg",
+        "buspass"
       ]
     },
     {
@@ -136,7 +159,15 @@
         "familie",
         "jugend",
         "tagesschule",
-        "volksschule"
+        "volksschule",
+        "schulraum",
+        "schullager",
+        "lernorte",
+        "schulmodell",
+        "ludothek",
+        "guthirt",
+        "loreto",
+        "betreuungsangebot"
       ]
     },
     {
@@ -157,7 +188,16 @@
         "stadtbäume",
         "hitze",
         "umwelt",
-        "circulago"
+        "circulago",
+        "wärmeverbund",
+        "wärmeverbünde",
+        "hitzemassnahmen",
+        "hitzeschutz",
+        "japankäfer",
+        "nachhaltigkeit",
+        "recycling",
+        "ökihof",
+        "abfall"
       ]
     },
     {
@@ -176,7 +216,14 @@
         "seeufer",
         "badi",
         "erholungsraum",
-        "spielplatz"
+        "spielplatz",
+        "25-meter-becken",
+        "männerbadi",
+        "minigolf",
+        "eissport",
+        "stadion",
+        "sportarten",
+        "seeuferweg"
       ]
     },
     {
@@ -192,7 +239,11 @@
         "e-mitwirkung",
         "volksinitiative",
         "referendum",
-        "legislatur"
+        "legislatur",
+        "medienmitteilungen zu",
+        "ratsdebatte",
+        "stadtratsreglement",
+        "partizipativ"
       ]
     }
   ]

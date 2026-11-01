@@ -1175,6 +1175,30 @@ def run(offline: Path | None, only: set[str]) -> int:
                 print(f"  ✗ Partei {short}: {e}", file=sys.stderr)
         out["posts"] = sorted(posts, key=lambda f: f["date"], reverse=True)
         out["postStatus"] = status
+        # Geschäfte des GGR aus dem Ratsinfo (öffentliche JSON-Schnittstelle); bei Ausfall bleiben die letzten stehen
+        try:
+            import ratsinfo
+            rows = []
+            if offline:
+                rows = json.loads((offline / "ratsinfo_businesses.json").read_text("utf-8"))["results"]
+            else:
+                for pg in range(1, ratsinfo.PAGES + 1):
+                    d = json.loads(fetch(ratsinfo.API.format(page=pg), "application/json"))
+                    rows += d.get("results") or []
+                    if not d.get("next"):
+                        break
+            g = ratsinfo.build(rows)
+            if not g["vorlagen"] and not g["vorstoesse"]:
+                raise ValueError("keine Geschäfte erkannt (Schnittstelle geändert?)")
+            out["geschaefte"] = g
+            meta["sources"]["ratsinfo"] = {"ok": True, "updated": now.isoformat(timespec="minutes"),
+                                           "count": len(g["vorlagen"]) + len(g["vorstoesse"])}
+            print(f"  ✓ ratsinfo: {len(g['vorlagen'])} Vorlagen, {len(g['vorstoesse'])} Vorstösse")
+        except Exception as e:
+            out["geschaefte"] = prev.get("geschaefte") or {"vorlagen": [], "vorstoesse": []}
+            meta["sources"]["ratsinfo"] = {**meta["sources"].get("ratsinfo", {}), "ok": False,
+                                           "error": f"{type(e).__name__}: {e}", "failed": now.isoformat(timespec="minutes")}
+            print(f"  ✗ ratsinfo: {e}", file=sys.stderr)
         nxt = next((d for d in VOTE_DATES if d >= today.isoformat()), None)
         out["nextVoteDate"] = (out["upcoming"][0]["date"] if out["upcoming"] else nxt)
         return out

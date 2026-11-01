@@ -414,7 +414,8 @@
       var b = ev.target.closest('button[data-p]'); if (!b) return;
       seatSel = seatSel === b.dataset.p ? null : b.dataset.p; seatsRender();
       pf = seatSel ? (PCODE[seatSel] || [seatSel]).join('|') : 'alle'; postsRender();
-      if (seatSel && posts.some(function (x) { return pf.split('|').indexOf(x.party) >= 0 })) $('pPart').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (typeof gesRender === 'function') { gTab = 'vorstoesse'; gMax = 10; gesRender() }
+      if (seatSel) $('pGes').scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
     seatsRender();
     $('polSr').innerHTML = '<ul class="srl">' + (P.stadtrat || []).map(function (r) {
@@ -444,6 +445,40 @@
     $('polMiss').textContent = miss.length ? 'Zurzeit ohne Meldungen (nur nationale Website oder nichts Neues in den letzten 4 Monaten): ' + miss.join(', ') + '.' : '';
     $('polPChips').onclick = function (ev) { var b = ev.target.closest('.chip'); if (!b) return; pf = b.dataset.v; seatSel = null; seatsRender(); postsRender() };
     postsRender();
+    // Geschäfte & Vorstösse (Ratsinfo)
+    var G = P.geschaefte || { vorlagen: [], vorstoesse: [] }, gTab = 'vorstoesse', gMax = 10;
+    var PORD = ['ALG-CSP', 'SP', 'GLP', 'Die Mitte', 'FDP', 'SVP'], PCOL = {};
+    g.parteien.forEach(function (p) { PCOL[p[0]] = p[3] });
+    function pBadge(p) { return '<span class="pbadge"><i style="background:' + (PCOL[p] || 'var(--soft)') + '"></i>' + esc(p) + '</span>' }
+    function gesRender() {
+      if (!G.vorlagen.length && !G.vorstoesse.length) { $('gesList').innerHTML = '<p class="note">Geschäfte werden beim nächsten Abgleich mit dem Ratsinfo geladen.</p>'; return }
+      $('gesTabs').innerHTML = [['vorstoesse', 'Vorstösse', G.vorstoesse.length], ['vorlagen', 'Vorlagen des Stadtrats', G.vorlagen.length]].map(function (t) {
+        return '<button type="button" class="chip" data-v="' + t[0] + '" aria-pressed="' + (gTab === t[0]) + '">' + t[1] + '<span class="n">' + t[2] + '</span></button>' }).join('');
+      $('gesParty').hidden = gTab !== 'vorstoesse';
+      $('gesParty').innerHTML = [['', 'Alle Parteien']].concat(PORD.map(function (p) { return [p, p] })).map(function (c) {
+        return '<button type="button" class="chip" data-p="' + esc(c[0]) + '" aria-pressed="' + ((seatSel || '') === c[0]) + '">' + esc(c[1]) + '</button>' }).join('');
+      var rows, html;
+      if (gTab === 'vorstoesse') {
+        rows = G.vorstoesse.filter(function (v) { return !seatSel || v.parteien.indexOf(seatSel) >= 0 || v.parteien.indexOf('Alle Fraktionen') >= 0 });
+        html = rows.slice(0, gMax).map(function (v) {
+          return '<a class="gr" href="' + esc(v.answer ? v.answer.url : v.url) + '"><span class="d">' + dLabel(v.touched || v.date) + '</span><span class="c">' +
+            '<span class="gk"><b>' + esc(v.art) + '</b>' + v.parteien.map(pBadge).join('') + '</span><span class="t">' + esc(v.title) + '</span>' +
+            '<span class="gs ' + v.tone + '">' + esc(v.status) + '</span></span></a>' }).join('');
+      } else {
+        rows = G.vorlagen;
+        html = rows.slice(0, gMax).map(function (v) {
+          var st = v.steps.map(function (s) { return '<li class="on">' + esc(s.label) + '</li>' }).join('') + '<li>Parlament</li>';
+          return '<a class="gr" href="' + esc(v.url) + '"><span class="d">' + dLabel(v.date) + '</span><span class="c"><span class="gk"><b>' + esc(v.bereich || 'Vorlage') + '</b><span class="muted">Nr. ' + esc(v.nr) + '</span></span>' +
+            '<span class="t">' + esc(v.title) + '</span><ol class="gway">' + st + '</ol></span></a>' }).join('');
+      }
+      $('gesList').innerHTML = (html || '<p class="note">Keine Geschäfte für diese Auswahl.</p>') +
+        (rows.length > gMax ? '<button type="button" class="btn gmore">Weitere ' + Math.min(10, rows.length - gMax) + ' anzeigen</button>' : '');
+      $('gesCount').textContent = rows.length + (gTab === 'vorstoesse' ? ' Vorstösse' : ' Vorlagen') + (seatSel && gTab === 'vorstoesse' ? ' · ' + seatSel : '') + ' · Ratsinfo';
+    }
+    $('gesTabs').onclick = function (ev) { var b = ev.target.closest('.chip'); if (!b) return; gTab = b.dataset.v; gMax = 10; gesRender() };
+    $('gesParty').onclick = function (ev) { var b = ev.target.closest('.chip'); if (!b) return; seatSel = b.dataset.p || null; gMax = 10; seatsRender(); gesRender() };
+    $('gesList').onclick = function (ev) { if (ev.target.closest('.gmore')) { gMax += 10; gesRender() } };
+    gesRender();
     $('polParties').innerHTML = (P.parteien || []).map(function (p) { return '<a href="' + esc(p[1]) + '"><strong>' + esc(p[0]) + '</strong><span>Website ' + EXT + '</span></a>' }).join('');
   }
 

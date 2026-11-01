@@ -36,7 +36,24 @@ def _collect(t, news, amtlich, pol):
     meld += [(a["date"], "Amtsblatt", a["title"], a["url"]) for a in amtlich if hit(a["title"])]
     posts = [p for p in pol.get("posts") or [] if hit(p["title"] + " " + (p.get("lead") or ""))]
     votes = [v for v in (pol.get("upcoming") or []) + (pol.get("votes") or []) if hit(v.get("title"))]
-    return sorted(meld, reverse=True)[:10], posts, votes
+    G = pol.get("geschaefte") or {}
+    ges = [("vorlage", v) for v in G.get("vorlagen") or [] if hit(v["title"] + " " + v.get("bereich", ""))]
+    ges += [("vorstoss", v) for v in G.get("vorstoesse") or [] if hit(v["title"])]
+    ges.sort(key=lambda x: x[1].get("touched") or x[1]["date"], reverse=True)
+    return sorted(meld, reverse=True)[:10], posts, votes, ges[:12]
+
+
+def _ges_row(kind, v):
+    if kind == "vorlage":
+        way = "".join(f'<li class="on">{B.esc(s["label"])}</li>' for s in v["steps"]) + "<li>Parlament</li>"
+        return (f'<a class="gr" href="{B.esc(v["url"])}"><span class="d">{B.dlabel(v["date"])}</span><span class="c">'
+                f'<span class="gk"><b>Vorlage des Stadtrats</b><span class="muted">Nr. {B.esc(v["nr"])}</span></span>'
+                f'<span class="t">{B.esc(v["title"])}</span><ol class="gway">{way}</ol></span></a>')
+    badges = "".join(f'<span class="pbadge">{B.esc(x)}</span>' for x in v["parteien"])
+    url = v["answer"]["url"] if v.get("answer") else v["url"]
+    return (f'<a class="gr" href="{B.esc(url)}"><span class="d">{B.dlabel(v.get("touched") or v["date"])}</span><span class="c">'
+            f'<span class="gk"><b>{B.esc(v["art"])}</b>{badges}</span><span class="t">{B.esc(v["title"])}</span>'
+            f'<span class="gs {B.esc(v["tone"])}">{B.esc(v["status"])}</span></span></a>')
 
 
 def _steps(n):
@@ -85,14 +102,14 @@ def build_dossiers(agenda_html, politik_html, news, amtlich):
     pages, cards = {}, []
 
     for t in themen:
-        meld, posts, votes = _collect(t, news, amtlich, pol)
+        meld, posts, votes, ges = _collect(t, news, amtlich, pol)
         gs = t.get("geschaefte") or []
         vs = [vh[s] for s in t.get("vorhaben", []) if s in vh]
         # nächster Termin über Geschäfte und Vorhaben
         nxt = sorted(((W._d(m.get("datum"))[0], m, s, x) for x in gs + vs for m, s in [_next(x["meilensteine"])]
                       if m and W._d(m.get("datum"))[0]), key=lambda z: z[0])
         n_items = len(gs) + len(vs)
-        cnt = " · ".join(x for x in [f"{n_items} Geschäfte & Vorhaben" if n_items else "", f"{len(posts)} Parteimeldungen" if posts else "",
+        cnt = " · ".join(x for x in [f"{n_items + len(ges)} Geschäfte & Vorhaben" if n_items + len(ges) else "", f"{len(posts)} Parteimeldungen" if posts else "",
                                       f"{len(meld)} Meldungen" if meld else ""] if x) or "Neue Meldungen erscheinen automatisch"
         nx = (f'<span class="nx"><b>{"Jetzt" if nxt[0][2] == "now" else "Als Nächstes"}</b> {B.esc(W._when(nxt[0][1]))} · '
               f'{B.esc(nxt[0][3]["titel"])}</span>') if nxt else ""
@@ -108,6 +125,10 @@ def build_dossiers(agenda_html, politik_html, news, amtlich):
             if vs:
                 body += ('<div class="wgrid" style="margin-top:16px">' + "".join(W._card(p).replace('href="wandel/', 'href="/wandel/') for p in vs) + "</div>")
             body += "</section>"
+        if ges:
+            body += ('<section class="block"><div class="shead"><h2>Aus dem Parlament</h2><span>Vorlagen und Vorstösse im Ratsinfo</span></div>'
+                     '<div class="glist2">' + "".join(_ges_row(k, v) for k, v in ges) + '</div>'
+                     '<p class="note">Automatisch aus dem Ratsinformationssystem zugeordnet. <a href="politik.html#pGes">Alle Geschäfte →</a></p></section>')
         # Parteien
         body += '<section class="block"><div class="shead"><h2>Das sagen die Parteien</h2><span>Meldungen zum Thema</span></div>'
         if posts:
@@ -137,9 +158,11 @@ def build_dossiers(agenda_html, politik_html, news, amtlich):
                  f'Massgebend sind die amtlichen Publikationen.</p><p><a href="politik.html">← Politik</a> · Weitere Dossiers: {others}</p></section>')
         desc = f'{t["titel"]} in der Stadt Zug: laufende Geschäfte, Vorhaben, Abstimmungen und was die Parteien sagen – an einem Ort.'
         page = H._page(frame, f'politik/{t["slug"]}/', f'{t["titel"]} – Politik Stadt Zug | zug.now', desc, body, nav="politik.html",
-                       index=bool(n_items or len(posts) + len(meld) >= 3))
+                       index=bool(n_items or ges or len(posts) + len(meld) >= 3))
         pages[f'politik/{t["slug"]}/index.html'] = page.replace("</body>", FILTER_JS + "\n</body>", 1)
 
+    G = pol.get("geschaefte") or {}
+    politik_html = B.fill(politik_html, "gesList", "".join(_ges_row("vorstoss", v) for v in (G.get("vorstoesse") or [])[:10]))
     pages["politik.html"] = B.fill(politik_html, "polDossiers", "".join(cards))
     print(f"Dossiers: {len(themen)} Themen")
     return pages
