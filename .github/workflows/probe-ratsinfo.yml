@@ -1,0 +1,18 @@
+name: Probe Ratsinfo (temporär)
+on: workflow_dispatch
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Analyse
+        run: |
+          mkdir out && cd out
+          B=https://ratsinfo.stadtzug.ch
+          curl -sSL -A "zug.now-probe" "$B/gremium/1/geschaefte" -o index.html; head -c 3000 index.html; echo
+          grep -oE '(src|href)="[^"]+\.(js|json)[^"]*"' index.html | sed -E 's/^(src|href)="//;s/"$//' | sort -u > assets.txt; cat assets.txt
+          for a in $(cat assets.txt); do case $a in http*) u=$a;; /*) u=$B$a;; *) u=$B/$a;; esac; f=$(echo $a | tr '/?=&' '____'); curl -sSL "$u" -o "js_$f"; done
+          echo "=== API-Strings ==="; grep -ohE '["'"'"'`](/api[^"'"'"'` ]*|https?://[^"'"'"'` ]*api[^"'"'"'` ]*)' js_* 2>/dev/null | sort | uniq -c | sort -rn | head -80
+          echo "=== Kandidaten ==="
+          for p in /api /api/ /api/v1 /api/v2 /api/swagger /api/docs /api/schema /api/meetings /api/affairs /api/business /api/geschaefte "/api/boards/1/affairs" ; do printf "%s -> " "$p"; curl -s -o /dev/null -w "%{http_code} %{content_type}\n" "$B$p"; done
+      - uses: actions/upload-artifact@v4
+        with: { name: probe, path: out }
