@@ -65,7 +65,7 @@
   "hall": "Seehof 1",
   "cinema": "Kino Seehof",
   "notes": [],
-  "ticket": "https://ticketonline.kinozug.ch/KinoZug/Show/331893",
+  "ticket": null,
   "url": "https://kinozug.ch/de/programm/filmdetail?EventId=132597",
   "image": "https://progi.kinozug.ch/image.php?ImageId=160958",
   "duration": "146 Min.",
@@ -84,7 +84,7 @@
   "notes": [
    "Reduzierter Eintrittspreis für alle: Tickets ab CHF 14.- (3D ab CHF 16.-)"
   ],
-  "ticket": "https://ticketonline.kinozug.ch/KinoZug/Show/332547",
+  "ticket": null,
   "url": "https://kinozug.ch/de/programm/filmdetail?EventId=132402",
   "image": "https://progi.kinozug.ch/image.php?ImageId=160370",
   "duration": "100 Min.",
@@ -103,7 +103,7 @@
   "notes": [
    "U25-Vorstellung: Nur CHF 10.- für unter 25-jährige (nur vor Ort erhältlich)"
   ],
-  "ticket": "https://ticketonline.kinozug.ch/KinoZug/Show/332581",
+  "ticket": null,
   "url": "https://kinozug.ch/de/programm/filmdetail?EventId=132585",
   "image": "https://progi.kinozug.ch/image.php?ImageId=160918",
   "duration": "78 Min.",
@@ -120,7 +120,7 @@
   "hall": "Seehof 1",
   "cinema": "Kino Seehof",
   "notes": [],
-  "ticket": "https://ticketonline.kinozug.ch/KinoZug/Show/331894",
+  "ticket": null,
   "url": "https://kinozug.ch/de/programm/filmdetail?EventId=132652",
   "image": "https://progi.kinozug.ch/image.php?ImageId=161032",
   "duration": "123 Min.",
@@ -137,7 +137,7 @@
   "hall": "Gotthard",
   "cinema": "Kino Gotthard",
   "notes": [],
-  "ticket": "https://ticketonline.kinozug.ch/KinoZug/Show/332575",
+  "ticket": null,
   "url": "https://kinozug.ch/de/programm/filmdetail?EventId=132368",
   "image": "https://progi.kinozug.ch/image.php?ImageId=160252",
   "duration": "96 Min.",
@@ -154,7 +154,7 @@
   "hall": "Seehof 2",
   "cinema": "Kino Seehof",
   "notes": [],
-  "ticket": "https://ticketonline.kinozug.ch/KinoZug/Show/332562",
+  "ticket": null,
   "url": "https://kinozug.ch/de/programm/filmdetail?EventId=132532",
   "image": "https://progi.kinozug.ch/image.php?ImageId=160735",
   "duration": "114 Min.",
