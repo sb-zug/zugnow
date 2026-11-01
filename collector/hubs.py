@@ -42,7 +42,7 @@ ORTE = [
 
 FOOTER_COL = ('<div class="col"><span style="font-weight:600;color:var(--fg)">Rubriken</span>'
               '<span><a href="/wochenende/">Wochenende in Zug</a> · <a href="/orte/">Orte &amp; Kulturhäuser</a> · '
-              '<a href="/baugesuche/">Baugesuche</a></span>'
+              '<a href="/baugesuche/">Baugesuche</a> · <a href="/wandel/">Wie sich Zug verändert</a></span>'
               '<span>' + " · ".join(f'<a href="/orte/{o[0]}/">{o[2]}</a>' for o in ORTE[:5]) + '</span></div>')
 
 _index = set()  # Seiten, die in die Sitemap gehören
@@ -204,7 +204,7 @@ def baugesuche(frame, amtlich, news):
         body += ('<section class="block"><div class="shead"><h2>Wöchentliche Übersichten der Stadt</h2><span>stadtzug.ch</span></div><div class="amtlist">'
                  + "".join(f'<a href="{B.esc(n["url"])}"><span class="d">{B.dlabel(n["date"])}</span><span class="t">{B.esc(n["title"])}</span></a>' for n in lists)
                  + "</div></section>")
-    body += '<section class="block"><p><a href="amtlich.html">Alle amtlichen Publikationen →</a></p></section>'
+    body += '<section class="block"><p><a href="wandel/">Wie sich Zug verändert: alle grossen Vorhaben →</a> · <a href="amtlich.html">Alle amtlichen Publikationen →</a></p></section>'
     return _page(frame, "baugesuche/", "Baugesuche Stadt Zug – aktuelle Publikationen | zug.now",
                  f"Aktuelle Baugesuche der Stadt Zug aus dem Amtsblatt: {_n(len(bg), 'Publikation', 'Publikationen')} mit Adresse und Auflagefrist, täglich aktualisiert.",
                  body, nav="amtlich.html", index=len(bg) + len(lists) >= 1)

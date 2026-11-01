@@ -237,6 +237,8 @@ def build():
             e["page"] = pg[e["id"]]
     (OUT / "data" / "agenda.json").write_text(json.dumps(raw, ensure_ascii=False), encoding="utf-8")
     pages.update(hubs.build_hubs(pages["agenda.html"], events=events, ongoing=ongoing, amtlich=amtlich, all_news=load("news", [])))
+    import wandel
+    pages.update(wandel.build_wandel(pages["agenda.html"], news=load("news", []), amtlich=load("amtlich", [])))
     for name, doc in pages.items():
         if name.endswith(".html"):
             doc = doc.replace("</div></div></footer>", "</div>" + hubs.FOOTER_COL + "</div></footer>", 1)
