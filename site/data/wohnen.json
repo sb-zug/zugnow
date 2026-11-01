@@ -1,0 +1,56 @@
+{
+  "_hinweis": "Von Hand gepflegt. Service-Inhalte für /wohnen/. Die Wohnungs-Pipeline rechnet build aus wandel.json (Feld wohnen). ziel = Vergleichsgrösse aus der städtischen Initiative.",
+  "stand": "2026-11-01",
+  "ziel": {
+    "zahl": 2000,
+    "jahr": 2040,
+    "text": "Die Initiative «2000 Wohnungen für den Zuger Mittelstand» verlangt bis 2040 rund 2000 neue preisgünstige Wohnungen (20 % des Bestands). Das Stimmvolk hat sie am 18. Juni 2023 knapp angenommen.",
+    "quelle": "https://www.srf.ch/news/abstimmungen-18-juni-2023/abstimmung-stadt-zug-hauchduenne-mehrheit-stadtzuger-wollen-mehr-bezahlbaren-wohnraum"
+  },
+  "wege": [
+    {
+      "titel": "Städtische Wohnungen",
+      "wer": "Stadt Zug, Abteilung Immobilien",
+      "text": "Die Stadt vermietet eigene preisgünstige Wohnungen. Vergeben wird über eine Anmeldung mit Formular (online oder PDF).",
+      "punkte": [
+        "Steuerbares Vermögen höchstens 400'000 Franken",
+        "Steuerbares Einkommen höchstens das Vierfache der Jahresnettomiete",
+        "Mindestbelegung: 3,5 Zimmer ab 2 Personen, 4,5 Zimmer ab 3 Personen (davon 1 Kind oder in Erstausbildung), 5,5 Zimmer ab 4 Personen (davon 2)"
+      ],
+      "links": [
+        ["Anmeldung und Richtlinien", "https://stadtzug.ch/de/leben/wohnen-umziehen/preisguenstige-wohnungen"]
+      ]
+    },
+    {
+      "titel": "Alterswohnungen",
+      "wer": "Stadt Zug, Fachstelle Alter und Gesundheit",
+      "text": "Für ältere Menschen vermietet die Stadt Alterswohnungen (u. a. Bergli, Frauensteinmatt, Neustadt 2). Die Anmeldung läuft über eine eigene Warteliste.",
+      "punkte": [],
+      "links": [
+        ["Wohnen im Alter", "https://stadtzug.ch/de/leben/leben-im-alter/wohnen-im-alter"]
+      ]
+    },
+    {
+      "titel": "Genossenschaften",
+      "wer": "Gewoba, awzug und weitere",
+      "text": "Genossenschaften vermieten zur Kostenmiete, also ohne Gewinn. Bewerben kann sich in der Regel nur, wer Mitglied ist. Mitglied werden lohnt sich deshalb früh – auch vor einer konkreten Vermietung.",
+      "punkte": [
+        "Gewoba – Genossenschaft für gemeinnützigen Wohnungsbau: Mitglied werden, Interesse anmelden",
+        "awzug – Allgemeine Wohnbaugenossenschaft Zug: Beitrittserklärung, Zuteilung nach Reglement"
+      ],
+      "links": [
+        ["Gewoba", "https://www.gewoba.ch/wohnen/interesse/"],
+        ["awzug", "https://www.awzug.ch/anmeldung-neumitglieder"]
+      ]
+    },
+    {
+      "titel": "Mietzinszuschüsse des Kantons",
+      "wer": "Kanton Zug, Wohnungswesen",
+      "text": "Rund 1900 Wohnungen im Kanton sind dem Wohnraumförderungsgesetz unterstellt und werden zur Kostenmiete vermietet. Haushalte mit geringem Einkommen können dort zusätzlich Mietzinszuschüsse erhalten. Ob eine Wohnung dazugehört, weiss die Vermieterin.",
+      "punkte": [],
+      "links": [
+        ["Bedingungen (Kanton)", "https://zg.ch/de/soziales/wohnungswesen/foerderinstrumente/fuer-privatpersonen"]
+      ]
+    }
+  ]
+}

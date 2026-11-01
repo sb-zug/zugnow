@@ -239,6 +239,8 @@ def build():
     pages.update(hubs.build_hubs(pages["agenda.html"], events=events, ongoing=ongoing, amtlich=amtlich, all_news=load("news", [])))
     import wandel
     pages.update(wandel.build_wandel(pages["agenda.html"], news=load("news", []), amtlich=load("amtlich", [])))
+    import wohnen
+    pages.update(wohnen.build_wohnen(pages["agenda.html"]))
     import dossiers
     pages.update(dossiers.build_dossiers(pages["agenda.html"], pages["politik.html"], news=load("news", []), amtlich=load("amtlich", [])))
     for name, doc in pages.items():

@@ -1,5 +1,5 @@
 {
-  "_hinweis": "Von Hand gepflegt (redaktionell). Phasen: 1 Planung, 2 Mitwirkung, 3 Parlament, 4 Abstimmung, 5 Bewilligung, 6 Bau, 7 Eröffnet. Stand und Quellen pro Meilenstein. keywords = Stichworte für die automatische Zuordnung von News und Amtsblatt (Kleinschreibung). lat/lon = ungefähre Lage.",
+  "_hinweis": "Von Hand gepflegt (redaktionell). Phasen: 1 Planung, 2 Mitwirkung, 3 Parlament, 4 Abstimmung, 5 Bewilligung, 6 Bau, 7 Eröffnet. Stand und Quellen pro Meilenstein. keywords = Stichworte für die automatische Zuordnung von News und Amtsblatt (Kleinschreibung). lat/lon = ungefähre Lage. wohnen = optional für die Wohnungs-Pipeline (/wohnen/): total und preisguenstig als Zahl (oder null, wenn noch offen), hinweis als Text, traeger. Meilensteine mit \"typ\": \"vermietung\" erscheinen auf /wohnen/ unter «Jetzt bewerben».",
   "stand": "2026-11-01",
   "projekte": [
     {
@@ -8,21 +8,85 @@
       "untertitel": "Neuer Stadtteil beim Bahnhof",
       "art": "Wohnen & Stadtteil",
       "quartier": "Bahnhof / Gubel",
-      "lat": 47.1772, "lon": 8.5186,
+      "lat": 47.1772,
+      "lon": 8.5186,
       "phase": 3,
       "kurz": "Auf dem Areal der ehemaligen Landis+Gyr beim Bahnhof soll ein urbaner Stadtteil mit hohem Wohnanteil entstehen – mit Hochhäusern, Aufstockungen und verbundenen Freiräumen wie den «Gleisgärten». Der Freiruum bleibt.",
-      "fakten": [["Wohnungen für", "2600–3900 Personen"], ["Hochhäuser", "bis rund 80 m"], ["Grundeigentümer", "5, darunter die Stadt Zug"], ["Preisgünstig", "Anteil gemäss Initiative «2000 Wohnungen»"]],
+      "fakten": [
+        [
+          "Wohnungen für",
+          "2600–3900 Personen"
+        ],
+        [
+          "Hochhäuser",
+          "bis rund 80 m"
+        ],
+        [
+          "Grundeigentümer",
+          "5, darunter die Stadt Zug"
+        ],
+        [
+          "Preisgünstig",
+          "7–11 % des Wohnraums"
+        ]
+      ],
       "meilensteine": [
-        {"datum": "2017", "text": "Start der Planung mit den Grundeigentümern", "quelle": "https://www.stadtzug.ch/aktuellesinformationen/2876914"},
-        {"datum": "2026-05-12", "text": "Stadtrat verabschiedet Bebauungsplan zur 1. Lesung", "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"},
-        {"datum": "2026-08-25", "text": "Stellungnahme des BauForumZug", "quelle": "https://www.bauforumzug.ch/im_fokus"},
-        {"datum": "2026-11-17", "text": "Grosser Gemeinderat berät in 1. Lesung (16 Uhr)", "quelle": "https://ratsinfo.stadtzug.ch/gremium/1/geschaefte/1223"},
-        {"datum": "danach", "text": "Öffentliche Auflage – Bevölkerung kann Eingaben machen", "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"},
-        {"datum": "2027", "text": "Beschluss GGR und Genehmigung Regierungsrat (voraussichtlich)", "quelle": "https://lg-zug.ch/roadmap/"}
+        {
+          "datum": "2017",
+          "text": "Start der Planung mit den Grundeigentümern",
+          "quelle": "https://www.stadtzug.ch/aktuellesinformationen/2876914"
+        },
+        {
+          "datum": "2026-05-12",
+          "text": "Stadtrat verabschiedet Bebauungsplan zur 1. Lesung",
+          "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"
+        },
+        {
+          "datum": "2026-08-25",
+          "text": "Stellungnahme des BauForumZug",
+          "quelle": "https://www.bauforumzug.ch/im_fokus"
+        },
+        {
+          "datum": "2026-11-17",
+          "text": "Grosser Gemeinderat berät in 1. Lesung (16 Uhr)",
+          "quelle": "https://ratsinfo.stadtzug.ch/gremium/1/geschaefte/1223"
+        },
+        {
+          "datum": "danach",
+          "text": "Öffentliche Auflage – Bevölkerung kann Eingaben machen",
+          "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"
+        },
+        {
+          "datum": "2027",
+          "text": "Beschluss GGR und Genehmigung Regierungsrat (voraussichtlich)",
+          "quelle": "https://lg-zug.ch/roadmap/"
+        }
       ],
       "mitreden": "Nach der 1. Lesung folgt die öffentliche Auflage. Dann sind Eingaben möglich.",
-      "links": [["Projektseite LG Zug", "https://lg-zug.ch/roadmap/"], ["Geschäft 3012 im Ratsinfo", "https://ratsinfo.stadtzug.ch/gremium/1/geschaefte/1223"]],
-      "keywords": ["lg-areal", "landis+gyr", "landis & gyr", "freiruum", "gleisgärten"]
+      "links": [
+        [
+          "Projektseite LG Zug",
+          "https://lg-zug.ch/roadmap/"
+        ],
+        [
+          "Geschäft 3012 im Ratsinfo",
+          "https://ratsinfo.stadtzug.ch/gremium/1/geschaefte/1223"
+        ]
+      ],
+      "keywords": [
+        "lg-areal",
+        "landis+gyr",
+        "landis & gyr",
+        "freiruum",
+        "gleisgärten"
+      ],
+      "wohnen": {
+        "total": null,
+        "preisguenstig": null,
+        "hinweis": "Wohnraum für 2600–3900 Personen, davon 7–11 % preisgünstig",
+        "traeger": "Private und Stadt Zug",
+        "quelle": "https://www.zug4you.ch/en/news/news-articles/a/high-rise-buildings-with-apartments-for-up-to-3,900-people"
+      }
     },
     {
       "slug": "aeussere-lorzenallmend",
@@ -30,18 +94,64 @@
       "untertitel": "Neuer Stadtteil im Westen",
       "art": "Wohnen & Stadtteil",
       "quartier": "Lorzen / Grenze Steinhausen",
-      "lat": 47.1858, "lon": 8.4985,
+      "lat": 47.1858,
+      "lon": 8.4985,
       "phase": 3,
       "kurz": "Die grösste zusammenhängende Baulandreserve der Stadt: Aus dem Gewerbegebiet soll ein durchgrüntes Quartier mit Wohnungen, Arbeitsplätzen, Primarschule und Park werden. Das bestehende Gewerbe kann bleiben.",
-      "fakten": [["Fläche", "rund 18 Hektaren"], ["Bebauungspläne", "5"], ["Wohnanteil", "mindestens 50 % pro Baubereich"], ["Preisgünstig", "40 % der neuen Wohnungen"]],
+      "fakten": [
+        [
+          "Fläche",
+          "rund 18 Hektaren"
+        ],
+        [
+          "Bebauungspläne",
+          "5"
+        ],
+        [
+          "Wohnanteil",
+          "mindestens 50 % pro Baubereich"
+        ],
+        [
+          "Preisgünstig",
+          "40 % der neuen Wohnungen"
+        ]
+      ],
       "meilensteine": [
-        {"datum": "2026-08", "text": "Grosser Gemeinderat schliesst 1. Lesung ab", "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"},
-        {"datum": "2026-11-09", "text": "Informationsanlass, 18.30 Uhr, Burgbachsaal", "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"},
-        {"datum": "2026-11-12", "bis": "2026-12-11", "text": "Öffentliche Auflage – Eingaben möglich", "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"}
+        {
+          "datum": "2026-08",
+          "text": "Grosser Gemeinderat schliesst 1. Lesung ab",
+          "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"
+        },
+        {
+          "datum": "2026-11-09",
+          "text": "Informationsanlass, 18.30 Uhr, Burgbachsaal",
+          "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"
+        },
+        {
+          "datum": "2026-11-12",
+          "bis": "2026-12-11",
+          "text": "Öffentliche Auflage – Eingaben möglich",
+          "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"
+        }
       ],
       "mitreden": "Auflage vom 12. November bis 11. Dezember 2026 im Stadthaus und online. Infoanlass am 9. November, ohne Anmeldung.",
-      "links": [["Medienmitteilung (PDF)", "https://www.baudepartement-stadtzug.ch/file/get/xwznphpjcydmldcl/20261030_MM_BBP_Aeussere_Lorzenallmend.pdf"]],
-      "keywords": ["lorzenallmend", "chollerstrasse"]
+      "links": [
+        [
+          "Medienmitteilung (PDF)",
+          "https://www.baudepartement-stadtzug.ch/file/get/xwznphpjcydmldcl/20261030_MM_BBP_Aeussere_Lorzenallmend.pdf"
+        ]
+      ],
+      "keywords": [
+        "lorzenallmend",
+        "chollerstrasse"
+      ],
+      "wohnen": {
+        "total": null,
+        "preisguenstig": null,
+        "hinweis": "Mindestens 50 % Wohnanteil, 40 % der neuen Wohnungen preisgünstig – Zahl noch offen",
+        "traeger": "Private Grundeigentümer",
+        "quelle": "https://www.baudepartement-stadtzug.ch/file/get/xwznphpjcydmldcl/20261030_MM_BBP_Aeussere_Lorzenallmend.pdf"
+      }
     },
     {
       "slug": "metalli",
@@ -49,17 +159,65 @@
       "untertitel": "Umbau Einkaufszentrum mit Hochhaus",
       "art": "Wohnen & Zentrum",
       "quartier": "Zentrum",
-      "lat": 47.1727, "lon": 8.5163,
+      "lat": 47.1727,
+      "lon": 8.5163,
       "phase": 5,
       "kurz": "Das Metalli von 1987 wird weiterentwickelt: Aufstockungen, Ersatzbauten und ein 80-Meter-Hochhaus schaffen vor allem Wohnungen und Dienstleistungsflächen. Läden und Gastronomie bleiben im heutigen Umfang.",
-      "fakten": [["Neue Wohnungen", "rund 130, davon 64 preisgünstig"], ["Hochhaus", "80 m"], ["Volksabstimmung", "57,8 % Ja"], ["Plätze", "4 neu gestaltet, begrünt"]],
-      "meilensteine": [
-        {"datum": "2025-11-18", "text": "Grosser Gemeinderat, 2. Lesung – Referendum ergriffen", "quelle": "https://www.stadtzug.ch/abstimmungen/termine/7472113"},
-        {"datum": "2026-06-14", "text": "Stimmvolk sagt Ja zum Bebauungsplan (57,8 %)", "quelle": "https://www.srf.ch/news/schweiz/abstimmung-stadt-zug-ja-zu-80-meter-hochhaus-wichtiger-schritt-fuer-stadtentwicklung"},
-        {"datum": "Ende 2026", "text": "Genehmigung durch den Kanton (frühestens)", "quelle": "https://lebensraum-metalli.ch/"}
+      "fakten": [
+        [
+          "Neue Wohnungen",
+          "rund 130, davon 64 preisgünstig"
+        ],
+        [
+          "Hochhaus",
+          "80 m"
+        ],
+        [
+          "Volksabstimmung",
+          "57,8 % Ja"
+        ],
+        [
+          "Plätze",
+          "4 neu gestaltet, begrünt"
+        ]
       ],
-      "links": [["Lebensraum Metalli", "https://lebensraum-metalli.ch/"], ["Abstimmung Stadt Zug", "https://www.stadtzug.ch/abstimmungen/termine/7472113"]],
-      "keywords": ["metalli"]
+      "meilensteine": [
+        {
+          "datum": "2025-11-18",
+          "text": "Grosser Gemeinderat, 2. Lesung – Referendum ergriffen",
+          "quelle": "https://www.stadtzug.ch/abstimmungen/termine/7472113"
+        },
+        {
+          "datum": "2026-06-14",
+          "text": "Stimmvolk sagt Ja zum Bebauungsplan (57,8 %)",
+          "quelle": "https://www.srf.ch/news/schweiz/abstimmung-stadt-zug-ja-zu-80-meter-hochhaus-wichtiger-schritt-fuer-stadtentwicklung"
+        },
+        {
+          "datum": "Ende 2026",
+          "text": "Genehmigung durch den Kanton (frühestens)",
+          "quelle": "https://lebensraum-metalli.ch/"
+        }
+      ],
+      "links": [
+        [
+          "Lebensraum Metalli",
+          "https://lebensraum-metalli.ch/"
+        ],
+        [
+          "Abstimmung Stadt Zug",
+          "https://www.stadtzug.ch/abstimmungen/termine/7472113"
+        ]
+      ],
+      "keywords": [
+        "metalli"
+      ],
+      "wohnen": {
+        "total": 130,
+        "preisguenstig": 64,
+        "hinweis": "rund 130 Wohnungen, davon 64 preisgünstig",
+        "traeger": "Zug Estates",
+        "quelle": "https://lebensraum-metalli.ch/"
+      }
     },
     {
       "slug": "hallenbad-herti",
@@ -67,20 +225,72 @@
       "untertitel": "Hallenbad und Sportmeile Herti Allmend",
       "art": "Sport & Freizeit",
       "quartier": "Herti",
-      "lat": 47.1789, "lon": 8.5028,
+      "lat": 47.1789,
+      "lon": 8.5028,
       "phase": 1,
       "kurz": "Gegenüber der Bossard-Arena entsteht ein Hallenbad mit 50-Meter-Becken, zusammen mit erneuerten Fussball- und Leichtathletikanlagen. Die Wünsche aus der Mitwirkung sind ins Wettbewerbsprogramm eingeflossen.",
-      "fakten": [["Herzstück", "50-Meter-Becken"], ["Initiative", "81 % Ja (2023)"], ["Mitwirkung", "knapp 1000 Teilnehmende"], ["Wettbewerbskredit", "1,427 Mio. Franken"]],
-      "meilensteine": [
-        {"datum": "2023-06-18", "text": "Stimmvolk nimmt Initiative für neues Hallenbad an (81 %)", "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"},
-        {"datum": "2025-04", "text": "Standort Herti festgelegt", "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"},
-        {"datum": "2025-12-19", "bis": "2026-01-23", "text": "Öffentliche Mitwirkung", "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"},
-        {"datum": "2026-01-20", "text": "Grosser Gemeinderat bewilligt Wettbewerbskredit", "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"},
-        {"datum": "2026-04-07", "text": "Architekturwettbewerb lanciert", "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"},
-        {"datum": "Frühjahr 2027", "text": "Siegerprojekt steht fest", "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"}
+      "fakten": [
+        [
+          "Herzstück",
+          "50-Meter-Becken"
+        ],
+        [
+          "Initiative",
+          "81 % Ja (2023)"
+        ],
+        [
+          "Mitwirkung",
+          "knapp 1000 Teilnehmende"
+        ],
+        [
+          "Wettbewerbskredit",
+          "1,427 Mio. Franken"
+        ]
       ],
-      "links": [["Projektseite Baudepartement", "https://www.baudepartement-stadtzug.ch/page/de/projekte/details?prid=19"]],
-      "keywords": ["hallenbad", "herti allmend", "sportmeile"]
+      "meilensteine": [
+        {
+          "datum": "2023-06-18",
+          "text": "Stimmvolk nimmt Initiative für neues Hallenbad an (81 %)",
+          "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"
+        },
+        {
+          "datum": "2025-04",
+          "text": "Standort Herti festgelegt",
+          "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"
+        },
+        {
+          "datum": "2025-12-19",
+          "bis": "2026-01-23",
+          "text": "Öffentliche Mitwirkung",
+          "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"
+        },
+        {
+          "datum": "2026-01-20",
+          "text": "Grosser Gemeinderat bewilligt Wettbewerbskredit",
+          "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"
+        },
+        {
+          "datum": "2026-04-07",
+          "text": "Architekturwettbewerb lanciert",
+          "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"
+        },
+        {
+          "datum": "Frühjahr 2027",
+          "text": "Siegerprojekt steht fest",
+          "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"
+        }
+      ],
+      "links": [
+        [
+          "Projektseite Baudepartement",
+          "https://www.baudepartement-stadtzug.ch/page/de/projekte/details?prid=19"
+        ]
+      ],
+      "keywords": [
+        "hallenbad",
+        "herti allmend",
+        "sportmeile"
+      ]
     },
     {
       "slug": "schulanlage-guthirt",
@@ -88,19 +298,65 @@
       "untertitel": "Erweiterung mit Sporthalle und Dachgarten",
       "art": "Schule",
       "quartier": "Guthirt",
-      "lat": 47.1797, "lon": 8.5196,
+      "lat": 47.1797,
+      "lon": 8.5196,
       "phase": 2,
       "kurz": "Das Quartier wächst, die Schule ist zu klein. Ein viergeschossiger Neubau entlang der Industriestrasse bringt Schulräume, eine Sporthalle und eine öffentliche Dachterrasse. Das Quartier wurde breit befragt.",
-      "fakten": [["Klassen im Quartier", "22 heute, 33 bis 2040"], ["Befragung", "902 Teilnehmende"], ["Siegerprojekt", "«Unter der Laube»"], ["Betrieb", "ab Schuljahr 2030/31"]],
-      "meilensteine": [
-        {"datum": "2024-07-03", "text": "Wettbewerb entschieden: «Unter der Laube»", "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"},
-        {"datum": "2026-02", "bis": "2026-04-13", "text": "Quartierbefragung durch gfs.bern und Ausstellung", "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"},
-        {"datum": "2026-05-20", "text": "Ergebnis: Quartier befürwortet die Erweiterung", "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"},
-        {"datum": "offen", "text": "Objektkredit an GGR und Urnenabstimmung (in Vorbereitung)", "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"},
-        {"datum": "2030", "text": "Inbetriebnahme ab Schuljahr 2030/31 (Ziel)", "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"}
+      "fakten": [
+        [
+          "Klassen im Quartier",
+          "22 heute, 33 bis 2040"
+        ],
+        [
+          "Befragung",
+          "902 Teilnehmende"
+        ],
+        [
+          "Siegerprojekt",
+          "«Unter der Laube»"
+        ],
+        [
+          "Betrieb",
+          "ab Schuljahr 2030/31"
+        ]
       ],
-      "links": [["Schlussbericht Quartierbefragung (PDF)", "https://www.baudepartement-stadtzug.ch/permalink/fv/oczarwcxyotihlhy/254032_Schlussbericht_Quartierbefragung_Guthirt_Bevoelkerung.pdf"]],
-      "keywords": ["guthirt"]
+      "meilensteine": [
+        {
+          "datum": "2024-07-03",
+          "text": "Wettbewerb entschieden: «Unter der Laube»",
+          "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"
+        },
+        {
+          "datum": "2026-02",
+          "bis": "2026-04-13",
+          "text": "Quartierbefragung durch gfs.bern und Ausstellung",
+          "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"
+        },
+        {
+          "datum": "2026-05-20",
+          "text": "Ergebnis: Quartier befürwortet die Erweiterung",
+          "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"
+        },
+        {
+          "datum": "offen",
+          "text": "Objektkredit an GGR und Urnenabstimmung (in Vorbereitung)",
+          "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"
+        },
+        {
+          "datum": "2030",
+          "text": "Inbetriebnahme ab Schuljahr 2030/31 (Ziel)",
+          "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"
+        }
+      ],
+      "links": [
+        [
+          "Schlussbericht Quartierbefragung (PDF)",
+          "https://www.baudepartement-stadtzug.ch/permalink/fv/oczarwcxyotihlhy/254032_Schlussbericht_Quartierbefragung_Guthirt_Bevoelkerung.pdf"
+        ]
+      ],
+      "keywords": [
+        "guthirt"
+      ]
     },
     {
       "slug": "schulanlage-loreto",
@@ -108,18 +364,54 @@
       "untertitel": "Zwei neue Trakte für die Oberstufe",
       "art": "Schule",
       "quartier": "Loreto",
-      "lat": 47.1697, "lon": 8.5228,
+      "lat": 47.1697,
+      "lon": 8.5228,
       "phase": 6,
       "kurz": "Die Oberstufenanlage von 1969 erhält einen Schultrakt und ein Betreuungsgebäude in Holzbauweise. Nach einem Beschwerdeverfahren bis vor Bundesgericht startete der Bau 2025 – die Aufrichte ist gefeiert.",
-      "fakten": [["Klassen", "25 statt 18"], ["Bauweise", "Holz-Skelettbau"], ["Architektur", "Gauch & Schwartz, Zug"], ["Bezug", "Juni 2027"]],
+      "fakten": [
+        [
+          "Klassen",
+          "25 statt 18"
+        ],
+        [
+          "Bauweise",
+          "Holz-Skelettbau"
+        ],
+        [
+          "Architektur",
+          "Gauch & Schwartz, Zug"
+        ],
+        [
+          "Bezug",
+          "Juni 2027"
+        ]
+      ],
       "meilensteine": [
-        {"datum": "2021-12", "text": "Stimmvolk bewilligt den Baukredit", "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"},
-        {"datum": "2025-09-26", "text": "Spatenstich nach rund drei Jahren Verzögerung", "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"},
-        {"datum": "2026-09-17", "text": "Aufrichte", "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"},
-        {"datum": "2027-06", "text": "Übergabe an die Schule", "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"}
+        {
+          "datum": "2021-12",
+          "text": "Stimmvolk bewilligt den Baukredit",
+          "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"
+        },
+        {
+          "datum": "2025-09-26",
+          "text": "Spatenstich nach rund drei Jahren Verzögerung",
+          "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"
+        },
+        {
+          "datum": "2026-09-17",
+          "text": "Aufrichte",
+          "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"
+        },
+        {
+          "datum": "2027-06",
+          "text": "Übergabe an die Schule",
+          "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"
+        }
       ],
       "links": [],
-      "keywords": ["loreto"]
+      "keywords": [
+        "loreto"
+      ]
     },
     {
       "slug": "schulanlage-herti",
@@ -127,17 +419,46 @@
       "untertitel": "Erweiterung, 1. Etappe",
       "art": "Schule",
       "quartier": "Herti",
-      "lat": 47.1817, "lon": 8.5003,
+      "lat": 47.1817,
+      "lon": 8.5003,
       "phase": 6,
       "kurz": "Im wachsenden Herti-Quartier entsteht die erste Etappe der neuen Schulanlage. Das alte Schulhaus ist bereits zum Betreuungsgebäude umgebaut, die zweite Etappe wird danach geplant.",
-      "fakten": [["Betreuung", "neues Gebäude seit Februar 2026"], ["Fertigstellung", "Dezember 2026"], ["Betrieb", "nach den Sportferien 2027"]],
+      "fakten": [
+        [
+          "Betreuung",
+          "neues Gebäude seit Februar 2026"
+        ],
+        [
+          "Fertigstellung",
+          "Dezember 2026"
+        ],
+        [
+          "Betrieb",
+          "nach den Sportferien 2027"
+        ]
+      ],
       "meilensteine": [
-        {"datum": "2026-01-15", "text": "Schlüsselübergabe Betreuungsgebäude", "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"},
-        {"datum": "2026-12", "text": "Innenausbau und Aussenanlage fertig", "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"},
-        {"datum": "2027-02", "text": "Inbetriebnahme nach den Sportferien", "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"}
+        {
+          "datum": "2026-01-15",
+          "text": "Schlüsselübergabe Betreuungsgebäude",
+          "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"
+        },
+        {
+          "datum": "2026-12",
+          "text": "Innenausbau und Aussenanlage fertig",
+          "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"
+        },
+        {
+          "datum": "2027-02",
+          "text": "Inbetriebnahme nach den Sportferien",
+          "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"
+        }
       ],
       "links": [],
-      "keywords": ["schulanlage herti", "schule herti"]
+      "keywords": [
+        "schulanlage herti",
+        "schule herti"
+      ]
     },
     {
       "slug": "brueggli",
@@ -145,18 +466,50 @@
       "untertitel": "Mehr Platz am See statt Camping",
       "art": "Sport & Freizeit",
       "quartier": "Brüggli",
-      "lat": 47.1838, "lon": 8.4893,
+      "lat": 47.1838,
+      "lon": 8.4893,
       "phase": 6,
       "kurz": "Wo früher fixe Campingplätze standen, entsteht mehr Raum für alle: Grünflächen, Wege, Spielflächen, Grillstellen, eine neue Beiz und eine Unterführung für Velo und Fussverkehr. Stadt, Korporation und Kanton bauen gemeinsam.",
-      "fakten": [["Partner", "Stadt, Korporation, Kanton Zug"], ["Unterführung", "fertig März 2027"], ["2. Etappe", "bis Sommer 2027"]],
+      "fakten": [
+        [
+          "Partner",
+          "Stadt, Korporation, Kanton Zug"
+        ],
+        [
+          "Unterführung",
+          "fertig März 2027"
+        ],
+        [
+          "2. Etappe",
+          "bis Sommer 2027"
+        ]
+      ],
       "meilensteine": [
-        {"datum": "2021", "text": "Öffentliche Mitwirkung", "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"},
-        {"datum": "2026-01-26", "text": "Start Neugestaltung Aussenraum", "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"},
-        {"datum": "2027-03", "text": "Fuss- und Radwegunterführung fertig", "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"},
-        {"datum": "2027-07", "text": "2. Etappe abgeschlossen (Ziel Sommer 2027)", "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"}
+        {
+          "datum": "2021",
+          "text": "Öffentliche Mitwirkung",
+          "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"
+        },
+        {
+          "datum": "2026-01-26",
+          "text": "Start Neugestaltung Aussenraum",
+          "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"
+        },
+        {
+          "datum": "2027-03",
+          "text": "Fuss- und Radwegunterführung fertig",
+          "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"
+        },
+        {
+          "datum": "2027-07",
+          "text": "2. Etappe abgeschlossen (Ziel Sommer 2027)",
+          "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"
+        }
       ],
       "links": [],
-      "keywords": ["brüggli"]
+      "keywords": [
+        "brüggli"
+      ]
     },
     {
       "slug": "ortsplanung",
@@ -164,18 +517,264 @@
       "untertitel": "Zonenplan und Bauordnung für die ganze Stadt",
       "art": "Planung (ganze Stadt)",
       "quartier": "Ganze Stadt",
-      "lat": null, "lon": null,
+      "lat": null,
+      "lon": null,
       "phase": 3,
       "kurz": "Die Spielregeln fürs Bauen werden erstmals seit 2010 neu geschrieben: Verdichtung nach innen, mehr preisgünstiger Wohnraum, Stadtklima, Freiräume und besserer Schutz der Ortsbilder.",
-      "fakten": [["Neu für preisgünstiges Wohnen", "rund 24'000 m²"], ["Einwendungen", "270"], ["Letzte Revision", "2010"]],
-      "meilensteine": [
-        {"datum": "2025-01-14", "text": "Stadtrat verabschiedet Vorlage zur 1. Lesung", "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"},
-        {"datum": "2025-11-13", "bis": "2025-12-12", "text": "Öffentliche Auflage (270 Einwendungen)", "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"},
-        {"datum": "2026-05-05", "text": "Stadtrat verabschiedet Vorlage zur 2. Lesung", "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"},
-        {"datum": "Herbst 2026", "text": "Grosser Gemeinderat berät in 2. Lesung", "quelle": "https://ratsinfo.stadtzug.ch/gremium/1/geschaefte/1210"}
+      "fakten": [
+        [
+          "Neu für preisgünstiges Wohnen",
+          "rund 24'000 m²"
+        ],
+        [
+          "Einwendungen",
+          "270"
+        ],
+        [
+          "Letzte Revision",
+          "2010"
+        ]
       ],
-      "links": [["Geschäft im Ratsinfo", "https://ratsinfo.stadtzug.ch/gremium/1/geschaefte/1210"]],
-      "keywords": ["ortsplanung", "zonenplan", "bauordnung"]
+      "meilensteine": [
+        {
+          "datum": "2025-01-14",
+          "text": "Stadtrat verabschiedet Vorlage zur 1. Lesung",
+          "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"
+        },
+        {
+          "datum": "2025-11-13",
+          "bis": "2025-12-12",
+          "text": "Öffentliche Auflage (270 Einwendungen)",
+          "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"
+        },
+        {
+          "datum": "2026-05-05",
+          "text": "Stadtrat verabschiedet Vorlage zur 2. Lesung",
+          "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"
+        },
+        {
+          "datum": "Herbst 2026",
+          "text": "Grosser Gemeinderat berät in 2. Lesung",
+          "quelle": "https://ratsinfo.stadtzug.ch/gremium/1/geschaefte/1210"
+        }
+      ],
+      "links": [
+        [
+          "Geschäft im Ratsinfo",
+          "https://ratsinfo.stadtzug.ch/gremium/1/geschaefte/1210"
+        ]
+      ],
+      "keywords": [
+        "ortsplanung",
+        "zonenplan",
+        "bauordnung"
+      ],
+      "wohnen": {
+        "total": null,
+        "preisguenstig": null,
+        "hinweis": "Rund 24'000 m² neu für preisgünstiges Wohnen",
+        "traeger": "Ganze Stadt",
+        "quelle": "https://www.baudepartement-stadtzug.ch/page/de/news"
+      }
+    },
+    {
+      "slug": "schliffi",
+      "titel": "Überbauung Schliffi",
+      "untertitel": "Rund 280 günstige Mietwohnungen der Korporation",
+      "art": "Wohnen",
+      "quartier": "Nordstrasse / Grenze Baar",
+      "lat": 47.1888,
+      "lon": 8.5208,
+      "phase": 5,
+      "kurz": "Die Korporation Zug plant zwischen Nordstrasse und Bahnlinie eine grosse Überbauung mit günstigen Mietwohnungen, vor allem 3,5-Zimmer-Wohnungen. Gespart wird bei Untergeschoss und Parkplätzen, gebaut mit Backstein und Holz.",
+      "fakten": [
+        [
+          "Wohnungen",
+          "rund 280"
+        ],
+        [
+          "Typisch",
+          "3,5 Zimmer"
+        ],
+        [
+          "Miete 3,5 Zimmer",
+          "unter 1800 Franken (geplant)"
+        ],
+        [
+          "Bauherrin",
+          "Korporation Zug"
+        ]
+      ],
+      "wohnen": {
+        "total": 280,
+        "preisguenstig": 280,
+        "hinweis": "Rund 280 günstige Mietwohnungen (laut Korporation)",
+        "traeger": "Korporation Zug",
+        "quelle": "https://www.korporation-zug.ch/baueingabe-schliffi-ist-erfolgt/"
+      },
+      "meilensteine": [
+        {
+          "datum": "2026-09-02",
+          "text": "Baugesuch eingereicht",
+          "quelle": "https://www.korporation-zug.ch/baueingabe-schliffi-ist-erfolgt/"
+        },
+        {
+          "datum": "2026-09",
+          "text": "Baugesuch liegt öffentlich auf",
+          "quelle": "https://www.ad-hoc-news.de/wirtschaft/schliffi-in-zug-272-guenstige-wohnungen-geplant-baugesuch-liegt/70194704"
+        },
+        {
+          "datum": "offen",
+          "text": "Baubewilligung, danach Baustart (ohne Einsprachen in wenigen Monaten möglich)",
+          "quelle": "https://www.ad-hoc-news.de/wirtschaft/schliffi-in-zug-272-guenstige-wohnungen-geplant-baugesuch-liegt/70194704"
+        },
+        {
+          "datum": "später",
+          "text": "Vermietung – Interessierte melden sich bei der Korporation",
+          "quelle": "https://www.korporation-zug.ch/"
+        }
+      ],
+      "links": [
+        [
+          "Korporation Zug",
+          "https://www.korporation-zug.ch/"
+        ]
+      ],
+      "keywords": [
+        "schliffi",
+        "schliifi"
+      ]
+    },
+    {
+      "slug": "hochhaus-pi",
+      "titel": "Hochhaus Pi (GIBZ)",
+      "untertitel": "80-Meter-Holzhochhaus mit 130 preisgünstigen Wohnungen",
+      "art": "Wohnen",
+      "quartier": "Guthirt",
+      "lat": 47.1808,
+      "lon": 8.5178,
+      "phase": 5,
+      "kurz": "Auf dem Areal beim GIBZ soll das Wohnhochhaus «Pi» entstehen, gebaut in Holz. Die Mehrheit der Wohnungen ist preisgünstig; einen Teil davon übernimmt die Genossenschaft Gewoba. Das Stimmvolk hat Ja gesagt, eine Beschwerde blockiert den Bau aber noch.",
+      "fakten": [
+        [
+          "Wohnungen",
+          "183"
+        ],
+        [
+          "Preisgünstig",
+          "130"
+        ],
+        [
+          "Höhe",
+          "80 m"
+        ],
+        [
+          "Volksabstimmung",
+          "70,8 % Ja"
+        ]
+      ],
+      "wohnen": {
+        "total": 183,
+        "preisguenstig": 130,
+        "hinweis": "183 Wohnungen, davon 130 preisgünstig",
+        "traeger": "Investoren und Gewoba",
+        "quelle": "https://www.srf.ch/news/schweiz/abstimmungen-9-februar-2025/abstimmung-stadt-zug-stadt-zug-ja-zum-hochhaus-pi-mit-130-preisguenstigen-wohnungen"
+      },
+      "meilensteine": [
+        {
+          "datum": "2025-02-09",
+          "text": "Stimmvolk sagt Ja zum Bebauungsplan GIBZ (70,8 %)",
+          "quelle": "https://www.srf.ch/news/schweiz/abstimmungen-9-februar-2025/abstimmung-stadt-zug-stadt-zug-ja-zum-hochhaus-pi-mit-130-preisguenstigen-wohnungen"
+        },
+        {
+          "datum": "2025-03",
+          "text": "Privatperson erhebt Verwaltungsbeschwerde",
+          "quelle": "https://www.immobilienbusiness.ch/en/regionen/2025-03-25/zug-verwaltungsbeschwerde-gegen-grossprojekt/"
+        },
+        {
+          "datum": "2026-07",
+          "text": "Beschwerde weiterhin beim Regierungsrat hängig",
+          "quelle": "https://www.zug4you.ch/en/news/news-articles/a/gewoba-has-been-busy-in-the-last-fiscal-year"
+        },
+        {
+          "datum": "offen",
+          "text": "Entscheid des Regierungsrats, danach Baugesuch",
+          "quelle": "https://www.zug4you.ch/en/news/news-articles/a/gewoba-has-been-busy-in-the-last-fiscal-year"
+        }
+      ],
+      "links": [
+        [
+          "Projekt Pi",
+          "https://pi-zug.ch/"
+        ],
+        [
+          "Gewoba: Wohnraum für Zug",
+          "https://www.gewoba.ch/nachricht/wohnraum-fuer-zug/"
+        ]
+      ],
+      "keywords": [
+        "hochhaus pi",
+        "gibz"
+      ]
+    },
+    {
+      "slug": "gewoba-goebli",
+      "titel": "Gewoba Göbli",
+      "untertitel": "Neues Genossenschaftshaus mit 26 Wohnungen",
+      "art": "Wohnen",
+      "quartier": "Göbli",
+      "lat": 47.1768,
+      "lon": 8.5272,
+      "phase": 6,
+      "kurz": "Die Genossenschaft für gemeinnützigen Wohnungsbau (Gewoba) baut im Göbli ein Mehrfamilienhaus mit 26 Wohnungen für rund 70 Personen. Vermietet wird zur Kostenmiete an Mitglieder der Genossenschaft.",
+      "fakten": [
+        [
+          "Wohnungen",
+          "26"
+        ],
+        [
+          "Für",
+          "rund 70 Personen"
+        ],
+        [
+          "Miete",
+          "Kostenmiete"
+        ],
+        [
+          "Bauherrin",
+          "Gewoba"
+        ]
+      ],
+      "wohnen": {
+        "total": 26,
+        "preisguenstig": 26,
+        "hinweis": "26 Genossenschaftswohnungen zur Kostenmiete",
+        "traeger": "Gewoba",
+        "quelle": "https://www.zug4you.ch/en/news/news-articles/a/gewoba-has-been-busy-in-the-last-fiscal-year"
+      },
+      "meilensteine": [
+        {
+          "datum": "2026-07",
+          "text": "Bau im Gang (Generalversammlung Gewoba)",
+          "quelle": "https://www.zug4you.ch/en/news/news-articles/a/gewoba-has-been-busy-in-the-last-fiscal-year"
+        },
+        {
+          "datum": "Herbst 2026",
+          "typ": "vermietung",
+          "text": "Erstvermietung an Mitglieder (geplant) – Mitgliedschaft nötig",
+          "quelle": "https://www.gewoba.ch/wohnen/interesse/"
+        }
+      ],
+      "mitreden": "Bewerben können sich nur Mitglieder der Gewoba. Wer eine Wohnung sucht, wird zuerst Mitglied und meldet sein Interesse an.",
+      "links": [
+        [
+          "Gewoba: Interesse anmelden",
+          "https://www.gewoba.ch/wohnen/interesse/"
+        ]
+      ],
+      "keywords": [
+        "gewoba"
+      ]
     }
   ]
 }

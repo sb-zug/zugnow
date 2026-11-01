@@ -84,13 +84,20 @@ def _matches(p, news, amtlich):
     return sorted(rows, reverse=True)[:8]
 
 
+def _wchip(p):
+    w = p.get("wohnen") or {}
+    if w.get("preisguenstig"):
+        return f'<span class="wchip">{w["preisguenstig"]} preisgünstige Wohnungen</span>'
+    return ""
+
+
 def _card(p):
     m, s = _next(p)
     nx = (f'<span class="nx{" live" if s == "now" else ""}"><b>{"Läuft jetzt" if s == "now" else "Als Nächstes"}</b> '
           f'{B.esc(_when(m))} · {B.esc(m["text"])}</span>') if m else ""
     return (f'<a class="wcard" href="wandel/{p["slug"]}/"><span class="eyebrow">{B.esc(p["art"])} · {B.esc(p["quartier"])}</span>'
             f'<strong>{B.esc(p["titel"])}</strong><span class="sub">{B.esc(p["untertitel"])}</span>'
-            f'{_phasebar(p["phase"])}<span class="ph-l">Phase {p["phase"]}/7: {B.esc(PHASEN[p["phase"] - 1])}</span>{nx}</a>')
+            + _wchip(p) + f'{_phasebar(p["phase"])}<span class="ph-l">Phase {p["phase"]}/7: {B.esc(PHASEN[p["phase"] - 1])}</span>{nx}</a>')
 
 
 MAP_JS = """<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
@@ -159,7 +166,7 @@ def build_wandel(agenda_html, news, amtlich):
              f'<div class="wgrid">{"".join(_card(p) for p in sorted(projekte, key=lambda p: p["phase"]))}</div></section>')
     body += ('<section class="block"><p class="note">Redaktionell zusammengestellt aus öffentlichen Quellen (Stadt Zug, Baudepartement, Ratsinfo, '
              'Projektwebsites). Meldungen aus News und Amtsblatt werden automatisch zugeordnet. Massgebend sind die amtlichen Publikationen. '
-             '<a href="baugesuche/">Aktuelle Baugesuche →</a> · <a href="politik.html">Politik →</a></p></section>')
+             '<a href="wohnen/">Günstig wohnen →</a> · <a href="baugesuche/">Aktuelle Baugesuche →</a> · <a href="politik.html">Politik →</a></p></section>')
     head_extra = '<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">'
     page = H._page(frame, "wandel/", "Wie sich Zug verändert – Bauprojekte und Planung | zug.now",
                    "LG-Areal, Metalli, Lorzenallmend, Hallenbad, Schulhäuser: alle grossen Vorhaben der Stadt Zug mit Stand, "
@@ -181,6 +188,9 @@ def build_wandel(agenda_html, news, amtlich):
                 + H._crumb(("Wandel", "wandel/"), (p["titel"], None)) + "</div>")
         body += (f'<section class="block"><div class="shead"><h2>Wo das Vorhaben steht</h2><span>Phase: {B.esc(PHASEN[p["phase"] - 1])}</span></div>'
                  + _phasebar(p["phase"], big=True) + (f'<div class="wfacts">{facts}</div>' if facts else "") + "</section>")
+        if p.get("wohnen"):
+            body += (f'<section class="block"><p class="note">Wohnungen: {B.esc(p["wohnen"].get("hinweis"))}. '
+                     '<a href="wohnen/">Alle Vorhaben mit günstigen Wohnungen →</a></p></section>')
         if p.get("mitreden"):
             body += f'<section class="block"><div class="mitreden"><span class="eyebrow">Mitreden</span><p>{B.esc(p["mitreden"])}</p></div></section>'
         body += f'<section class="block"><div class="shead"><h2>Der Weg bisher – und weiter</h2></div><ol class="wtl dossier">{tl}</ol></section>'
