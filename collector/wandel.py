@@ -128,7 +128,7 @@ MAP_JS = """<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crosso
   pts.forEach(function(p){
     var c=p.phase>=6?cs.getPropertyValue('--ok'):p.phase>=4?cs.getPropertyValue('--brand'):cs.getPropertyValue('--red');
     var m=L.circleMarker([p.lat,p.lon],{radius:10,weight:3,color:'#fff',fillColor:c.trim(),fillOpacity:1}).addTo(map);
-    m.on('click',function(){location.href='wandel/'+p.s+'/';});
+    m.on('click',function(){location.href=(document.documentElement.lang==='en'?'/en/':'/')+'wandel/'+p.s+'/';});
     m._t=p.t; ms.push(m); b.push([p.lat,p.lon]);
   });
   // Beschriftungen ohne Überlappung: rechts, sonst links, sonst nur beim Antippen/Überfahren

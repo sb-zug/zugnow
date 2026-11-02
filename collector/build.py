@@ -252,6 +252,9 @@ def build():
         (OUT / name).parent.mkdir(parents=True, exist_ok=True)
         (OUT / name).write_text(doc, encoding="utf-8")
     (OUT / "sitemap.xml").write_text(hubs.sitemap(pages), encoding="utf-8")
+    import i18n
+    written = {PATHS.get(n, n): (OUT / PATHS.get(n, n)).read_text(encoding="utf-8") for n in pages if n.endswith(".html")}
+    i18n.build_en(written)
     print(f"Vorgerendert: {len(events)} Anlässe ({min(20, len(events))} in der Liste), {len(news)} News, {len(amtlich)} Amtlich, "
           f"{len(rows)} Politik-Meldungen → {OUT.relative_to(ROOT)}/")
 

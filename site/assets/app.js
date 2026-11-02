@@ -554,9 +554,45 @@
   // ---------- Start
   // Vorgerenderte Anlässe (Rubrikseiten), die inzwischen vorbei sind, ausblenden
   [].forEach.call(document.querySelectorAll('[data-end]'), function (el) { if (new Date(el.dataset.end) < new Date()) el.hidden = true });
+
+  // ---------- Englisch (/en/): Texte, die app.js nachlädt, mit demselben Wörterbuch wie der Build übersetzen
+  var EN = document.documentElement.lang === 'en', I18 = null;
+  var JWD = { Mo: 'Mon', Di: 'Tue', Mi: 'Wed', Do: 'Thu', Fr: 'Fri', Sa: 'Sat', So: 'Sun' };
+  var JMON = { 'Januar': 'January', 'Februar': 'February', 'März': 'March', 'April': 'April', 'Mai': 'May', 'Juni': 'June', 'Juli': 'July', 'August': 'August', 'September': 'September', 'Oktober': 'October', 'November': 'November', 'Dezember': 'December', 'Jan.': 'Jan.', 'Feb.': 'Feb.', 'Aug.': 'Aug.', 'Sept.': 'Sept.', 'Okt.': 'Oct.', 'Nov.': 'Nov.', 'Dez.': 'Dec.' };
+  var RMON = new RegExp('(^|[^\\wÄÖÜäöü.])(' + Object.keys(JMON).map(function (k) { return k.replace('.', '\\.') }).join('|') + ')(?= \\d{4}\\b)', 'g');
+  function trDates(s) { return s.replace(/\b(Mo|Di|Mi|Do|Fr|Sa|So)(?=,? \d{1,2}\.)/g, function (m, a) { return JWD[a] }).replace(RMON, function (m, a, b) { return a + JMON[b] }) }
+  function trOne(c) {
+    if (Object.prototype.hasOwnProperty.call(I18.t, c)) return I18.t[c];
+    if (c.indexOf(' · ') >= 0) return c.split(' · ').map(trOne).join(' · ');
+    for (var i = 0; i < I18.p.length; i++) { var m = I18.p[i][0].exec(c); if (m) return trDates(c.replace(I18.p[i][0], I18.p[i][1]).replace(/\{\{(.*?)\}\}/g, function (x, y) { return trOne(y) })) }
+    return c.length <= 30 ? trDates(c) : c;
+  }
+  function tr(s) { var c = s.trim(); if (!c || !/[A-Za-zÄÖÜäöü]/.test(c)) return s; var o = trOne(c); return o === c ? s : s.replace(c, o) }
+  function enHref(a) {
+    if (a.classList.contains('lang')) return;
+    var h = a.getAttribute('href'); if (!h || /^(mailto:|tel:|javascript:|#)/.test(h)) return;
+    var u; try { u = new URL(h, document.baseURI) } catch (e) { return }
+    if (u.origin !== location.origin || u.pathname.indexOf('/en/') === 0) return;
+    if (I18.pages.indexOf(u.pathname) >= 0) a.setAttribute('href', '/en' + u.pathname + u.search + u.hash);
+  }
+  function trEl(root) {
+    if (root.nodeType === 3) { var v = tr(root.nodeValue); if (v !== root.nodeValue) root.nodeValue = v; return }
+    if (root.nodeType !== 1 || /^(SCRIPT|STYLE)$/.test(root.tagName)) return;
+    var w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode: function (n) { return n.parentNode && /^(SCRIPT|STYLE)$/.test(n.parentNode.tagName) ? 2 : 1 } }), n;
+    while ((n = w.nextNode())) { var v = tr(n.nodeValue); if (v !== n.nodeValue) n.nodeValue = v }
+    [root].concat([].slice.call(root.querySelectorAll('[title],[aria-label],[placeholder],[alt],a[href]'))).forEach(function (el) {
+      if (!el.getAttribute) return;
+      ['title', 'aria-label', 'placeholder', 'alt'].forEach(function (k) { var v = el.getAttribute(k); if (v) { var t = tr(v); if (t !== v) el.setAttribute(k, t) } });
+      if (el.tagName === 'A') enHref(el);
+    });
+  }
+  var i18nReady = !EN ? Promise.resolve() : fetch('/assets/i18n-en.json').then(function (r) { return r.json() }).then(function (d) {
+    I18 = { t: d.t, p: d.p.map(function (x) { return [new RegExp('^' + x[0] + '$'), x[1]] }), pages: d.pages };
+    new MutationObserver(function (ms) { ms.forEach(function (m) { [].forEach.call(m.addedNodes, trEl) }) }).observe(document.body, { childList: true, subtree: true });
+  }).catch(function () { EN = false });
   frame();
   searchInit();
-  Promise.all(['news', 'agenda', 'amtlich', 'meta'].map(get)).then(function (r) {
+  Promise.all(['news', 'agenda', 'amtlich', 'meta'].map(get).concat([i18nReady])).then(function (r) {
     D = { news: r[0] || [], agenda: r[1] || [], amtlich: r[2] || [], meta: r[3] || {} };
     // GGR-Meldungen erscheinen nur unter «Politik», nicht auf den anderen Seiten
     var GGR = /Grosse[nr]? Gemeinderat|\bGGR\b/i, noGgr = function (x) { return !GGR.test(x.title || '') };

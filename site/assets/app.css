@@ -632,3 +632,8 @@ nav a[aria-current="page"]::after{transform:scaleX(1);opacity:1}
 .mbox{display:flex;gap:16px;align-items:flex-start;padding:18px 20px;border-radius:14px;background:var(--surface);box-shadow:0 2px 14px rgba(14,26,38,.08)}
 .mic{flex:none;display:flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:10px;background:var(--tint);color:var(--brand)}
 .mbox .mc strong{font-size:19px}.mbox .mc span:last-child{font-size:16px;color:var(--fg)}
+/* Sprachumschalter */
+nav a.lang{align-self:center;padding:4px 10px;border:1.5px solid var(--line-strong);border-radius:999px;font-size:14px;font-weight:700;letter-spacing:.04em;color:var(--fg)}
+nav a.lang::after{display:none}
+nav a.lang:hover{border-color:var(--brand);color:var(--brand)}
+@media (max-width:480px){.v2 nav a.lang,nav a.lang{padding:2px 8px;font-size:13px}}
