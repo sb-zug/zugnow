@@ -245,6 +245,8 @@ def build():
     pages.update(wohnen.build_wohnen(pages["agenda.html"]))
     import dossiers
     pages.update(dossiers.build_dossiers(pages["agenda.html"], pages["politik.html"], news=load("news", []), amtlich=load("amtlich", [])))
+    import startb
+    pages.update(startb.build_start_b(pages["index.html"], pol_news))
     for name, doc in pages.items():
         if name.endswith(".html"):
             doc = doc.replace("</div></div></footer>", "</div>" + hubs.FOOTER_COL + "</div></footer>", 1)
