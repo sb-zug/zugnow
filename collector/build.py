@@ -22,6 +22,8 @@ TODAY = NOW.date()
 WD = ["MO", "DI", "MI", "DO", "FR", "SA", "SO"]
 WDL = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
 MO = ["JAN", "FEB", "MÄR", "APR", "MAI", "JUN", "JUL", "AUG", "SEP", "OKT", "NOV", "DEZ"]
+# Hauptseiten liegen seit 2.11.2026 unter /agenda/ usw.; agenda.html etc. sind Weiterleitungen
+PATHS = {f"{n}.html": f"{n}/index.html" for n in ("agenda", "news", "amtlich", "politik")}
 GGR = re.compile(r"Grosse[nr]? Gemeinderat|\bGGR\b", re.I)
 EXT = ('<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" '
        'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>')
@@ -122,7 +124,7 @@ def tcard(e, show_day):
     d = dt(e["start"]).date()
     t = "ganztags" if e.get("allday") else hm(e["start"])
     im = f'<div class="tim">{img(e["image"])}</div>' if e.get("image") else f'<div class="tim nob c-{esc(e.get("cat") or "weitere")}"><span>{esc(e.get("catLabel"))}</span></div>'
-    return (f'<a class="tcard" href="{esc(e.get("page") or "agenda.html#ev-" + e["id"])}">{im}<div class="tb"><span class="tm">{(dshort(d) + " · " + t) if show_day else t}</span>'
+    return (f'<a class="tcard" href="{esc(e.get("page") or "agenda/#ev-" + e["id"])}">{im}<div class="tb"><span class="tm">{(dshort(d) + " · " + t) if show_day else t}</span>'
             f'<strong>{esc(e["title"])}</strong><span class="ts"><span>{esc(e.get("place"))} · {esc(e.get("catLabel"))}</span>{CHEVR}</span></div></a>')
 
 
@@ -153,7 +155,7 @@ def build():
     if OUT.exists():
         shutil.rmtree(OUT)
     shutil.copytree(SRC, OUT)
-    pages = {p: (OUT / p).read_text(encoding="utf-8") for p in ["index.html", "agenda.html", "news.html", "amtlich.html", "politik.html"]}
+    pages = {p: (OUT / PATHS.get(p, p)).read_text(encoding="utf-8") for p in ["index.html", "agenda.html", "news.html", "amtlich.html", "politik.html"]}
 
     # Startseite: Agenda heute (wie app.js: kommende zuerst, Bilder vorne), News, Themen
     upcoming = [e for e in events if not e.get("cancelled") and not over(e)]
@@ -190,7 +192,7 @@ def build():
     pick.sort(key=lambda e: e["start"])
     p = fill(p, "wkBadgeN", f'{len(wk)} {"Anlass" if len(wk) == 1 else "Anlässe"} →')
     p = fill(p, "wkCards", "".join(
-        f'<a href="{esc(e.get("page") or "agenda.html#ev-" + e["id"])}"><div class="ph">{img(e.get("image"))}<span class="when">{dshort(dt(e["start"]).date())} · {"ganztags" if e.get("allday") else hm(e["start"])}</span></div>'
+        f'<a href="{esc(e.get("page") or "agenda/#ev-" + e["id"])}"><div class="ph">{img(e.get("image"))}<span class="when">{dshort(dt(e["start"]).date())} · {"ganztags" if e.get("allday") else hm(e["start"])}</span></div>'
         f'<span class="eyebrow">{esc(e.get("catLabel"))}</span><strong>{esc(e["title"])}</strong><span class="s">{esc(e.get("place"))}</span></a>' for e in pick))
     lauf, keys = [], set()
     for e in ongoing:
@@ -246,6 +248,7 @@ def build():
     for name, doc in pages.items():
         if name.endswith(".html"):
             doc = doc.replace("</div></div></footer>", "</div>" + hubs.FOOTER_COL + "</div></footer>", 1)
+        name = PATHS.get(name, name)
         (OUT / name).parent.mkdir(parents=True, exist_ok=True)
         (OUT / name).write_text(doc, encoding="utf-8")
     (OUT / "sitemap.xml").write_text(hubs.sitemap(pages), encoding="utf-8")

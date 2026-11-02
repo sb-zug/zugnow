@@ -122,7 +122,7 @@ def page(frame, e, same_day):
     more = [x for x in same_day if x is not e][:8]
     body = (
         f'<div class="pagehead evhead">'
-        + H._crumb(("Agenda", "agenda.html"), (f"{d.day}.{d.month}.{d.year}", None))
+        + H._crumb(("Agenda", "agenda/"), (f"{d.day}.{d.month}.{d.year}", None))
         + (f'<span class="tag off" style="align-self:flex-start">Abgesagt</span>' if e.get("cancelled") else f'<span class="eyebrow">{B.esc(e.get("catLabel"))} · {B.esc(e.get("place"))}</span>')
         + f'<h1>{B.esc(e["title"])}</h1><p class="evwhen">{B.esc(when)}</p></div>'
         + '<section class="block evd"><div class="evbody">'
@@ -137,18 +137,18 @@ def page(frame, e, same_day):
     )
     if more:
         body += (f'<section class="block"><div class="shead"><h2>Mehr am {WDAY[d.weekday()]}, {d.day}.{d.month}.</h2>'
-                 f'<a href="agenda.html">Ganze Agenda →</a></div><div class="amtlist">'
+                 f'<a href="agenda/">Ganze Agenda →</a></div><div class="amtlist">'
                  + "".join(f'<a href="{x["page"]}"{"" if x.get("allday") else " data-end=" + chr(34) + B.esc(x.get("end") or x["start"]) + chr(34)}>'
                            f'<span class="d">{"ganztags" if x.get("allday") else B.hm(x["start"])}</span>'
                            f'<span class="t">{B.esc(x["title"])}</span><span class="o">{B.esc(x.get("place"))} · {B.esc(x.get("catLabel"))}</span></a>' for x in more)
                  + "</div></section>")
-    links = ['<a href="agenda.html">Ganze Agenda →</a>']
+    links = ['<a href="agenda/">Ganze Agenda →</a>']
     if wa <= d <= wb:
         links.insert(0, '<a href="wochenende/">Alles am Wochenende →</a>')
     body += f'<section class="block"><p>{" · ".join(links)}</p></section>'
     title = f'{e["title"]} – {d.day}.{d.month}.{d.year}, {e.get("place") or "Zug"}'
     desc = (txt[:150].rsplit(" ", 1)[0] + " …") if len(txt) > 155 else (txt or f'{when} in {e.get("place") or "Zug"}.')
-    html = H._page(frame, e["page"], f"{title} | zug.now", f"{when} · {desc}", body, nav="agenda.html", index=idx, image=e.get("image"))
+    html = H._page(frame, e["page"], f"{title} | zug.now", f"{when} · {desc}", body, nav="agenda/", index=idx, image=e.get("image"))
     html = html.replace("</head>", f'<script type="application/ld+json">{jsonld(e)}</script>\n</head>', 1)
     if idx:
         _indexed.append(e["page"])
@@ -165,8 +165,5 @@ def pages(agenda_html, events):
         out[e["page"] + "index.html"] = page(frame, e, by_day[B.dt(e["start"]).date()])
         out[e["page"] + "termin.ics"] = ics(e)
     # /agenda/ selbst → Agenda-Seite
-    out["agenda/index.html"] = ('<!doctype html><html lang="de-CH"><head><meta charset="utf-8"><title>Agenda Stadt Zug – zug.now</title>'
-                                '<link rel="canonical" href="https://zug.now/agenda.html"><meta name="robots" content="noindex">'
-                                '<meta http-equiv="refresh" content="0; url=/agenda.html"></head><body><a href="/agenda.html">Zur Agenda</a></body></html>')
     print(f"Einzelseiten: {len(events)} Anlässe, davon {len(_indexed)} indexierbar")
     return out

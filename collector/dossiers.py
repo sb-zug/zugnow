@@ -117,7 +117,7 @@ def build_dossiers(agenda_html, politik_html, news, amtlich):
                      f'<span class="sub">{B.esc(t["kurz"].split(". ")[0].rstrip(".") + ".")}</span>{nx}<span class="cnt">{cnt}</span></a>')
 
         body = (f'<div class="pagehead"><span class="eyebrow">Politisches Dossier</span><h1>{B.esc(t["titel"])}</h1><p>{B.esc(t["kurz"])}</p>'
-                + H._crumb(("Politik", "politik.html"), (t["titel"], None)) + "</div>")
+                + H._crumb(("Politik", "politik/"), (t["titel"], None)) + "</div>")
         if gs or vs:
             body += '<section class="block"><div class="shead"><h2>Was gerade läuft</h2><span>Geschäfte und Vorhaben</span></div>'
             if gs:
@@ -128,7 +128,7 @@ def build_dossiers(agenda_html, politik_html, news, amtlich):
         if ges:
             body += ('<section class="block"><div class="shead"><h2>Aus dem Parlament</h2><span>Vorlagen und Vorstösse im Ratsinfo</span></div>'
                      '<div class="glist2">' + "".join(_ges_row(k, v) for k, v in ges) + '</div>'
-                     '<p class="note">Automatisch aus dem Ratsinformationssystem zugeordnet. <a href="politik.html#pGes">Alle Geschäfte →</a></p></section>')
+                     '<p class="note">Automatisch aus dem Ratsinformationssystem zugeordnet. <a href="politik/#pGes">Alle Geschäfte →</a></p></section>')
         # Parteien
         body += '<section class="block"><div class="shead"><h2>Das sagen die Parteien</h2><span>Meldungen zum Thema</span></div>'
         if posts:
@@ -155,9 +155,9 @@ def build_dossiers(agenda_html, politik_html, news, amtlich):
                  + "</section>")
         others = " · ".join(f'<a href="/politik/{o["slug"]}/">{B.esc(o["titel"])}</a>' for o in themen if o is not t)
         body += (f'<section class="block"><p class="note">Stand {stand}. Redaktionell aus öffentlichen Quellen zusammengestellt, Meldungen automatisch zugeordnet. '
-                 f'Massgebend sind die amtlichen Publikationen.</p><p><a href="politik.html">← Politik</a> · Weitere Dossiers: {others}</p></section>')
+                 f'Massgebend sind die amtlichen Publikationen.</p><p><a href="politik/">← Politik</a> · Weitere Dossiers: {others}</p></section>')
         desc = f'{t["titel"]} in der Stadt Zug: laufende Geschäfte, Vorhaben, Abstimmungen und was die Parteien sagen – an einem Ort.'
-        page = H._page(frame, f'politik/{t["slug"]}/', f'{t["titel"]} – Politik Stadt Zug | zug.now', desc, body, nav="politik.html",
+        page = H._page(frame, f'politik/{t["slug"]}/', f'{t["titel"]} – Politik Stadt Zug | zug.now', desc, body, nav="politik/",
                        index=bool(n_items or ges or len(posts) + len(meld) >= 3))
         pages[f'politik/{t["slug"]}/index.html'] = page.replace("</body>", FILTER_JS + "\n</body>", 1)
 

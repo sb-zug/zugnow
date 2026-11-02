@@ -54,7 +54,7 @@ def _mitreden(projekte, pol_news, politik):
     if nv and nv >= B.TODAY:
         k = len([v for v in politik.get("upcoming") or [] if v.get("date") == politik.get("nextVoteDate")])
         rows.append((nv, nv, False, "Abstimmung", "Abstimmungssonntag",
-                     f'{k} {"Vorlage" if k == 1 else "Vorlagen"} · Unterlagen und Resultate' if k else "Vorlagen werden aufgeschaltet", "politik.html#pAbst"))
+                     f'{k} {"Vorlage" if k == 1 else "Vorlagen"} · Unterlagen und Resultate' if k else "Vorlagen werden aufgeschaltet", "politik/#pAbst"))
     rows.sort(key=lambda r: r[0])
     if not rows:
         return ""
@@ -96,7 +96,7 @@ def _parlament(politik):
     if not rows:
         return ""
     return ('<section class="block" aria-labelledby="pTitle"><div class="shead"><h2 id="pTitle">Aus dem Parlament</h2>'
-            '<a href="politik.html#pGes">Alle Geschäfte →</a></div><div class="glist2">'
+            '<a href="politik/#pGes">Alle Geschäfte →</a></div><div class="glist2">'
             + "".join(f'<a class="gr" href="{B.esc(u)}"><span class="d">{B.dlabel(d)}</span><span class="c"><span class="gk">{k}</span>'
                       f'<span class="t">{B.esc(t)}</span>{st}</span></a>' for d, k, t, st, u in rows[:3])
             + "</div></section>")
@@ -114,7 +114,7 @@ def build_start_b(index_html, pol_news):
     p = p.replace('<body data-page="start">', '<body data-page="start" class="v2">', 1)
     nv = _iso(politik.get("nextVoteDate"))
     if nv and nv >= B.TODAY:
-        tile = (f'<a class="iitem ilink" href="politik.html#pAbst"><span class="iic cal">{VOTE_ICON}</span>'
+        tile = (f'<a class="iitem ilink" href="politik/#pAbst"><span class="iic cal">{VOTE_ICON}</span>'
                 f'<span class="itx"><strong>{B.WDL[nv.weekday()]} {nv.day}.{nv.month}.</strong><span>Abstimmung</span></span>{B.CHEVR.replace("<svg", "<svg class=\"ichev\"", 1)}</a>')
         p = p.replace("</a></div></div></div></div>\n<main", "</a>" + tile + "</div></div></div></div>\n<main", 1)
     extra = _mitreden(projekte, pol_news, politik) + _wandel(projekte)

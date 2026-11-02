@@ -42,7 +42,7 @@ ORTE = [
 
 FOOTER_COL = ('<div class="col"><span style="font-weight:600;color:var(--fg)">Rubriken</span>'
               '<span><a href="/wochenende/">Wochenende in Zug</a> · <a href="/orte/">Orte &amp; Kulturhäuser</a> · '
-              '<a href="/baugesuche/">Baugesuche</a> · <a href="/wandel/">Wie sich Zug verändert</a> · <a href="/wohnen/">Günstig wohnen</a> · <a href="/politik.html#pDos">Politische Dossiers</a></span>'
+              '<a href="/baugesuche/">Baugesuche</a> · <a href="/wandel/">Wie sich Zug verändert</a> · <a href="/wohnen/">Günstig wohnen</a> · <a href="/politik/#pDos">Politische Dossiers</a></span>'
               '<span>' + " · ".join(f'<a href="/orte/{o[0]}/">{o[2]}</a>' for o in ORTE[:5]) + '</span></div>')
 
 _index = set()  # Seiten, die in die Sitemap gehören
@@ -136,7 +136,7 @@ def wochenende(frame, events, ongoing):
             f'<p>Was läuft am Wochenende in der Stadt Zug? {span}: {_n(len(evs), "Anlass", "Anlässe")} – Konzerte, Theater, '
             'Ausstellungen, Märkte, Sport und Angebote für Familien. Automatisch aus dem offiziellen Veranstaltungskalender '
             'und den Programmen der Kulturhäuser, zweimal täglich aktualisiert.</p>'
-            + _crumb(("Agenda", "agenda.html"), ("Wochenende", None)) + "</div>")
+            + _crumb(("Agenda", "agenda/"), ("Wochenende", None)) + "</div>")
     for d in sorted({B.dt(e["start"]).date() for e in evs}):
         day = [e for e in evs if B.dt(e["start"]).date() == d]
         name = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"][d.weekday()]
@@ -147,10 +147,10 @@ def wochenende(frame, events, ongoing):
     if ongoing:
         body += ('<section class="block"><div class="shead"><h2>Ausstellungen und Laufendes</h2>'
                  '<span>Auch am Wochenende offen</span></div>' + _lauf(ongoing) + "</section>")
-    body += '<section class="block"><p><a href="agenda.html">Ganze Agenda mit Filtern →</a></p></section>'
+    body += '<section class="block"><p><a href="agenda/">Ganze Agenda mit Filtern →</a></p></section>'
     return _page(frame, "wochenende/", "Wochenende in Zug – was läuft? | zug.now",
                  f"Was läuft am Wochenende in der Stadt Zug: {_n(len(evs), 'Anlass', 'Anlässe')} am {span} – Konzerte, Theater, Ausstellungen und mehr, täglich aktualisiert.",
-                 body, nav="agenda.html", index=len(evs) >= MIN_EVENTS)
+                 body, nav="agenda/", index=len(evs) >= MIN_EVENTS)
 
 
 def orte(frame, events, ongoing):
@@ -168,11 +168,11 @@ def orte(frame, events, ongoing):
                  + _evlist(evs, "Zurzeit sind keine kommenden Anlässe gemeldet.") + "</section>")
         if lauf:
             body += '<section class="block"><div class="shead"><h2>Ausstellungen und Laufendes</h2></div>' + _lauf(lauf) + "</section>"
-        body += '<section class="block"><p><a href="orte/">Alle Orte →</a> · <a href="agenda.html">Ganze Agenda →</a></p></section>'
+        body += '<section class="block"><p><a href="orte/">Alle Orte →</a> · <a href="agenda/">Ganze Agenda →</a></p></section>'
         pages[f"orte/{slug}/index.html"] = _page(
             frame, f"orte/{slug}/", f"{name} – Programm und Veranstaltungen | zug.now",
             f"{name}: alle kommenden Veranstaltungen ({_n(len(evs), 'Anlass', 'Anlässe')}) mit Datum, Zeit und Details. Automatisch aktualisiert.",
-            body, nav="agenda.html", index=idx)
+            body, nav="agenda/", index=idx)
         nxt = f" · nächster am {B.dshort(B.dt(evs[0]['start']).date())}" if evs else ""
         cards.append(f'<a href="orte/{slug}/"><strong>{B.esc(name)}</strong><span>{_n(len(evs), "Anlass", "Anlässe")}{nxt}</span></a>')
     body = ('<div class="pagehead"><h1>Orte und Kulturhäuser in Zug</h1>'
@@ -182,7 +182,7 @@ def orte(frame, events, ongoing):
             '<section class="block"><div class="polparties">' + "".join(cards) + "</div></section>")
     pages["orte/index.html"] = _page(frame, "orte/", "Orte und Kulturhäuser in Zug – Programme | zug.now",
                                      "Theater Casino, Galvanik, Kunsthaus, Burg, Bibliothek und Kinos in Zug: alle Programme an einem Ort.",
-                                     body, nav="agenda.html")
+                                     body, nav="agenda/")
     return pages
 
 
@@ -197,17 +197,17 @@ def baugesuche(frame, amtlich, news):
             '<p>Die Stadt Zug publiziert neue Baugesuche im Amtsblatt des Kantons Zug. Während der Auflage können die Pläne '
             'eingesehen werden. Hier stehen die aktuellen Publikationen mit Adresse, automatisch übernommen und zweimal täglich '
             'aktualisiert. Massgebend für Fristen und Auflageort ist die Publikation im Amtsblatt.</p>'
-            + _crumb(("Amtlich", "amtlich.html"), ("Baugesuche", None)) + "</div>"
+            + _crumb(("Amtlich", "amtlich/"), ("Baugesuche", None)) + "</div>"
             f'<section class="block"><div class="shead"><h2>Aktuelle Baugesuche</h2><span>{_n(len(bg), "Publikation", "Publikationen")}</span></div>'
             + (f'<div class="amtlist">{rows}</div>' if bg else '<p class="note">Zurzeit sind keine Baugesuche publiziert.</p>') + "</section>")
     if lists:
         body += ('<section class="block"><div class="shead"><h2>Wöchentliche Übersichten der Stadt</h2><span>stadtzug.ch</span></div><div class="amtlist">'
                  + "".join(f'<a href="{B.esc(n["url"])}"><span class="d">{B.dlabel(n["date"])}</span><span class="t">{B.esc(n["title"])}</span></a>' for n in lists)
                  + "</div></section>")
-    body += '<section class="block"><p><a href="wandel/">Wie sich Zug verändert: alle grossen Vorhaben →</a> · <a href="amtlich.html">Alle amtlichen Publikationen →</a></p></section>'
+    body += '<section class="block"><p><a href="wandel/">Wie sich Zug verändert: alle grossen Vorhaben →</a> · <a href="amtlich/">Alle amtlichen Publikationen →</a></p></section>'
     return _page(frame, "baugesuche/", "Baugesuche Stadt Zug – aktuelle Publikationen | zug.now",
                  f"Aktuelle Baugesuche der Stadt Zug aus dem Amtsblatt: {_n(len(bg), 'Publikation', 'Publikationen')} mit Adresse und Auflagefrist, täglich aktualisiert.",
-                 body, nav="amtlich.html", index=len(bg) + len(lists) >= 1)
+                 body, nav="amtlich/", index=len(bg) + len(lists) >= 1)
 
 
 def build_hubs(agenda_html, events, ongoing, amtlich, all_news):
@@ -220,7 +220,7 @@ def build_hubs(agenda_html, events, ongoing, amtlich, all_news):
 
 
 def sitemap(pages):
-    main = [("", "daily"), ("agenda.html", "daily"), ("news.html", "daily"), ("amtlich.html", "daily"), ("politik.html", "weekly")]
+    main = [("", "daily"), ("agenda/", "daily"), ("news/", "daily"), ("amtlich/", "daily"), ("politik/", "weekly")]
     urls = main + [(p, "daily") for p in sorted(_index)]
     today = B.TODAY.isoformat()
     return ('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'

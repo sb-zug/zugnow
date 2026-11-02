@@ -7,7 +7,7 @@
   var CATS = [['alle', 'Alle'], ['kinder', 'Kinder & Familie'], ['kultur', 'Kultur & Musik'], ['maerkte', 'Märkte & Feste'], ['treff', 'Treffpunkte'], ['sport', 'Sport & Natur'], ['weitere', 'Weitere']];
   var TIMES = [['alle', 'Alle Termine'], ['heute', 'Heute'], ['morgen', 'Morgen'], ['wochenende', 'Wochenende'], ['woche', 'Diese Woche']];
   var PLACES = [['alle', 'Alle Orte'], ['bibliothek', 'Bibliothek Zug'], ['kunsthaus', 'Kunsthaus Zug'], ['burg', 'Museum Burg Zug'], ['musikschule', 'Musikschule'], ['theatercasino', 'Theater Casino'], ['galvanik', 'Galvanik'], ['kino', 'Kino']];
-  var PAGES = [['index.html', 'start', 'Start'], ['agenda.html', 'agenda', 'Agenda'], ['news.html', 'news', 'News'], ['amtlich.html', 'amtlich', 'Amtlich'], ['politik.html', 'politik', 'Politik'], ['wandel/', 'wandel', 'Wandel']];
+  var PAGES = [['/', 'start', 'Start'], ['agenda/', 'agenda', 'Agenda'], ['news/', 'news', 'News'], ['amtlich/', 'amtlich', 'Amtlich'], ['politik/', 'politik', 'Politik'], ['wandel/', 'wandel', 'Wandel']];
   var page = document.body.dataset.page || 'start';
   var D = {};
 
@@ -27,7 +27,7 @@
   function dShort(key) { var p = key.split('-'); return WDL[dowOf(key)] + ' ' + (+p[2]) + '.' + (+p[1]) + '.' }
   function timeLabel(e) { if (e.allday) return 'ganztags'; var a = parts(e.start).hm; return e.end ? a + '–' + parts(e.end).hm : a }
   // Eigene Seite pro Anlass (vom Build vergeben), sonst Anker in der Agenda
-  function evHref(e) { return e.page || 'agenda.html#ev-' + e.id }
+  function evHref(e) { return e.page || 'agenda/#ev-' + e.id }
   function img(src) { return src ? '<img src="' + esc(src) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">' : '' }
   function get(n) { return fetch('data/' + n + '.json', { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json() }).catch(function () { return null }) }
 
@@ -52,7 +52,7 @@
   function frame() {
     if ($('sBtn')) return; // Kopf und Fuss stehen bereits im HTML
     $('hdr').innerHTML =
-      '<header><div class="wrap"><a class="logo" href="index.html" aria-label="zug.now Startseite">zug<span class="dot">.</span><span class="now">now</span></a>' +
+      '<header><div class="wrap"><a class="logo" href="/" aria-label="zug.now Startseite">zug<span class="dot">.</span><span class="now">now</span></a>' +
       '<nav aria-label="Hauptnavigation">' + PAGES.map(function (p) { return '<a href="' + p[0] + '"' + (p[1] === page ? ' aria-current="page"' : '') + '>' + p[2] + '</a>' }).join('') + '</nav>' +
       '<button type="button" class="sbtn" id="sBtn" aria-expanded="false" aria-controls="sPanel" aria-label="Suchen">' + LUPE + '</button></div></header>' +
       '<div class="search" id="sPanel" role="search" hidden><div class="wrap"><label class="vh" for="sIn">Suche in News, Agenda und Amtlichem</label>' +
@@ -62,7 +62,7 @@
       '<div class="infobar"><div class="wrap"><div class="ibox">' +
       '<div class="iitem" id="wx" hidden><span class="iic" id="wxI"></span><span class="itx"><strong id="wxT"></strong><span id="wxD"></span></span></div>' +
       '<div class="iitem"><span class="iic">' + IC.sunset + '</span><span class="itx"><span>Sonnen&shy;untergang</span><span id="sunT">–</span></span></div>' +
-      '<a class="iitem ilink" href="agenda.html#heute"><span class="iic cal">' + IC.cal + '</span><span class="itx"><strong id="cntN">–</strong><span>heute</span></span>' +
+      '<a class="iitem ilink" href="agenda/#heute"><span class="iic cal">' + IC.cal + '</span><span class="itx"><strong id="cntN">–</strong><span>heute</span></span>' +
       '<svg class="ichev" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>' +
       '</div></div></div>';
     var intro = $('intro'); if (intro) $('hdr').insertBefore(intro, $('hdr').querySelector('.infobar'));
@@ -129,7 +129,7 @@
     // Anlässe mit Bild zuerst, innerhalb chronologisch
     list = list.filter(function (e) { return e.image }).concat(list.filter(function (e) { return !e.image }));
     $('hTitle').textContent = 'Agenda';
-    if ($('hMore')) $('hMore').href = 'agenda.html#' + hDay;
+    if ($('hMore')) $('hMore').href = 'agenda/#' + hDay;
     el.setAttribute('aria-label', 'Anlässe ' + { heute: 'heute', morgen: 'morgen', wochenende: 'am Wochenende' }[hDay]);
     var oneDay = hDay !== 'wochenende';
     el.innerHTML = list.map(function (e) {
@@ -208,7 +208,7 @@
     var el = $('themes'); if (!el) return;
     el.innerHTML = NTOPICS.filter(function (t) { return TICON[t[0]] }).map(function (t) {
       var n = D.news.filter(function (x) { return x.topic === t[0] }).length;
-      return '<a class="theme th-' + t[0] + '" href="news.html#' + t[0] + '"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + TICON[t[0]] + '</svg>' +
+      return '<a class="theme th-' + t[0] + '" href="news/#' + t[0] + '"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + TICON[t[0]] + '</svg>' +
         '<span class="tn">' + t[1] + '</span><span class="tc">' + (n ? n + (n === 1 ? ' Meldung' : ' Meldungen') : 'aktuell keine') + '</span></a>';
     }).join('');
   }
@@ -222,7 +222,7 @@
       ch.innerHTML = NTOPICS.filter(function (d) { return d[0] === 'alle' || cnt(d[0]) }).map(function (d) {
         return '<button type="button" class="chip" data-v="' + d[0] + '" aria-pressed="' + (st.ntopic === d[0]) + '">' + d[1] + '<span class="n">' + cnt(d[0]) + '</span></button>'
       }).join('');
-      ch.onclick = function (ev) { var b = ev.target.closest('.chip'); if (!b) return; st.ntopic = b.dataset.v; history.replaceState(null, '', st.ntopic === 'alle' ? location.pathname : '#' + st.ntopic); renderNewsPage() };
+      ch.onclick = function (ev) { var b = ev.target.closest('.chip'); if (!b) return; st.ntopic = b.dataset.v; history.replaceState(null, '', location.pathname + (st.ntopic === 'alle' ? '' : '#' + st.ntopic)); renderNewsPage() };
     }
     el.innerHTML = D.news.filter(function (n) { return st.ntopic === 'alle' || n.topic === st.ntopic }).map(newsRow).join('') || '<p style="color:var(--soft);padding:18px 0">Keine Meldungen in dieser Kategorie.</p>';
   }
@@ -370,7 +370,7 @@
     $('polTiles').innerHTML =
       '<a class="ptile dark" href="' + esc(sess ? sess.n.url : L.livestream) + '"><span class="pk">Nächste GGR-Sitzung</span><strong>' + (sess ? dLong(sess.d) : 'Termin folgt') + '</strong>' +
         '<span>Kantonsratssaal · öffentlich mit Livestream</span><em>' + (sess ? 'Traktanden ansehen →' : 'Zum Livestream →') + '</em></a>' +
-      '<a class="ptile" href="#pAbst"><span class="pk">Nächste Abstimmung</span><strong>' + (nv ? dLong(nv) : 'Termin folgt') + '</strong>' +
+      '<a class="ptile" href="politik/#pAbst"><span class="pk">Nächste Abstimmung</span><strong>' + (nv ? dLong(nv) : 'Termin folgt') + '</strong>' +
         '<span>' + (up.length ? up.length + (up.length === 1 ? ' Vorlage' : ' Vorlagen') : 'Vorlagen werden aufgeschaltet') + '</span><em>Zu den Abstimmungen →</em></a>' +
       '<a class="ptile" href="' + esc(L.wahlen) + '"><span class="pk">Neue Legislatur</span><strong>' + esc((P.ggr || {}).legislatur || '2027–2030') + '</strong>' +
         '<span>Gewählt am 4. Oktober 2026</span><em>Wahlresultate →</em></a>';
@@ -544,9 +544,9 @@
       cnt.textContent = n ? n + (n === 1 ? ' Treffer' : ' Treffer') + ' für «' + inp.value.trim() + '»' : 'Keine Treffer für «' + inp.value.trim() + '». Versuche einen anderen Begriff.';
       res.innerHTML =
         group('Agenda', ev.slice(0, 6).map(function (x) { var e = x.e, p = parts(e.start);
-          return row(e.ongoing ? 'agenda.html#laufend' : evHref(e), e.ongoing ? 'Laufend' : dShort(p.key) + ' ' + (e.allday ? '' : p.hm), e.title, e.place) }), ev.length > 6 ? ['agenda.html', 'Ganze Agenda →'] : null) +
-        group('News', nw.slice(0, 5).map(function (x) { return row(x.e.url, esc(x.e.type) + ' · ' + dLabel(x.e.date), x.e.title, '') }), nw.length > 5 ? ['news.html', 'Alle News →'] : null) +
-        group('Amtlich', am.slice(0, 5).map(function (x) { return row(x.e.url, esc(x.e.label) + ' · ' + dLabel(x.e.date), x.e.title, '') }), am.length > 5 ? ['amtlich.html', 'Alle Publikationen →'] : null);
+          return row(e.ongoing ? 'agenda/#laufend' : evHref(e), e.ongoing ? 'Laufend' : dShort(p.key) + ' ' + (e.allday ? '' : p.hm), e.title, e.place) }), ev.length > 6 ? ['agenda/', 'Ganze Agenda →'] : null) +
+        group('News', nw.slice(0, 5).map(function (x) { return row(x.e.url, esc(x.e.type) + ' · ' + dLabel(x.e.date), x.e.title, '') }), nw.length > 5 ? ['news/', 'Alle News →'] : null) +
+        group('Amtlich', am.slice(0, 5).map(function (x) { return row(x.e.url, esc(x.e.label) + ' · ' + dLabel(x.e.date), x.e.title, '') }), am.length > 5 ? ['amtlich/', 'Alle Publikationen →'] : null);
     }
     searchInit.run = run;
   }

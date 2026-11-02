@@ -166,7 +166,7 @@ def build_wandel(agenda_html, news, amtlich):
              f'<div class="wgrid">{"".join(_card(p) for p in sorted(projekte, key=lambda p: p["phase"]))}</div></section>')
     body += ('<section class="block"><p class="note">Redaktionell zusammengestellt aus öffentlichen Quellen (Stadt Zug, Baudepartement, Ratsinfo, '
              'Projektwebsites). Meldungen aus News und Amtsblatt werden automatisch zugeordnet. Massgebend sind die amtlichen Publikationen. '
-             '<a href="wohnen/">Günstig wohnen →</a> · <a href="baugesuche/">Aktuelle Baugesuche →</a> · <a href="politik.html">Politik →</a></p></section>')
+             '<a href="wohnen/">Günstig wohnen →</a> · <a href="baugesuche/">Aktuelle Baugesuche →</a> · <a href="politik/">Politik →</a></p></section>')
     head_extra = '<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">'
     page = H._page(frame, "wandel/", "Wie sich Zug verändert – Bauprojekte und Planung | zug.now",
                    "LG-Areal, Metalli, Lorzenallmend, Hallenbad, Schulhäuser: alle grossen Vorhaben der Stadt Zug mit Stand, "
