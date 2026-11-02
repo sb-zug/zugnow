@@ -36,6 +36,12 @@ jobs:
           EVENTFROG_API_KEY: ${{ secrets.EVENTFROG_API_KEY }}
         run: python collector/collect.py
 
+      - name: Übersetzen für /en/ (DeepL, mit Obergrenze)
+        if: github.event_name != 'push'
+        env:
+          DEEPL_KEY: ${{ secrets.DEEPL_KEY }}
+        run: python collector/translate.py || true
+
       - name: Seiten vorrendern (SEO)
         run: python collector/build.py || (rm -rf _site && cp -r site _site)
 
