@@ -170,7 +170,7 @@ def build_wandel(agenda_html, news, amtlich):
     head_extra = '<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">'
     page = H._page(frame, "wandel/", "Wie sich Zug verändert – Bauprojekte und Planung | zug.now",
                    "LG-Areal, Metalli, Lorzenallmend, Hallenbad, Schulhäuser: alle grossen Vorhaben der Stadt Zug mit Stand, "
-                   "nächsten Schritten und Mitwirkung auf einen Blick.", body, nav=None)
+                   "nächsten Schritten und Mitwirkung auf einen Blick.", body, nav="wandel/")
     page = page.replace("</head>", head_extra + "\n</head>", 1).replace("</body>", MAP_JS + "\n</body>", 1)
     pages["wandel/index.html"] = page
 

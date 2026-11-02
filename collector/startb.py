@@ -1,9 +1,9 @@
-"""zug.now – Startseite Variante B (/start-b.html), zum Vergleich mit der aktuellen Startseite.
+"""zug.now – Startseite (ehemals Variante B, seit 2.11.2026).
 
 Baut auf der fertig vorgerenderten index.html auf (Kopf, Infoleiste, Agenda, News, Kino bleiben gleich)
 und ergänzt: Abstimmungs-Kachel in der Infoleiste, «Jetzt mitreden», «Wie sich Zug verändert»
 (Wohnzähler + 3 Vorhaben) und «Aus dem Parlament» (Ratsinfo). «Themen aus Zug» entfällt.
-noindex, nicht in der Sitemap. Wird von build.py aufgerufen.
+Wird von build.py aufgerufen.
 """
 import re
 from datetime import date
@@ -107,14 +107,11 @@ VOTE_ICON = ('<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke
 
 
 def build_start_b(index_html, pol_news):
+    """Neue Startseite (seit 2.11.2026). start-b.html leitet auf / um."""
     politik = B.load("politik", {})
     projekte = (B.load("wandel", {}).get("projekte") or [])
     p = index_html
-    p = p.replace("<title>zug.now – Was heute in Zug läuft</title>", "<title>zug.now – Startseite Variante B</title>", 1)
-    p = p.replace("</head>", '<meta name="robots" content="noindex">\n</head>', 1)
     p = p.replace('<body data-page="start">', '<body data-page="start" class="v2">', 1)
-    p = p.replace('<a href="politik.html">Politik</a></nav>', '<a href="politik.html">Politik</a><a href="wandel/">Wandel</a></nav>', 1)
-    p = p.replace('<section class="intro"', '<div class="vbanner"><div class="wrap">Variante B · <a href="index.html">Zur aktuellen Startseite →</a></div></div><section class="intro"', 1)
     nv = _iso(politik.get("nextVoteDate"))
     if nv and nv >= B.TODAY:
         tile = (f'<a class="iitem ilink" href="politik.html#pAbst"><span class="iic cal">{VOTE_ICON}</span>'
@@ -124,4 +121,7 @@ def build_start_b(index_html, pol_news):
     p = re.sub(r'(<div class="swipe" id="todayList"[^>]*>.*?</div>\s*</section>)', lambda m: m.group(1) + "\n" + extra, p, count=1, flags=re.S)
     p = re.sub(r'<section class="block" aria-labelledby="thTitle">.*?</section>', lambda m: "", p, count=1, flags=re.S)
     p = re.sub(r'(<section class="block hn".*?</section>)', lambda m: m.group(1) + "\n" + _parlament(politik), p, count=1, flags=re.S)
-    return {"start-b.html": p}
+    redirect = ('<!doctype html><html lang="de-CH"><head><meta charset="utf-8"><title>zug.now</title>'
+                '<meta name="robots" content="noindex"><link rel="canonical" href="https://zug.now/">'
+                '<meta http-equiv="refresh" content="0; url=/"></head><body><a href="/">Zur Startseite</a></body></html>')
+    return {"index.html": p, "start-b.html": redirect}

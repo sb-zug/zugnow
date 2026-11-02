@@ -598,9 +598,7 @@ nav a[aria-current="page"]::after{transform:scaleX(1);opacity:1}
 .glist2 .gmore{margin-top:16px;align-self:flex-start}
 @media (max-width:620px){.gr{grid-template-columns:minmax(0,1fr)}.gr .d{padding-top:0}}
 
-/* ---------- Startseite Variante B (start-b.html) ---------- */
-.vbanner{background:var(--tint);font-size:14px;color:var(--muted)}
-.vbanner .wrap{padding-block:8px}
+/* ---------- Startseite (body.v2) ---------- */
 .v2 .ibox{grid-template-columns:repeat(4,minmax(0,1fr))}
 .v2 .iitem{padding:6px 22px;gap:14px}
 .v2 section.block{margin-top:52px}

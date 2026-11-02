@@ -175,10 +175,6 @@ def build():
                      f'<a href="{esc(n["url"])}"><span class="bc"><span class="beye">{esc(topic_of(n))} · {int(n["date"][8:10])}.{int(n["date"][5:7])}.</span><strong>{esc(n["title"])}</strong>'
                      + (f'<span class="bl">{esc(n["lead"])}</span>' if n.get("lead") else "") + f'<span class="bsrc">Stadt Zug {EXT}</span></span>'
                      + (f'<span class="bth">{img(n["image"])}</span>' if n.get("image") else "") + "</a>" for n in rest) + "</div>")
-    p = fill(p, "themes", "".join(
-        f'<a class="theme th-{k}" href="news.html#{k}"><span class="tn">{v}</span><span class="tc">'
-        + (lambda c: f'{c} {"Meldung" if c == 1 else "Meldungen"}' if c else "aktuell keine")(sum(1 for n in news if n.get("topic") == k))
-        + "</span></a>" for k, v in NTOPICS))
     pages["index.html"] = p
 
     # Agenda: Liste (erste 20 wie app.js), Wochenende, Laufend

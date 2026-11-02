@@ -7,7 +7,7 @@
   var CATS = [['alle', 'Alle'], ['kinder', 'Kinder & Familie'], ['kultur', 'Kultur & Musik'], ['maerkte', 'Märkte & Feste'], ['treff', 'Treffpunkte'], ['sport', 'Sport & Natur'], ['weitere', 'Weitere']];
   var TIMES = [['alle', 'Alle Termine'], ['heute', 'Heute'], ['morgen', 'Morgen'], ['wochenende', 'Wochenende'], ['woche', 'Diese Woche']];
   var PLACES = [['alle', 'Alle Orte'], ['bibliothek', 'Bibliothek Zug'], ['kunsthaus', 'Kunsthaus Zug'], ['burg', 'Museum Burg Zug'], ['musikschule', 'Musikschule'], ['theatercasino', 'Theater Casino'], ['galvanik', 'Galvanik'], ['kino', 'Kino']];
-  var PAGES = [['index.html', 'start', 'Start'], ['agenda.html', 'agenda', 'Agenda'], ['news.html', 'news', 'News'], ['amtlich.html', 'amtlich', 'Amtlich'], ['politik.html', 'politik', 'Politik']];
+  var PAGES = [['index.html', 'start', 'Start'], ['agenda.html', 'agenda', 'Agenda'], ['news.html', 'news', 'News'], ['amtlich.html', 'amtlich', 'Amtlich'], ['politik.html', 'politik', 'Politik'], ['wandel/', 'wandel', 'Wandel']];
   var page = document.body.dataset.page || 'start';
   var D = {};
 
