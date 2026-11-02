@@ -447,5 +447,33 @@
  "https://veranstaltungen.zug.ch/event/ausstellung-100-jahre-institut-montana-eine-reise-durch-die-geschichte-2026-11-02": "https://veranstaltungen.zug.ch/storage/a04d21ecc730563774af0f469888d05033673a743d175e2f8b6a5562af3961bf",
  "https://veranstaltungen.zug.ch/event/dauerausstellung-museum-burg-zug-1-2026-11-07": "https://veranstaltungen.zug.ch/storage/225f0feeb4333aec31b5e4cf07f396b332d8abbfaa2080f7684969d053a25d01",
  "https://veranstaltungen.zug.ch/event/kyra-tabea-balderer-raphael-egil-chamber-chamber-2026-11-07": "https://veranstaltungen.zug.ch/storage/f23cc043c5b25cd6897eeafa82349655f016c90d0238ac29a9d6114df192bda2",
- "https://veranstaltungen.zug.ch/event/reise-in-die-vergangenheit-1-2026-11-08": "https://veranstaltungen.zug.ch/storage/daf45d895c123c1b82bfd27a9c450fce83637f5a34c7837e9b9e3df395db6ac6"
+ "https://veranstaltungen.zug.ch/event/reise-in-die-vergangenheit-1-2026-11-08": "https://veranstaltungen.zug.ch/storage/daf45d895c123c1b82bfd27a9c450fce83637f5a34c7837e9b9e3df395db6ac6",
+ "kino:132711": {
+  "image": "https://progi.kinozug.ch/image.php?ImageId=161255",
+  "duration": "130 Min.",
+  "age": "empfohlen ab 12 Jahren",
+  "credits": "Von Travis Knight",
+  "text": "Nachdem ihr kleiner Bruder von einem Schwarm Krähen entführt worden ist, begibt sich die 12-jährige Prue auf eine abenteuerliche Rettungsmission in die „Undurchdringliche Wildnis“ – einen verzauberten Wald, der sich am Rande von Portland, Oregon, verbirgt. Gemeinsam mit ihrem tollpatschigen Mitschüler Curtis betritt sie eine Welt voller sprechender Tiere, Magie und uralter Mächte. Als die beiden in einen Konflikt geraten, der das Gleichgewicht des Waldes bedroht, entdeckt Prue eine innere Stärke, von der sie niemals geahnt hätte, dass sie in ihr steckt. Wenn sie ihren Bruder retten und das Sch"
+ },
+ "kino:132703": {
+  "image": "https://progi.kinozug.ch/image.php?ImageId=161223",
+  "duration": "107 Min.",
+  "age": "empfohlen ab 14 Jahren",
+  "credits": "Von Anton Corbijn, mit Helen Mirren, Alden Ehrenreich, Olivia Cooke",
+  "text": "Ein geheimnisvoller junger Mann eines New Yorker Verlags wird in die Schweiz geschickt, um die weltberühmte Schriftstellerin Patricia Highsmith davon zu überzeugen, einen letzten Band der Ripley-Reihe zu schreiben."
+ },
+ "kino:132700": {
+  "image": "https://progi.kinozug.ch/image.php?ImageId=161191",
+  "duration": "112 Min.",
+  "age": "empfohlen ab 14 Jahren",
+  "credits": "Von Wim Wenders, mit Peter Zumthor",
+  "text": "Wim Wenders’ neuer Film widmet sich dem Werk eines der einflussreichsten zeitgenössischen Architekten, des Pritzker-Preisträgers Peter Zumthor. Der immersive Ansatz in 3D zeigt seine Architektur aus der Perspektive von Besucher:innen, Nutzer:innen, Bewohner:innen oder Handwerker:innen. Das Publikum erlebt die Gebäude, als könne es sich selbst darin bewegen, und gewinnt ein Verständnis dafür, wie sehr Architektur unsere Wahrnehmung der Welt beeinflusst und unser Leben prägt."
+ },
+ "kino:132706": {
+  "image": "https://progi.kinozug.ch/image.php?ImageId=161230",
+  "duration": "105 Min.",
+  "age": "empfohlen ab 14 Jahren",
+  "credits": "Von Fatih Akin, mit David Schütter, Eren M. Güvercin, Carlotta von Falkenhayn",
+  "text": "Farasha und Faris sind 20, als sie sich auf einer Abiparty begegnen – ein Blick, der alles verändert. Doch noch in derselben Nacht stirbt Farasha. Auf der verzweifelten Suche, Kontakt zu Faris aufzunehmen, findet Farasha einen Weg: Sie kann ihn treffen, jedoch nur in seinen Träumen und nur für 40 Nächte. So wächst ihre Liebe bis zur letzten Nacht."
+ }
 }
