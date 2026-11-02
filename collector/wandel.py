@@ -104,19 +104,34 @@ MAP_JS = """<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crosso
 <script>
 (function(){
   var el=document.getElementById('wmap'); if(!el||!window.L) return;
-  var dark=matchMedia('(prefers-color-scheme: dark)').matches&&document.documentElement.dataset.theme!=='light';
   var map=L.map(el,{scrollWheelZoom:false,zoomControl:true,attributionControl:true}).setView([47.1770,8.5080],14);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/'+(dark?'dark_all':'light_all')+'/{z}/{x}/{y}{r}.png',
-    {maxZoom:18,attribution:'&copy; OpenStreetMap, &copy; CARTO'}).addTo(map);
-  var cs=getComputedStyle(document.documentElement), pts=JSON.parse(document.getElementById('wdata').textContent), b=[];
+  // Landeskarte grau von swisstopo (frei, ohne Schlüssel); Dunkelmodus per CSS-Filter auf .wmap
+  L.tileLayer('https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-grau/default/current/3857/{z}/{x}/{y}.jpeg',
+    {maxZoom:18,attribution:'&copy; <a href="https://www.swisstopo.admin.ch/">swisstopo</a>'}).addTo(map);
+  var cs=getComputedStyle(document.documentElement), pts=JSON.parse(document.getElementById('wdata').textContent), b=[], ms=[];
   pts.forEach(function(p){
     var c=p.phase>=6?cs.getPropertyValue('--ok'):p.phase>=4?cs.getPropertyValue('--brand'):cs.getPropertyValue('--red');
-    var m=L.circleMarker([p.lat,p.lon],{radius:11,weight:3,color:'#fff',fillColor:c.trim(),fillOpacity:1}).addTo(map);
-    m.bindTooltip(p.t,{permanent:true,direction:'right',offset:[10,0],className:'wtip'});
+    var m=L.circleMarker([p.lat,p.lon],{radius:10,weight:3,color:'#fff',fillColor:c.trim(),fillOpacity:1}).addTo(map);
     m.on('click',function(){location.href='wandel/'+p.s+'/';});
-    b.push([p.lat,p.lon]);
+    m._t=p.t; ms.push(m); b.push([p.lat,p.lon]);
   });
+  // Beschriftungen ohne Überlappung: rechts, sonst links, sonst nur beim Antippen/Überfahren
+  function hit(a,r){return a.some(function(q){return !(r.right<q.left||r.left>q.right||r.bottom<q.top||r.top>q.bottom)})}
+  function labels(){
+    var used=[];
+    ms.forEach(function(m){var r=m._path.getBoundingClientRect();used.push({left:r.left-2,right:r.right+2,top:r.top-2,bottom:r.bottom+2})});
+    ms.forEach(function(m){
+      var ok=false;
+      [['right',[10,0]],['left',[-10,0]]].some(function(d){
+        m.unbindTooltip().bindTooltip(m._t,{permanent:true,direction:d[0],offset:d[1],className:'wtip'}).openTooltip();
+        var r=m.getTooltip().getElement().getBoundingClientRect();
+        if(!hit(used,r)){used.push(r);ok=true;return true}
+      });
+      if(!ok) m.unbindTooltip().bindTooltip(m._t,{direction:'top',offset:[0,-10],className:'wtip'});
+    });
+  }
   if(b.length) map.fitBounds(b,{padding:[40,40]});
+  labels(); map.on('zoomend',labels);
 })();
 </script>"""
 
