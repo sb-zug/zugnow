@@ -91,6 +91,22 @@ def _wchip(p):
     return ""
 
 
+MONK = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"]
+MIC = ('<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" '
+       'stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 10.5h7M8.5 14h4.5"/></svg>')
+
+
+def mitreden_card(a, s, p, m):
+    """Karte mit Datumskachel – gleich wie «Jetzt mitreden» auf der Startseite."""
+    live = s == "now"
+    b = _d(m.get("bis"))[0] if m.get("bis") else a
+    d = b if live else a
+    lbl = "Auflage läuft" if live else ("Infoanlass" if "anlass" in m["text"] else "Auflage" if "Auflage" in m["text"] else "Mitwirkung")
+    text = (f"Noch bis {b.day}.{b.month}. · " if live else (f"bis {b.day}.{b.month}. · " if m.get("bis") else "")) + m["text"]
+    return (f'<a class="mi{" live" if live else ""}" href="wandel/{p["slug"]}/"><span class="mt{" live" if live else ""}"><b>{d.day}</b>{MONK[d.month - 1]}</span>'
+            f'<span class="mc"><span class="eyebrow">{B.esc(lbl)}</span><strong>{B.esc(p["titel"])}</strong><span>{B.esc(text)}</span></span></a>')
+
+
 def _card(p):
     m, s = _next(p)
     nx = (f'<span class="nx{" live" if s == "now" else ""}"><b>{"Läuft jetzt" if s == "now" else "Als Nächstes"}</b> '
@@ -153,7 +169,7 @@ def build_wandel(agenda_html, news, amtlich):
             if s in ("now", "next", "later") and a:
                 upcoming.append((a, s, p, m))
     upcoming.sort(key=lambda x: (x[0], x[2]["titel"]))
-    mitreden = [(p, m) for a, s, p, m in upcoming
+    mitreden = [(a, s, p, m) for a, s, p, m in upcoming
                 if re.search(r"Auflage|Mitwirkung|Infoanlass|Informationsanlass", m["text"]) and a <= date(B.TODAY.year + 1, B.TODAY.month, 1)]
 
     body = ('<div class="pagehead"><span class="eyebrow">Stadtentwicklung</span><h1>Wie sich Zug verändert</h1>'
@@ -162,10 +178,8 @@ def build_wandel(agenda_html, news, amtlich):
             'Stadtrat, Parlament, Abstimmungen und Medienmitteilungen an einem Ort.</p>'
             + H._crumb(("Wandel", None)) + "</div>")
     if mitreden:
-        body += ('<section class="block"><div class="mitreden"><span class="eyebrow">Jetzt mitreden</span>'
-                 + "".join(f'<a href="wandel/{p["slug"]}/"><strong>{B.esc(p["titel"])}</strong>'
-                           f'<span>{B.esc(_when(m))} · {B.esc(m["text"])}</span></a>' for p, m in mitreden[:4])
-                 + "</div></section>")
+        body += ('<section class="block"><div class="shead"><h2>Jetzt mitreden</h2><span>Infoanlässe, Auflagen, Mitwirkungen</span></div>'
+                 '<div class="mrow">' + "".join(mitreden_card(a, s, p, m) for a, s, p, m in mitreden[:4]) + "</div></section>")
     pts = [{"s": p["slug"], "t": p["titel"], "lat": p["lat"], "lon": p["lon"], "phase": p["phase"]} for p in projekte if p.get("lat")]
     body += ('<section class="block"><div class="shead"><h2>Die Stadt im Umbau</h2><span>Ungefähre Lage · antippen für das Dossier</span></div>'
              '<div id="wmap" class="wmap" role="img" aria-label="Karte der Vorhaben in der Stadt Zug"></div>'
@@ -207,7 +221,8 @@ def build_wandel(agenda_html, news, amtlich):
             body += (f'<section class="block"><p class="note">Wohnungen: {B.esc(p["wohnen"].get("hinweis"))}. '
                      '<a href="wohnen/">Alle Vorhaben mit günstigen Wohnungen →</a></p></section>')
         if p.get("mitreden"):
-            body += f'<section class="block"><div class="mitreden"><span class="eyebrow">Mitreden</span><p>{B.esc(p["mitreden"])}</p></div></section>'
+            body += ('<section class="block"><div class="mbox"><span class="mic" aria-hidden="true">' + MIC + '</span>'
+                     f'<span class="mc"><span class="eyebrow">Mitreden</span><strong>So kannst du dich einbringen</strong><span>{B.esc(p["mitreden"])}</span></span></div></section>')
         body += f'<section class="block"><div class="shead"><h2>Der Weg bisher – und weiter</h2></div><ol class="wtl dossier">{tl}</ol></section>'
         body += ('<section class="block"><div class="shead"><h2>Aktuelle Meldungen</h2><span>Automatisch aus News und Amtsblatt</span></div>'
                  + (('<div class="amtlist">' + "".join(
