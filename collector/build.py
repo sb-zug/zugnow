@@ -141,7 +141,9 @@ def build():
     politik = load("politik", {})
     no_ggr = lambda x: not GGR.search(x.get("title") or "")
     pol_news = [n for n in news if n.get("topic") == "politik" or GGR.search(n.get("title") or "")]
-    pol_amt = [a for a in amtlich if GGR.search(a.get("title") or "") or re.search("Abstimmung|Wahlen", a.get("label") or "")]
+    # Sitzungsanzeigen im Amtsblatt doppeln die Meldungen der Stadt → weglassen
+    pol_amt = [a for a in amtlich if not re.search(r"Sitzung des Grossen Gemeinderat", a.get("title") or "", re.I)
+               and (GGR.search(a.get("title") or "") or re.search("Abstimmung|Wahlen", a.get("label") or ""))]
     news, amtlich, agenda = [n for n in news if no_ggr(n)], [a for a in amtlich if no_ggr(a)], [e for e in agenda if no_ggr(e)]
     events = [e for e in agenda if not e.get("ongoing") and dt(e["start"]).date() >= TODAY]
     ongoing = [e for e in agenda if e.get("ongoing")]

@@ -561,7 +561,7 @@
     // GGR-Meldungen erscheinen nur unter «Politik», nicht auf den anderen Seiten
     var GGR = /Grosse[nr]? Gemeinderat|\bGGR\b/i, noGgr = function (x) { return !GGR.test(x.title || '') };
     D.pol = { news: D.news.filter(function (x) { return x.topic === 'politik' || GGR.test(x.title || '') }),
-      amt: D.amtlich.filter(function (x) { return GGR.test(x.title || '') || /Abstimmung|Wahlen/.test(x.label || '') }) };
+      amt: D.amtlich.filter(function (x) { return !/Sitzung des Grossen Gemeinderat/i.test(x.title || '') && (GGR.test(x.title || '') || /Abstimmung|Wahlen/.test(x.label || '')) }) }; // Sitzungen kommen schon als Meldung der Stadt
     D.news = D.news.filter(noGgr); D.amtlich = D.amtlich.filter(noGgr); D.agenda = D.agenda.filter(noGgr);
     D.events = D.agenda.filter(function (e) { return !e.ongoing });
     D.ongoing = D.agenda.filter(function (e) { return e.ongoing });
