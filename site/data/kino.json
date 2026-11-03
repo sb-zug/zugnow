@@ -1,134 +1,5 @@
 [
  {
-  "start": "2026-11-02T15:00:00+01:00",
-  "film": "132542",
-  "title": "VATERLAND",
-  "label": "",
-  "special": false,
-  "lang": "D",
-  "langText": "Deutsch gesprochen",
-  "hall": "Seehof 1",
-  "cinema": "Kino Seehof",
-  "notes": [
-   "U25-Vorstellung: Nur CHF 10.- für unter 25-jährige (nur vor Ort erhältlich)"
-  ],
-  "ticket": "https://ticketonline.kinozug.ch/KinoZug/Show/332541",
-  "url": "https://kinozug.ch/de/programm/filmdetail?EventId=132542",
-  "image": "https://progi.kinozug.ch/image.php?ImageId=160779",
-  "duration": "82 Min.",
-  "age": "empfohlen ab 14 Jahren"
- },
- {
-  "start": "2026-11-02T15:00:00+01:00",
-  "film": "132772",
-  "title": "WAS HABEN WIR GELACHT",
-  "label": "",
-  "special": false,
-  "lang": "D",
-  "langText": "Deutsch gesprochen",
-  "hall": "Seehof 2",
-  "cinema": "Kino Seehof",
-  "notes": [
-   "U25-Vorstellung: Nur CHF 10.- für unter 25-jährige (nur vor Ort erhältlich)"
-  ],
-  "ticket": "https://ticketonline.kinozug.ch/KinoZug/Show/332559",
-  "url": "https://kinozug.ch/de/programm/filmdetail?EventId=132772",
-  "image": "https://progi.kinozug.ch/image.php?ImageId=161442",
-  "duration": "98 Min.",
-  "age": "empfohlen ab 14 Jahren"
- },
- {
-  "start": "2026-11-02T17:45:00+01:00",
-  "film": "132720",
-  "title": "ALTE LIEBE",
-  "label": "",
-  "special": false,
-  "lang": "D",
-  "langText": "Deutsch gesprochen",
-  "hall": "Seehof 2",
-  "cinema": "Kino Seehof",
-  "notes": [
-   "U25-Vorstellung: Nur CHF 10.- für unter 25-jährige (nur vor Ort erhältlich)"
-  ],
-  "ticket": "https://ticketonline.kinozug.ch/KinoZug/Show/332565",
-  "url": "https://kinozug.ch/de/programm/filmdetail?EventId=132720",
-  "image": "https://progi.kinozug.ch/image.php?ImageId=161280",
-  "duration": "112 Min.",
-  "age": "empfohlen ab 14 Jahren"
- },
- {
-  "start": "2026-11-02T18:00:00+01:00",
-  "film": "132759",
-  "title": "WENN DIE ERINNERUNG VERBLASST",
-  "label": "",
-  "special": false,
-  "lang": "OVdf",
-  "langText": "Originalversion mit deutschen und französischen Untertiteln",
-  "hall": "Seehof 1",
-  "cinema": "Kino Seehof",
-  "notes": [],
-  "ticket": "https://ticketonline.kinozug.ch/KinoZug/Show/332536",
-  "url": "https://kinozug.ch/de/programm/filmdetail?EventId=132759",
-  "image": "https://progi.kinozug.ch/image.php?ImageId=161435",
-  "duration": "80 Min.",
-  "age": "empfohlen ab 14 Jahren"
- },
- {
-  "start": "2026-11-02T19:30:00+01:00",
-  "film": "132323",
-  "title": "DAS GETRÄUMTE ABENTEUER",
-  "label": "Im Gotthard um die Welt",
-  "special": true,
-  "lang": "OVdf",
-  "langText": "Originalversion mit deutschen und französischen Untertiteln",
-  "hall": "Gotthard",
-  "cinema": "Kino Gotthard",
-  "notes": [
-   "U25-Vorstellung: Nur CHF 10.- für unter 25-jährige (nur vor Ort erhältlich)"
-  ],
-  "ticket": "https://ticketonline.kinozug.ch/KinoZug/Show/330048",
-  "url": "https://kinozug.ch/de/programm/filmdetail?EventId=132323",
-  "image": "https://progi.kinozug.ch/image.php?ImageId=159872",
-  "duration": "167 Min.",
-  "age": "empfohlen ab 14 Jahren"
- },
- {
-  "start": "2026-11-02T20:15:00+01:00",
-  "film": "132545",
-  "title": "SENSE AND SENSIBILITY",
-  "label": "",
-  "special": false,
-  "lang": "Edf",
-  "langText": "Englisch gesprochen, mit deutschen und französischen Untertiteln",
-  "hall": "Seehof 1",
-  "cinema": "Kino Seehof",
-  "notes": [],
-  "ticket": "https://ticketonline.kinozug.ch/KinoZug/Show/332533",
-  "url": "https://kinozug.ch/de/programm/filmdetail?EventId=132545",
-  "image": "https://progi.kinozug.ch/image.php?ImageId=160816",
-  "duration": "132 Min.",
-  "age": "empfohlen ab 14 Jahren"
- },
- {
-  "start": "2026-11-02T20:30:00+01:00",
-  "film": "132668",
-  "title": "QUEEN AT SEA",
-  "label": "",
-  "special": false,
-  "lang": "Edf",
-  "langText": "Englisch gesprochen, mit deutschen und französischen Untertiteln",
-  "hall": "Seehof 2",
-  "cinema": "Kino Seehof",
-  "notes": [
-   "U25-Vorstellung: Nur CHF 10.- für unter 25-jährige (nur vor Ort erhältlich)"
-  ],
-  "ticket": "https://ticketonline.kinozug.ch/KinoZug/Show/332554",
-  "url": "https://kinozug.ch/de/programm/filmdetail?EventId=132668",
-  "image": "https://progi.kinozug.ch/image.php?ImageId=161089",
-  "duration": "121 Min.",
-  "age": "empfohlen ab 14 Jahren"
- },
- {
   "start": "2026-11-03T15:00:00+01:00",
   "film": "132759",
   "title": "WENN DIE ERINNERUNG VERBLASST",
@@ -480,7 +351,7 @@
   "label": "",
   "special": false,
   "lang": "3D-OVdfe",
-  "langText": "KN_3D-OVdfe",
+  "langText": "Originalversion in 3D mit deutschen, französischen und englischen Untertiteln",
   "hall": "Seehof 1",
   "cinema": "Kino Seehof",
   "notes": [
@@ -557,7 +428,7 @@
   "label": "",
   "special": false,
   "lang": "3D-OVdfe",
-  "langText": "KN_3D-OVdfe",
+  "langText": "Originalversion in 3D mit deutschen, französischen und englischen Untertiteln",
   "hall": "Seehof 1",
   "cinema": "Kino Seehof",
   "notes": [
@@ -831,7 +702,7 @@
   "label": "",
   "special": false,
   "lang": "3D-OVdfe",
-  "langText": "KN_3D-OVdfe",
+  "langText": "Originalversion in 3D mit deutschen, französischen und englischen Untertiteln",
   "hall": "Seehof 1",
   "cinema": "Kino Seehof",
   "notes": [
@@ -1052,7 +923,7 @@
   "label": "",
   "special": false,
   "lang": "3D-OVdfe",
-  "langText": "KN_3D-OVdfe",
+  "langText": "Originalversion in 3D mit deutschen, französischen und englischen Untertiteln",
   "hall": "Seehof 1",
   "cinema": "Kino Seehof",
   "notes": [
@@ -1216,7 +1087,7 @@
   "label": "",
   "special": false,
   "lang": "3D-OVdfe",
-  "langText": "KN_3D-OVdfe",
+  "langText": "Originalversion in 3D mit deutschen, französischen und englischen Untertiteln",
   "hall": "Seehof 1",
   "cinema": "Kino Seehof",
   "notes": [
@@ -1293,7 +1164,7 @@
   "label": "",
   "special": false,
   "lang": "3D-OVdfe",
-  "langText": "KN_3D-OVdfe",
+  "langText": "Originalversion in 3D mit deutschen, französischen und englischen Untertiteln",
   "hall": "Seehof 1",
   "cinema": "Kino Seehof",
   "notes": [
