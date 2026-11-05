@@ -1,1 +1,112 @@
-[]
+[
+ {
+  "id": "38058938-34e6-46f1-920c-4ae51d689f82",
+  "date": "2026-11-05",
+  "label": "Gemeinderat",
+  "title": "12. Sitzung des Grossen Gemeinderats, Zug",
+  "office": "Stadt Zug - Stadtkanzlei",
+  "number": "RS-ZG60-0000000273",
+  "expires": null,
+  "url": "https://amtsblatt.zg.ch/#!/search/publications/detail/38058938-34e6-46f1-920c-4ae51d689f82",
+  "source": "amtsblatt.zg.ch"
+ },
+ {
+  "id": "a49261ba-4374-4960-a0ed-868c6976d17b",
+  "date": "2026-11-05",
+  "label": "Gemeinderat",
+  "title": "13. Sitzung des Grossen Gemeinderats, Zug",
+  "office": "Stadt Zug - Stadtkanzlei",
+  "number": "RS-ZG60-0000000274",
+  "expires": null,
+  "url": "https://amtsblatt.zg.ch/#!/search/publications/detail/a49261ba-4374-4960-a0ed-868c6976d17b",
+  "source": "amtsblatt.zg.ch"
+ },
+ {
+  "id": "d5ea2b08-e47a-4afd-956a-44d8bfc528de",
+  "date": "2026-11-05",
+  "label": "Baugesuch",
+  "title": "Fridbachweg 3, Zug",
+  "office": "Stadt Zug - Baudepartement",
+  "number": "BP-ZG10-0000006379",
+  "expires": "2026-12-05",
+  "url": "https://amtsblatt.zg.ch/#!/search/publications/detail/d5ea2b08-e47a-4afd-956a-44d8bfc528de",
+  "source": "amtsblatt.zg.ch"
+ },
+ {
+  "id": "5480fdb8-98cd-41a1-9bb0-5e69f604a5ae",
+  "date": "2026-11-05",
+  "label": "Baugesuch",
+  "title": "Stolzengrabenstrasse 51, Zug",
+  "office": "Stadt Zug - Baudepartement",
+  "number": "BP-ZG10-0000006378",
+  "expires": "2026-12-05",
+  "url": "https://amtsblatt.zg.ch/#!/search/publications/detail/5480fdb8-98cd-41a1-9bb0-5e69f604a5ae",
+  "source": "amtsblatt.zg.ch"
+ },
+ {
+  "id": "6d6235ea-8a6e-43b5-ba0d-e52a324ef831",
+  "date": "2026-11-05",
+  "label": "Baugesuch",
+  "title": "Hafenweg 7, Zug",
+  "office": "Stadt Zug - Baudepartement",
+  "number": "BP-ZG10-0000006400",
+  "expires": "2027-02-05",
+  "url": "https://amtsblatt.zg.ch/#!/search/publications/detail/6d6235ea-8a6e-43b5-ba0d-e52a324ef831",
+  "source": "amtsblatt.zg.ch"
+ },
+ {
+  "id": "b00de757-cb63-443d-9af5-be790f38a891",
+  "date": "2026-11-05",
+  "label": "Baugesuch",
+  "title": "Artherstrasse 101, Zug",
+  "office": "Stadt Zug - Baudepartement",
+  "number": "BP-ZG10-0000006377",
+  "expires": "2026-12-05",
+  "url": "https://amtsblatt.zg.ch/#!/search/publications/detail/b00de757-cb63-443d-9af5-be790f38a891",
+  "source": "amtsblatt.zg.ch"
+ },
+ {
+  "id": "1977e952-00ec-498b-913d-f61361770b71",
+  "date": "2026-11-05",
+  "label": "Baugesuch",
+  "title": "Löberenstrasse 33, Zug",
+  "office": "Stadt Zug - Baudepartement",
+  "number": "BP-ZG10-0000006380",
+  "expires": "2026-12-05",
+  "url": "https://amtsblatt.zg.ch/#!/search/publications/detail/1977e952-00ec-498b-913d-f61361770b71",
+  "source": "amtsblatt.zg.ch"
+ },
+ {
+  "id": "79d1da34-d1e2-444a-b446-fda1400f486d",
+  "date": "2026-11-05",
+  "label": "Baugesuch",
+  "title": "Leimatt A, Zug",
+  "office": "Stadt Zug - Baudepartement",
+  "number": "BP-ZG10-0000006399",
+  "expires": "2027-02-05",
+  "url": "https://amtsblatt.zg.ch/#!/search/publications/detail/79d1da34-d1e2-444a-b446-fda1400f486d",
+  "source": "amtsblatt.zg.ch"
+ },
+ {
+  "id": "d873ec87-db9a-4554-97ac-8a4f8c409ab4",
+  "date": "2026-11-05",
+  "label": "Publikation",
+  "title": "Winterdienst 2026/2027, Zug",
+  "office": "Stadt Zug - Baudepartement",
+  "number": "KO-ZG50-0000001024",
+  "expires": "2027-04-05",
+  "url": "https://amtsblatt.zg.ch/#!/search/publications/detail/d873ec87-db9a-4554-97ac-8a4f8c409ab4",
+  "source": "amtsblatt.zg.ch"
+ },
+ {
+  "id": "04f6a25c-dc3b-42ae-8e78-3b494e64915d",
+  "date": "2026-11-05",
+  "label": "Publikation",
+  "title": "Öffentlicher Informationsanlass zu den Bebauungsplänen Äussere Lorzenallmend, Zug",
+  "office": "Stadt Zug - Baudepartement",
+  "number": "KO-ZG50-0000001042",
+  "expires": "2026-12-05",
+  "url": "https://amtsblatt.zg.ch/#!/search/publications/detail/04f6a25c-dc3b-42ae-8e78-3b494e64915d",
+  "source": "amtsblatt.zg.ch"
+ }
+]

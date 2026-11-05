@@ -192,6 +192,15 @@
  "upcoming": [],
  "posts": [
   {
+   "title": "SP Votum zu den Leerkündigungen im Herti-Zentrum 2-5 in Zug.",
+   "url": "https://stadtzug.sp-zug.ch/blog/2026/11/04/sp-votum-zu-den-leerkuendigungen-im-herti-zentrum-2-5-in-zug/",
+   "date": "2026-11-04",
+   "lead": "Marilena Amato Mengis, GGR-Sitzung vom 4. November 2026 Sehr geehrter Herr PräsidentGeschätzte Stadträtinnen und StadträteLiebe Kolleginnen und Kollegen Die SP-Fraktion schliesst sich als Mitinterpellantin den Ausführung",
+   "party": "SP",
+   "partyName": "SP Stadt Zug",
+   "level": "Stadt"
+  },
+  {
    "title": "Schluss mit Milchbüechli-Denken",
    "url": "https://www.svp-zug.ch/artikel/schluss-mit-milchbueechli-denken/",
    "date": "2026-11-04",
@@ -300,6 +309,15 @@
    "level": "Stadt"
   },
   {
+   "title": "Was wir heute sichern, gehört morgen allen – Ja zur Parkanlage Unterer Frauenstein",
+   "url": "https://stadtzug.sp-zug.ch/blog/2026/10/20/was-wir-heute-sichern-gehoert-morgen-allen-ja-zur-parkanlage-unterer-frauenstein/",
+   "date": "2026-10-20",
+   "lead": "Kolumne Zuger Zeitung vom 20. Oktober 2026 – Marilena Amato Mengis zum Kauf der Parkanlage Unterer Frauenstein Was gibt es Wertvolleres als Freiraum in einer Stadt, die in den kommenden",
+   "party": "SP",
+   "partyName": "SP Stadt Zug",
+   "level": "Stadt"
+  },
+  {
    "title": "Danke, Zug!",
    "url": "https://stadtzug-diemitte.ch/danke-zug/",
    "date": "2026-10-12",
@@ -313,24 +331,6 @@
    "url": "https://stadtzug.sp-zug.ch/blog/2026/10/10/bezahlbare-wohnungen-ohne-wenn-und-aber/",
    "date": "2026-10-10",
    "lead": "Zuger Woche, 7. Oktober 2026Es war ziemlich auffällig. Alle Zuger Parteien haben sich während ihrer Wahlkampagnen diesen Sommer und Herbst plötzlich glasklar für bezahlbaren Wohnraum ausgesprochen. Das ist jawunderbar. E",
-   "party": "SP",
-   "partyName": "SP Stadt Zug",
-   "level": "Stadt"
-  },
-  {
-   "title": "Einladung zur Parolenfassung und Wahlfeier am 26. Oktober 26",
-   "url": "https://stadtzug.sp-zug.ch/blog/2026/10/10/einladung-zur-parolenfassung-und-wahlfeier-am-26-oktober-26/",
-   "date": "2026-10-10",
-   "lead": "Die letzten Monate waren intensiv. Dank eurer Unterstützung konnten wir unsere Sitze sowohl im Grossen Gemeinderat als auch im Kantonsrat in der Stadt halten, und unsere Stadträtin hat ein hervorragendes",
-   "party": "SP",
-   "partyName": "SP Stadt Zug",
-   "level": "Stadt"
-  },
-  {
-   "title": "SP Stadt Zug freut sich über das Vertrauen der Bevölkerung und über die Bestätigung ihrer städtischen Arbeit",
-   "url": "https://stadtzug.sp-zug.ch/blog/2026/10/10/sp-stadt-zug-freut-sich-ueber-das-vertrauen-der-bevoelkerung-und-ueber-die-bestaetigung-ihrer-staedtischen-arbeit/",
-   "date": "2026-10-10",
-   "lead": "Die SP Stadt Zug freut sich über das Ergebnis der heutigen Gesamterneuerungswahlen. Sie behält ihre bisherigen drei städtischen Sitze im Kantonsrat und im Grossen Gemeinderat. Barbara Gysel wurde mit 4580",
    "party": "SP",
    "partyName": "SP Stadt Zug",
    "level": "Stadt"
@@ -2303,8 +2303,8 @@
     "title": "Der Japankäfer ist in Zug: welches sind die Konsequenzen für die Stadt",
     "full": "Interpellation der SP-Fraktion vom 24. August 2026 betreffend «Der Japankäfer ist in Zug: welches sind die Konsequenzen für die Stadt».",
     "date": "2026-08-24",
-    "status": "In Bearbeitung beim Stadtrat",
-    "tone": "open",
+    "status": "Eingereicht",
+    "tone": "new",
     "answer": null,
     "url": "https://ratsinfo.stadtzug.ch/gremium/1/geschaefte/1313",
     "eingereicht": "24 August 2026",
@@ -2333,8 +2333,8 @@
     "title": "Ökologisierung des Wärmeverbunds Zuger Altstadt: Stillstand im Projekt, Vollgas bei der Preiserhöhung",
     "full": "Interpellation der FDP-Fraktion vom 19. August 2026 betreffend Ökologisierung des Wärmeverbunds Zuger Altstadt: Stillstand im Projekt, Vollgas bei der Preiserhöhung",
     "date": "2026-08-19",
-    "status": "In Bearbeitung beim Stadtrat",
-    "tone": "open",
+    "status": "Eingereicht",
+    "tone": "new",
     "answer": null,
     "url": "https://ratsinfo.stadtzug.ch/gremium/1/geschaefte/1306",
     "eingereicht": "19 August 2026",
@@ -2607,8 +2607,8 @@
     "title": "Männerbadi – Was ist der Plan?",
     "full": "Interpellation B. Gisler (FDP) und Mitunterzeichner vom 17. Juni 2026 betreffend Männerbadi – Was ist der Plan?",
     "date": "2026-06-17",
-    "status": "In Bearbeitung beim Stadtrat",
-    "tone": "open",
+    "status": "Eingereicht",
+    "tone": "new",
     "answer": null,
     "url": "https://ratsinfo.stadtzug.ch/gremium/1/geschaefte/1261",
     "eingereicht": "17 Juni 2026",
