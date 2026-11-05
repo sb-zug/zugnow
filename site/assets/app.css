@@ -811,3 +811,12 @@ html[lang="en"] .v3 header nav a.lang::before{content:"EN  |  "}
 .rblue>.rhead .rmore{color:var(--on-blue)}
 .rblue>.rhead .rmore:hover{color:var(--on-blue);text-decoration:underline}
 .rev,.rmi,.rwv{min-height:230px}
+/* Variante D (/start-d/): News/Parlament im 4er-Raster */
+.rg>.rn22{grid-column:span 2;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--rl)}
+.rn22>*{background:var(--bg)}
+.rnews4 .rnw:nth-child(even){padding-left:28px}
+.rparl4{gap:14px}
+.rparl4 .rpl a{padding:16px 0}
+.rparl4 .rpl strong{font:600 16px/1.35 var(--body)}
+@media (max-width:900px){.rg>.rn22{grid-column:1/-1}.rparl4{grid-column:1/-1}}
+@media (max-width:560px){.rg>.rn22{grid-template-columns:minmax(0,1fr)}}
