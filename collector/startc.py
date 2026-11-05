@@ -22,13 +22,26 @@ def _fill(cells, n):
     return cells + ['<div class="rc rx" aria-hidden="true"></div>'] * (-len(cells) % n)
 
 
+def _excerpt(e, n=110):
+    """Ein Satz aus dem Teaser der Quelle, höchstens rund n Zeichen."""
+    t = re.sub(r"\s+", " ", e.get("teaser") or "").split(" · ")[0].strip()
+    if len(t) < 15 or t.lower().rstrip(".") in (e["title"] or "").lower():
+        return ""
+    m = re.match(r"(.+?[.!?])(\s|$)", t)
+    t = m.group(1) if m and len(m.group(1)) >= 25 else t
+    if len(t) > n:
+        t = t[:n].rsplit(" ", 1)[0].rstrip(" ,;:–-") + " …"
+    return t
+
+
 def _ev(e, day_label):
     d = B.dt(e["start"]).date()
     t = "ganztags" if e.get("allday") else B.hm(e["start"]).replace(":", ".")
     rel = {0: "Heute", 1: "Morgen"}.get((d - B.TODAY).days)
     when = f'{rel or B.WDL[d.weekday()]} · {t}' 
     return (f'<a class="rc rev" href="{B.esc(e.get("page") or "agenda/#ev-" + e["id"])}"><span class="rk">{B.esc(when)}</span>'
-            f'<strong>{B.esc(e["title"])}</strong><span class="rs">{B.esc(e.get("place") or "")}</span>{ARR}</a>')
+            f'<strong>{B.esc(e["title"])}</strong>' + (f'<span class="rex">{B.esc(x)}</span>' if (x := _excerpt(e)) else "")
+            + f'<span class="rs">{B.esc(e.get("place") or "")}</span>{ARR}</a>')
 
 
 def _agenda(events):
