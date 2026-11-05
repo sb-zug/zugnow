@@ -147,10 +147,9 @@ def _hero(slides):
     def ctl(i):
         if k < 2:
             return ""
-        dots = "".join(f'<button type="button" class="rsd" data-to="{j}" aria-label="Meldung {j + 1} von {k}" aria-pressed="{"true" if j == i else "false"}"></button>'
-                       for j in range(k))
-        return (f'<span class="rctl"><span class="rdots">{dots}</span><span class="rarr">{arrow(-1, "Vorherige Meldung", "M15 6l-6 6 6 6")}'
-                f'{arrow(1, "Nächste Meldung", "M9 6l6 6-6 6")}</span></span>')
+        return (f'<span class="rcnt" aria-hidden="true">{i + 1} / {k}</span>'
+                f'{arrow(-1, "Vorherige Meldung", "M15 6l-6 6 6 6").replace("rsa", "rsa rprev", 1)}'
+                f'{arrow(1, "Nächste Meldung", "M9 6l6 6-6 6").replace("rsa", "rsa rnext", 1)}')
     out = []
     for i, n in enumerate(slides):
         u = B.esc(n["url"])
@@ -161,7 +160,7 @@ def _hero(slides):
                    f'<strong>{B.esc(n["title"])}</strong>' + (f'<span class="rs">{B.esc(n["lead"])}</span>' if n.get("lead") else "")
                    + f'<span class="rsrc">Zur Meldung auf stadtzug.ch {B.EXT}</span></a></div>')
     return (f'<section class="rg r12 rhero">{h1}<div class="rlead rslider" role="region" aria-roledescription="Karussell" '
-            f'aria-label="Neueste Meldungen">{"".join(out)}</div></section>')
+            f'aria-label="Neueste Meldungen">{"".join(out)}<span class="vh rlive" aria-live="polite"></span></div></section>')
 
 
 TABS_JS = """<script>
@@ -170,7 +169,7 @@ g.querySelectorAll('.rtab').forEach(function(x){x.setAttribute('aria-pressed',x=
 g.querySelectorAll('.rpanel').forEach(function(p){p.hidden=p.dataset.p!==b.dataset.t});
 var m=document.getElementById('rAgMore');if(m)m.setAttribute('href','agenda/#'+b.dataset.t)})})();
 (function(){var r=document.querySelector('.rslider');if(!r)return;var S=r.querySelectorAll('.rslide'),n=S.length,c=0;if(n<2)return;
-function show(i){c=(i+n)%n;S.forEach(function(s,j){s.hidden=j!==c});r.querySelectorAll('.rsd').forEach(function(d){d.setAttribute('aria-pressed',d.dataset.to==c)})}
+function show(i){c=(i+n)%n;S.forEach(function(s,j){s.hidden=j!==c});var lv=r.querySelector('.rlive');if(lv)lv.textContent='Meldung '+(c+1)+' von '+n}
 r.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;e.preventDefault();show(b.dataset.to!=null?+b.dataset.to:c+(+b.dataset.go));
 var f=S[c].querySelector('button[data-'+(b.dataset.to!=null?'to="'+c+'"]':'go="'+b.dataset.go+'"]'));if(f)f.focus()});
 r.addEventListener('keydown',function(e){if(e.key==='ArrowLeft'||e.key==='ArrowRight'){show(c+(e.key==='ArrowRight'?1:-1));e.preventDefault()}});
