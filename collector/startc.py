@@ -163,8 +163,8 @@ def build_start_c(index_html, events, news, pol_news):
     pool = [n for n in news if not re.match(r"Baugesuche vom", n["title"], re.I)]
     lead = next((n for n in pool if n.get("image")), pool[0] if pool else None)
     rest = [n for n in pool if n is not lead]
-    main = ('<main id="top" class="rwrap">' + _hero(lead) + _agenda(events) + _mitreden(projekte, pol_news, politik)
-            + _wandel(projekte) + _news_parl(rest, politik) + "</main>")
+    main = ('<main id="top" class="rwrap">' + _hero(lead) + _agenda(events) + _news_parl(rest, politik)
+            + _mitreden(projekte, pol_news, politik) + _wandel(projekte) + "</main>")
     p = index_html
     p = p.replace('class="v2"', f'class="v2 v3" data-vote="{B.esc(politik.get("nextVoteDate") or "")}"', 1)
     p = p.replace("<head>\n", '<head>\n<base href="/">\n', 1)
