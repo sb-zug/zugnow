@@ -904,3 +904,22 @@ html[lang="en"] .v3 header nav a.lang::before{content:"EN  |  "}
 }
 @media (max-width:720px){.v3 header nav{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;max-width:100%}.v3 header nav a{flex:0 0 auto}}
 @media (max-width:900px){.rlist details.ev.same>summary>.evside{box-shadow:none}}
+/* Agenda-Liste: Linien wie .rg (1-px-Abstand statt Zellrand), auch im aufgeklappten Teil */
+.rlist details.ev>summary{gap:1px;background:var(--rl)}
+.rlist details.ev>summary>*{background:var(--bg)}
+.rlist details.ev>summary>svg{background:none}
+.rlist .date,.rlist .evmain{border-right:0}
+.rlist .panel,.rlist .panel.withimg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;padding:0;background:var(--rl)}
+.rlist .panel::before{content:"";background:var(--bg)}
+.rlist .panel>div:first-child{grid-column:2/span 2;background:var(--bg);padding:4px 28px 28px}
+.rlist .panel>.pimg{grid-column:4;background:var(--bg);aspect-ratio:auto;padding:4px 28px 28px;max-width:none}
+.rlist .panel>.pimg img{aspect-ratio:4/3;height:auto}
+.rlist .panel:not(.withimg)::after{content:"";background:var(--bg)}
+@media (max-width:900px){
+  .rlist details.ev>summary{row-gap:0}
+  .rlist .panel,.rlist .panel.withimg{grid-template-columns:96px minmax(0,1fr);row-gap:0}
+  .rlist .panel>div:first-child{grid-column:2;padding:0 20px 20px}
+  .rlist .panel>.pimg{grid-column:2;padding:0 20px 24px}
+  .rlist .panel::before{grid-row:span 2}
+  .rlist .panel:not(.withimg)::after{display:none}
+}
