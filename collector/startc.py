@@ -134,16 +134,34 @@ def _news_parl(pool, politik):
             + "</section>")
 
 
-def _hero(lead):
+def _hero(slides):
+    """Hero: H1 + Slider mit bis zu 3 Meldungen (Bild links, Text rechts, Punkte und Pfeile im Bild)."""
     h1 = ('<div class="rc rh1"><h1>Was läuft<br>in Zug<span class="dot">.</span></h1>'
           '<p>Agenda, News, Amtliches und Politik der Stadt Zug – an einem Ort, zweimal täglich aktualisiert.</p></div>')
-    if not lead:
+    if not slides:
         return f'<section class="rg r12 rhero">{h1}</section>'
-    return (f'<section class="rg r12 rhero">{h1}<a class="rlead{" noimg" if not lead.get("image") else ""}" href="{B.esc(lead["url"])}">'
-            + (f'<span class="rim">{B.img(lead["image"])}<span class="credit">Bild: Stadt Zug</span></span>' if lead.get("image") else "")
-            + f'<span class="rc rlt"><span class="rk">{B.esc(B.topic_of(lead))} · {B.dlabel(lead["date"])}</span>'
-              f'<strong>{B.esc(lead["title"])}</strong>' + (f'<span class="rs">{B.esc(lead["lead"])}</span>' if lead.get("lead") else "")
-            + f'<span class="rsrc">Zur Meldung auf stadtzug.ch {B.EXT}</span></span></a></section>')
+    k = len(slides)
+    arrow = lambda d, lbl, path: (f'<button type="button" class="rsa" data-go="{d}" aria-label="{lbl}"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" '
+                                  f'stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{path}"/></svg></button>')
+
+    def ctl(i):
+        if k < 2:
+            return ""
+        dots = "".join(f'<button type="button" class="rsd" data-to="{j}" aria-label="Meldung {j + 1} von {k}" aria-pressed="{"true" if j == i else "false"}"></button>'
+                       for j in range(k))
+        return (f'<span class="rctl">{arrow(-1, "Vorherige Meldung", "M15 6l-6 6 6 6")}<span class="rdots">{dots}</span>'
+                f'{arrow(1, "Nächste Meldung", "M9 6l6 6-6 6")}</span>')
+    out = []
+    for i, n in enumerate(slides):
+        u = B.esc(n["url"])
+        img = (f'<span class="rim"><a class="rimg" href="{u}" tabindex="-1" aria-hidden="true">{B.img(n["image"])}</a>'
+               f'<span class="credit">Bild: Stadt Zug</span>{ctl(i)}</span>') if n.get("image") else ""
+        out.append(f'<div class="rslide{"" if n.get("image") else " noimg"}" data-i="{i}"{"" if i == 0 else " hidden"}>{img}'
+                   f'<a class="rc rlt" href="{u}"><span class="rk">{B.esc(B.topic_of(n))} · {B.dlabel(n["date"])}</span>'
+                   f'<strong>{B.esc(n["title"])}</strong>' + (f'<span class="rs">{B.esc(n["lead"])}</span>' if n.get("lead") else "")
+                   + f'<span class="rsrc">Zur Meldung auf stadtzug.ch {B.EXT}</span></a></div>')
+    return (f'<section class="rg r12 rhero">{h1}<div class="rlead rslider" role="region" aria-roledescription="Karussell" '
+            f'aria-label="Neueste Meldungen">{"".join(out)}</div></section>')
 
 
 TABS_JS = """<script>
@@ -151,6 +169,13 @@ TABS_JS = """<script>
 g.querySelectorAll('.rtab').forEach(function(x){x.setAttribute('aria-pressed',x===b)});
 g.querySelectorAll('.rpanel').forEach(function(p){p.hidden=p.dataset.p!==b.dataset.t});
 var m=document.getElementById('rAgMore');if(m)m.setAttribute('href','agenda/#'+b.dataset.t)})})();
+(function(){var r=document.querySelector('.rslider');if(!r)return;var S=r.querySelectorAll('.rslide'),n=S.length,c=0;if(n<2)return;
+function show(i){c=(i+n)%n;S.forEach(function(s,j){s.hidden=j!==c});r.querySelectorAll('.rsd').forEach(function(d){d.setAttribute('aria-pressed',d.dataset.to==c)})}
+r.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;e.preventDefault();show(b.dataset.to!=null?+b.dataset.to:c+(+b.dataset.go));
+var f=S[c].querySelector('button[data-'+(b.dataset.to!=null?'to="'+c+'"]':'go="'+b.dataset.go+'"]'));if(f)f.focus()});
+r.addEventListener('keydown',function(e){if(e.key==='ArrowLeft'||e.key==='ArrowRight'){show(c+(e.key==='ArrowRight'?1:-1));e.preventDefault()}});
+var x=null;r.addEventListener('touchstart',function(e){x=e.touches[0].clientX},{passive:true});
+r.addEventListener('touchend',function(e){if(x==null)return;var d=e.changedTouches[0].clientX-x;if(Math.abs(d)>40)show(c+(d<0?1:-1));x=null})})();
 (function(){var a=document.querySelector('.v3 .ilink[href*="pAbst"] strong'),d=document.body.dataset.vote;if(!a||!d)return;
 var t=new Date(),n=Math.round((Date.UTC(+d.slice(0,4),+d.slice(5,7)-1,+d.slice(8,10))-Date.UTC(t.getFullYear(),t.getMonth(),t.getDate()))/864e5);
 if(n>0){var s=document.createElement('em');s.className='rcd';s.textContent=' · in '+n+(n===1?' Tag':' Tagen');a.appendChild(s)}})();
@@ -165,13 +190,13 @@ def _page(index_html, events, news, pol_news):
     politik = B.load("politik", {})
     projekte = B.load("wandel", {}).get("projekte") or []
     pool = [n for n in news if not re.match(r"Baugesuche vom", n["title"], re.I)]
-    lead = next((n for n in pool if n.get("image")), pool[0] if pool else None)
     key = lambda n: re.sub(r"[^a-zäöü]", "", n["title"].lower().replace(", zug", ""))[:50]
-    seen, rest = {key(lead)} if lead else set(), []
-    for n in pool:  # fast gleiche Meldungen (z. B. «…, Zug») nur einmal
-        if n is not lead and key(n) not in seen:
+    slides = [n for n in pool if n.get("image")][:3] or pool[:1]  # Slider: die 3 neuesten Meldungen mit Bild
+    seen, rest = {key(n) for n in slides}, []
+    for n in pool:  # fast gleiche Meldungen (z. B. «…, Zug») nur einmal, nichts doppelt zum Slider
+        if n not in slides and key(n) not in seen:
             seen.add(key(n)); rest.append(n)
-    main = ('<main id="top" class="rwrap">' + _hero(lead) + _agenda(events) + _news_parl(rest, politik)
+    main = ('<main id="top" class="rwrap">' + _hero(slides) + _agenda(events) + _news_parl(rest, politik)
             + _mitreden(projekte, pol_news, politik) + _wandel(projekte) + "</main>")
     p = index_html
     p = p.replace('class="v2"', f'class="v2 v3" data-vote="{B.esc(politik.get("nextVoteDate") or "")}"', 1)
