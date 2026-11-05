@@ -25,16 +25,25 @@ def _fill(cells, n):
 def _ev(e, day_label):
     d = B.dt(e["start"]).date()
     t = "ganztags" if e.get("allday") else B.hm(e["start"]).replace(":", ".")
-    when = f'{B.dshort(d)} · {t}' if day_label else t
+    rel = {0: "Heute", 1: "Morgen"}.get((d - B.TODAY).days)
+    when = f'{rel or B.WDL[d.weekday()]} · {t}' 
     return (f'<a class="rc rev" href="{B.esc(e.get("page") or "agenda/#ev-" + e["id"])}"><span class="rk">{B.esc(when)}</span>'
-            f'<strong>{B.esc(e["title"])}</strong><span class="rs">{B.esc(e.get("place") or "")}'
-            + (f' · {B.esc(e["catLabel"])}' if e.get("catLabel") else "") + f'</span>{ARR}</a>')
+            f'<strong>{B.esc(e["title"])}</strong><span class="rs">{B.esc(e.get("place") or "")}</span>{ARR}</a>')
 
 
 def _agenda(events):
     up = [e for e in events if not e.get("cancelled") and not B.over(e)]
+
+    def best(lst, n=6):
+        """Anlässe mit Bild bevorzugen (wie die bisherige Startseite), dann chronologisch."""
+        seen, out = set(), []
+        for e, dl in [x for x in lst if x[0].get("image")] + [x for x in lst if not x[0].get("image")]:
+            if e["title"] not in seen and len(out) < n:
+                seen.add(e["title"]); out.append((e, dl))
+        return sorted(out, key=lambda x: x[0]["start"])
+
     today = [e for e in up if B.dt(e["start"]).date() == B.TODAY]
-    heute = [(e, False) for e in today[:6]]
+    heute = best([(e, False) for e in today])
     if len(heute) < 6:  # wenig los: mit den nächsten Anlässen auffüllen (mit Tag)
         heute += [(e, True) for e in up if B.dt(e["start"]).date() > B.TODAY][: 6 - len(heute)]
     morgen = [(e, False) for e in up if B.dt(e["start"]).date() == B.TODAY + timedelta(days=1)]
@@ -43,7 +52,7 @@ def _agenda(events):
     for e in up:  # Wochenende: verschiedene Titel, chronologisch
         if wa <= B.dt(e["start"]).date() <= wb and e["title"] not in seen:
             seen.add(e["title"]); wk.append((e, True))
-    tabs = [("heute", "Heute", heute), ("morgen", "Morgen", morgen[:6]), ("wochenende", "Wochenende", wk[:6])]
+    tabs = [("heute", "Heute", heute), ("morgen", "Morgen", best(morgen)), ("wochenende", "Wochenende", best(wk))]
     btn = "".join(f'<button type="button" class="rtab" data-t="{k}" aria-pressed="{"true" if i == 0 else "false"}">{lbl}</button>'
                   for i, (k, lbl, _) in enumerate(tabs))
     panels = "".join(
@@ -128,6 +137,9 @@ TABS_JS = """<script>
 g.querySelectorAll('.rtab').forEach(function(x){x.setAttribute('aria-pressed',x===b)});
 g.querySelectorAll('.rpanel').forEach(function(p){p.hidden=p.dataset.p!==b.dataset.t});
 var m=document.getElementById('rAgMore');if(m)m.setAttribute('href','agenda/#'+b.dataset.t)})})();
+(function(){var a=document.querySelector('.v3 .ilink[href*="pAbst"] strong'),d=document.body.dataset.vote;if(!a||!d)return;
+var t=new Date(),n=Math.round((Date.UTC(+d.slice(0,4),+d.slice(5,7)-1,+d.slice(8,10))-Date.UTC(t.getFullYear(),t.getMonth(),t.getDate()))/864e5);
+if(n>0){var s=document.createElement('em');s.className='rcd';s.textContent=' · in '+n+(n===1?' Tag':' Tagen');a.appendChild(s)}})();
 </script>"""
 
 
@@ -140,7 +152,7 @@ def build_start_c(index_html, events, news, pol_news):
     main = ('<main id="top" class="rwrap">' + _hero(lead) + _agenda(events) + _mitreden(projekte, pol_news, politik)
             + _wandel(projekte) + _news_parl(rest, politik) + "</main>")
     p = index_html
-    p = p.replace('class="v2"', 'class="v2 v3"', 1)
+    p = p.replace('class="v2"', f'class="v2 v3" data-vote="{B.esc(politik.get("nextVoteDate") or "")}"', 1)
     p = p.replace("<head>\n", '<head>\n<base href="/">\n', 1)
     p = re.sub(r'<meta name="description"', '<meta name="robots" content="noindex">\n<meta name="description"', p, count=1)
     p = p.replace("family=Archivo:", "family=Inter+Tight:wght@600;700;800&family=Archivo:", 1)
