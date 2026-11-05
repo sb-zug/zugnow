@@ -684,7 +684,7 @@ a.rc:hover strong,.rlead:hover strong,.rpl a:hover strong{color:var(--brand)}
 .rsrc{margin-top:auto;display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:15px}
 .rlead.noimg .rlt{grid-column:1/-1}
 /* Agenda */
-.rtall{grid-row:span 2;gap:20px}
+.rtall{gap:20px}
 .rtabs{display:flex;flex-wrap:wrap;gap:8px}
 .rtab{min-height:44px;padding:0 18px;border:2px solid var(--fg);background:var(--bg);color:var(--fg);font:600 15px var(--body);cursor:pointer}
 .rtab[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
