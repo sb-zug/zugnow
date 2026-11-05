@@ -700,7 +700,6 @@ a.rc:hover strong,.rlead:hover strong,.rpl a:hover strong{color:var(--brand)}
 .rbar span{flex:1 1 300px;font-size:16px;color:var(--on-blue-soft)}
 .rbar a{font-weight:600;color:var(--on-blue);text-decoration:none}
 .rmi{color:var(--on-blue);min-height:170px}
-.rmi:first-of-type{padding-left:40px}
 .rmi .rk{color:var(--on-blue-soft)}
 .rmi .rd{font:800 40px/1 var(--rf);letter-spacing:-.02em}
 .rmi strong{font-size:18px;line-height:1.3;font-family:var(--body);font-weight:600}
@@ -752,7 +751,7 @@ a.rmi:hover strong{color:var(--on-blue);text-decoration:underline}
   .v3 .ibox{grid-auto-flow:row;grid-template-columns:repeat(2,minmax(0,1fr))}
   .v3 .iitem,.v3 .iitem:first-child,.v3 .iitem[hidden]+.iitem{padding:14px 20px;border-left:0}
   .v3 .iitem:nth-child(n){border-bottom:1px solid var(--rl)}
-  .rc,.rmi:first-of-type,.rnw:nth-child(even){padding:22px 20px}
+  .rc,.rnw:nth-child(even){padding:22px 20px}
   .rhead,.rline,.rparl,.rbar,.rwohn{padding:28px 20px}
   .rhead h2,.rparl h2,.rbar h2{font-size:38px}
   .v3 header .wrap{padding-left:20px;padding-right:20px}
@@ -806,3 +805,9 @@ html[lang="en"] .v3 header nav a.lang::before{content:"EN  |  "}
 /* Raster: kurzer Auszug in den Agenda-Kacheln */
 .rex{font-size:15px;line-height:1.45;color:var(--muted);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .rev .rs{margin-top:2px}
+/* Raster: alle Bänder im Mittelteil gleich gebaut (Titel = erste Spalte), gleiche Mindesthöhe */
+.rblue>.rhead{color:var(--on-blue);gap:14px}
+.rblue>.rhead .rs{color:var(--on-blue-soft)}
+.rblue>.rhead .rmore{color:var(--on-blue)}
+.rblue>.rhead .rmore:hover{color:var(--on-blue);text-decoration:underline}
+.rev,.rmi,.rwv{min-height:230px}

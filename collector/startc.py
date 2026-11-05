@@ -79,15 +79,15 @@ def _agenda(events):
 
 
 def _mitreden(projekte, pol_news, politik):
-    rows = SB.mitreden_rows(projekte, pol_news, politik)[:4]
+    rows = SB.mitreden_rows(projekte, pol_news, politik)[:3]
     if not rows:
         return ""
     cells = [f'<a class="rc rmi{" live" if live else ""}" href="{B.esc(u)}"><span class="rk">{B.esc(lbl)}</span>'
              f'<span class="rd">{td.day}.{td.month}.</span><strong>{B.esc(t)}</strong><span class="rs">{B.esc(x)}</span></a>'
              for _, td, live, lbl, t, x, u in rows]
-    return ('<section class="rg r4 rblue" aria-labelledby="rMit"><div class="rc rbar"><h2 id="rMit">Jetzt mitreden</h2>'
-            '<span>Auflagen, Infoanlässe, Parlament und Urne – die nächsten Termine</span>'
-            '<a href="wandel/">Alle Termine →</a></div>' + "".join(_fill(cells, 4)) + "</section>")
+    return ('<section class="rg r4 rblue" aria-labelledby="rMit"><div class="rc rhead"><h2 id="rMit">Jetzt mitreden</h2>'
+            '<span class="rs">Auflagen, Infoanlässe, Parlament und Urne – die nächsten Termine</span>'
+            '<a class="rmore" href="wandel/">Alle Termine →</a></div>' + "".join(_fill(cells, 3)) + "</section>")
 
 
 def _phases(n):
