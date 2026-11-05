@@ -149,8 +149,8 @@ def _hero(slides):
             return ""
         dots = "".join(f'<button type="button" class="rsd" data-to="{j}" aria-label="Meldung {j + 1} von {k}" aria-pressed="{"true" if j == i else "false"}"></button>'
                        for j in range(k))
-        return (f'<span class="rctl">{arrow(-1, "Vorherige Meldung", "M15 6l-6 6 6 6")}<span class="rdots">{dots}</span>'
-                f'{arrow(1, "Nächste Meldung", "M9 6l6 6-6 6")}</span>')
+        return (f'<span class="rctl"><span class="rdots">{dots}</span><span class="rarr">{arrow(-1, "Vorherige Meldung", "M15 6l-6 6 6 6")}'
+                f'{arrow(1, "Nächste Meldung", "M9 6l6 6-6 6")}</span></span>')
     out = []
     for i, n in enumerate(slides):
         u = B.esc(n["url"])
