@@ -956,3 +956,29 @@ html[lang="en"] .v3 header nav a.lang::before{content:"EN  |  "}
   .rlist .nlist a:not(.img)::after{display:none}
 }
 .rlist .nlist .i{background:var(--bg)}
+
+/* ---------- Raster für alle übrigen Seiten (Seitenkopf + Abschnitte): Titel links, Inhalt rechts */
+.v3 main.wrap:not(.rpage){max-width:none;margin:0;padding:0}
+.v3 main.wrap:not(.rpage)>.pagehead{margin:0;padding:56px 40px 44px;border-bottom:1px solid var(--rl);gap:14px}
+.v3 main.wrap:not(.rpage)>.pagehead h1{font:800 clamp(44px,4.4vw,76px)/1 var(--rf);letter-spacing:-.03em;font-stretch:normal;max-width:18ch}
+.v3 main.wrap:not(.rpage)>.pagehead p{max-width:64ch}
+.v3 main.wrap:not(.rpage)>.pagehead .eyebrow{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--brand)}
+.v3 main.wrap:not(.rpage)>section.block{margin:0;display:grid;grid-template-columns:calc((100% - 3px) / 4) minmax(0,1fr);column-gap:1px;align-items:start;border-bottom:1px solid var(--rl);
+  background:linear-gradient(var(--rl),var(--rl)) no-repeat calc((100% - 3px) / 4) 0/1px 100%}
+.v3 main.wrap:not(.rpage)>section.block>.shead{grid-column:1;margin:0;padding:40px;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:12px}
+.v3 main.wrap:not(.rpage)>section.block>.shead h2{font:800 clamp(32px,2.6vw,48px)/1.02 var(--rf);letter-spacing:-.03em}
+.v3 main.wrap:not(.rpage)>section.block>.shead span{font-size:15px;color:var(--muted)}
+.v3 main.wrap:not(.rpage)>section.block>.shead a{color:var(--fg);text-decoration:none}
+.v3 main.wrap:not(.rpage)>section.block>.shead a:hover{color:var(--brand)}
+.v3 main.wrap:not(.rpage)>section.block>:not(.shead){grid-column:2;margin:0;padding:40px 40px 40px 28px;min-width:0}
+.v3 main.wrap:not(.rpage)>section.block>:not(.shead)+:not(.shead){padding-top:0}
+.v3 main.wrap:not(.rpage)>div:not(.pagehead){margin:0;padding:32px 40px;border-bottom:1px solid var(--rl)}
+.v3 main.wrap:not(.rpage) :where(*):not(i):not(.dot){border-radius:0!important}
+.v3 main.wrap:not(.rpage) :where(*):not(:focus-visible){box-shadow:none!important}
+@media (max-width:900px){
+  .v3 main.wrap:not(.rpage)>.pagehead{padding:36px 20px 28px}
+  .v3 main.wrap:not(.rpage)>section.block{display:block;background:none}
+  .v3 main.wrap:not(.rpage)>section.block>.shead{padding:28px 20px 0}
+  .v3 main.wrap:not(.rpage)>section.block>:not(.shead),.v3 main.wrap:not(.rpage)>section.block>:not(.shead)+:not(.shead){padding:20px 20px 28px}
+  .v3 main.wrap:not(.rpage)>div:not(.pagehead){padding:24px 20px}
+}
