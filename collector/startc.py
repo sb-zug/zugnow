@@ -119,23 +119,6 @@ def _wandel(projekte):
             f'<a class="rmore" href="wandel/">Alle {len(projekte)} Vorhaben →</a></div>' + "".join(cells) + band + "</section>")
 
 
-def _news_parl4(pool, politik):
-    """Variante D: News/Parlament im 4er-Raster – Titel links, 2×2 Meldungen in Spalte 2–3, Parlament in Spalte 4."""
-    news = "".join(
-        f'<a class="rc rnw" href="{B.esc(n["url"])}"><span class="rk">{B.esc(B.topic_of(n))} · {int(n["date"][8:10])}.{int(n["date"][5:7])}.</span>'
-        f'<strong>{B.esc(n["title"])}</strong>' + (f'<span class="rex">{B.esc(x)}</span>' if (x := _excerpt(n, field="lead")) else "")
-        + f'{ARR}</a>' for n in pool[:4]) + '<div class="rc rx" aria-hidden="true"></div>' * (len(pool[:4]) % 2)
-    parl = "".join(
-        f'<a href="{B.esc(u)}"><span class="rk">{re.sub(r"<[^>]+>", " ", k).strip()} · {B.dlabel(d)}</span><strong>{B.esc(t)}</strong></a>'
-        for d, k, t, st, u in SB.parl_rows(politik)[:3])
-    return ('<section class="rg r4 rnews4" aria-labelledby="rNw"><div class="rc rhead"><h2 id="rNw">News</h2>'
-            '<span class="rs">Meldungen der Stadt Zug</span><a class="rmore" href="news/">Alle News →</a></div>'
-            f'<div class="rn22">{news}</div>'
-            + (f'<div class="rc rparl4" aria-labelledby="rPa"><span class="rk">Aus dem Parlament</span><div class="rpl">{parl}</div>'
-               '<a class="rmore" href="politik/#pGes">Alle Geschäfte →</a></div>' if parl else '<div class="rc rx"></div>')
-            + "</section>")
-
-
 def _news_parl(pool, politik):
     news = "".join(
         f'<a class="rc rnw" href="{B.esc(n["url"])}"><span class="rk">{B.esc(B.topic_of(n))} · {int(n["date"][8:10])}.{int(n["date"][5:7])}.</span>'
@@ -175,11 +158,10 @@ if(n>0){var s=document.createElement('em');s.className='rcd';s.textContent=' · 
 
 
 def build_start_c(index_html, events, news, pol_news):
-    """Variante C (/start-c/) und Variante D (/start-d/: News/Parlament im 4er-Raster)."""
-    return {f"start-{v}/index.html": _page(index_html, events, news, pol_news, v) for v in ("c", "d")}
+    return {"start-c/index.html": _page(index_html, events, news, pol_news)}
 
 
-def _page(index_html, events, news, pol_news, variant):
+def _page(index_html, events, news, pol_news):
     politik = B.load("politik", {})
     projekte = B.load("wandel", {}).get("projekte") or []
     pool = [n for n in news if not re.match(r"Baugesuche vom", n["title"], re.I)]
@@ -189,7 +171,7 @@ def _page(index_html, events, news, pol_news, variant):
     for n in pool:  # fast gleiche Meldungen (z. B. «…, Zug») nur einmal
         if n is not lead and key(n) not in seen:
             seen.add(key(n)); rest.append(n)
-    main = ('<main id="top" class="rwrap">' + _hero(lead) + _agenda(events) + (_news_parl4 if variant == "d" else _news_parl)(rest, politik)
+    main = ('<main id="top" class="rwrap">' + _hero(lead) + _agenda(events) + _news_parl(rest, politik)
             + _mitreden(projekte, pol_news, politik) + _wandel(projekte) + "</main>")
     p = index_html
     p = p.replace('class="v2"', f'class="v2 v3" data-vote="{B.esc(politik.get("nextVoteDate") or "")}"', 1)
