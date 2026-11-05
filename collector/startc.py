@@ -1,4 +1,4 @@
-"""zug.now – Startseite Variante C «Raster» (Entwurf 5.11.2026), Vorschau unter /start-c/.
+"""zug.now – Startseite «Raster» (seit 5.11.2026; /start-c/ leitet auf / um).
 
 Strenges Kachelraster mit durchgezogenen Linien (CSS-Block «Startseite Raster (body.v3)» in app.css).
 Baut auf der fertigen Startseite (Variante B) auf: Kopf, Infoleiste (inkl. Abstimmung) und Fuss bleiben,
@@ -182,7 +182,10 @@ if(n>0){var s=document.createElement('em');s.className='rcd';s.textContent=' · 
 
 
 def build_start_c(index_html, events, news, pol_news):
-    return {"start-c/index.html": _page(index_html, events, news, pol_news)}
+    redirect = ('<!doctype html><html lang="de-CH"><head><meta charset="utf-8"><title>zug.now</title>'
+                '<meta name="robots" content="noindex"><link rel="canonical" href="https://zug.now/">'
+                '<meta http-equiv="refresh" content="0; url=/"></head><body><a href="/">Zur Startseite</a></body></html>')
+    return {"index.html": _page(index_html, events, news, pol_news), "start-c/index.html": redirect}
 
 
 def _page(index_html, events, news, pol_news):
@@ -198,10 +201,8 @@ def _page(index_html, events, news, pol_news):
     main = ('<main id="top" class="rwrap">' + _hero(slides) + _agenda(events) + _news_parl(rest, politik)
             + _mitreden(projekte, pol_news, politik) + _wandel(projekte) + "</main>")
     p = index_html
-    p = p.replace('class="v2"', f'class="v2 v3" data-vote="{B.esc(politik.get("nextVoteDate") or "")}"', 1)
+    p = p.replace('class="v2"', f'class="v2 v3 vhome" data-vote="{B.esc(politik.get("nextVoteDate") or "")}"', 1)
     p = p.replace("<head>\n", '<head>\n<base href="/">\n', 1)
-    p = re.sub(r'<meta name="description"', '<meta name="robots" content="noindex">\n<meta name="description"', p, count=1)
-    p = p.replace("family=Archivo:", "family=Inter+Tight:wght@600;700;800&family=Archivo:", 1)
     p = re.sub(r'<section class="intro".*?</section>\s*', "", p, count=1, flags=re.S)
     p = re.sub(r"<main\b.*?</main>", lambda m: main, p, count=1, flags=re.S)
     p = p.replace("</body>", TABS_JS + "\n</body>", 1)

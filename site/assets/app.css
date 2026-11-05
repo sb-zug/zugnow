@@ -825,3 +825,6 @@ html[lang="en"] .v3 header nav a.lang::before{content:"EN  |  "}
 .rsa:focus-visible,.rsd:focus-visible{outline:2px solid #fff;outline-offset:2px}
 /* News: Titelzeile so hoch wie nötig, zusätzliche Höhe geht an die Kacheln */
 .rg>.rnl{grid-template-rows:auto;grid-auto-rows:1fr}
+/* Raster-Rahmen auf allen Seiten (body.v3): Titelschrift, Fuss mit Linie */
+.v3{--display:"Inter Tight","Archivo","Arial Narrow",system-ui,sans-serif}
+.v3:not(.vhome) footer{border-top:1px solid var(--rl)}

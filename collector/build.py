@@ -138,6 +138,23 @@ def fill(doc, el_id, inner):
     return new
 
 
+def raster(doc):
+    """Raster-Layout (seit 5.11.2026) auf allen Seiten: Klasse v3 am body, Schrift Inter Tight."""
+    if "<body" not in doc or "http-equiv=\"refresh\"" in doc:
+        return doc
+    m = re.search(r"<body([^>]*)>", doc)
+    attrs = m.group(1)
+    if 'class="' in attrs:
+        if "v3" not in re.search(r'class="([^"]*)"', attrs).group(1).split():
+            attrs = re.sub(r'class="([^"]*)"', r'class="\1 v3"', attrs, count=1)
+    else:
+        attrs += ' class="v3"'
+    doc = doc[:m.start()] + f"<body{attrs}>" + doc[m.end():]
+    if "Inter+Tight" not in doc:
+        doc = doc.replace("family=Archivo:", "family=Inter+Tight:wght@600;700;800&family=Archivo:", 1)
+    return doc
+
+
 def build():
     news, agenda, amtlich = load("news", []), load("agenda", []), load("amtlich", [])
     politik = load("politik", {})
@@ -250,6 +267,7 @@ def build():
     for name, doc in pages.items():
         if name.endswith(".html"):
             doc = doc.replace("</div></div></footer>", "</div>" + hubs.FOOTER_COL + "</div></footer>", 1)
+            doc = raster(doc)
         name = PATHS.get(name, name)
         (OUT / name).parent.mkdir(parents=True, exist_ok=True)
         (OUT / name).write_text(doc, encoding="utf-8")
