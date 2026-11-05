@@ -22,9 +22,9 @@ def _fill(cells, n):
     return cells + ['<div class="rc rx" aria-hidden="true"></div>'] * (-len(cells) % n)
 
 
-def _excerpt(e, n=110):
-    """Ein Satz aus dem Teaser der Quelle, höchstens rund n Zeichen."""
-    t = re.sub(r"\s+", " ", e.get("teaser") or "").split(" · ")[0].strip()
+def _excerpt(e, n=110, field="teaser"):
+    """Ein Satz aus dem Teaser/Lead der Quelle, höchstens rund n Zeichen."""
+    t = re.sub(r"\s+", " ", e.get(field) or "").split(" · ")[0].strip()
     if len(t) < 15 or t.lower().rstrip(".") in (e["title"] or "").lower():
         return ""
     m = re.match(r"(.+?[.!?])(\s|$)", t)
@@ -122,7 +122,8 @@ def _wandel(projekte):
 def _news_parl(pool, politik):
     news = "".join(
         f'<a class="rc rnw" href="{B.esc(n["url"])}"><span class="rk">{B.esc(B.topic_of(n))} · {int(n["date"][8:10])}.{int(n["date"][5:7])}.</span>'
-        f'<strong>{B.esc(n["title"])}</strong>{ARR}</a>' for n in pool[:4])
+        f'<strong>{B.esc(n["title"])}</strong>' + (f'<span class="rex">{B.esc(x)}</span>' if (x := _excerpt(n, field="lead")) else "")
+        + f'{ARR}</a>' for n in pool[:4])
     parl = "".join(
         f'<a href="{B.esc(u)}"><span class="rk">{re.sub(r"<[^>]+>", " ", k).strip()} · {B.dlabel(d)}</span><strong>{B.esc(t)}</strong></a>'
         for d, k, t, st, u in SB.parl_rows(politik)[:3])
