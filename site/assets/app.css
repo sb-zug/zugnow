@@ -671,11 +671,11 @@ a.rc:hover strong,.rlead:hover strong,.rpl a:hover strong{color:var(--brand)}
 .rhead h2,.rparl h2,.rbar h2{margin:0;font:800 48px/1 var(--rf);letter-spacing:-.03em}
 .rx{background:var(--bg)}
 /* Hero */
-.rh1{grid-column:span 5;padding:56px 40px 40px;justify-content:space-between;gap:40px;min-height:420px}
+.rh1{grid-column:span 4;padding:56px 40px 40px;justify-content:space-between;gap:40px;min-height:420px}
 .rh1 h1{margin:0;font:800 84px/.95 var(--rf);letter-spacing:-.035em}
 .rh1 .dot{color:var(--red)}
 .rh1 p{margin:0;font-size:18px;line-height:1.5;max-width:34ch;color:var(--muted)}
-.rg>.rlead{grid-column:span 7;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--rl);color:var(--fg);text-decoration:none}
+.rg>.rlead{grid-column:span 8;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--rl);color:var(--fg);text-decoration:none}
 .rim{position:relative;background:var(--ph);min-height:420px}
 .rim img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .rlt{background:var(--bg);padding:40px 32px}
@@ -723,14 +723,14 @@ a.rmi:hover strong{color:var(--on-blue);text-decoration:underline}
 .rbarw i{position:absolute;left:0;top:0;bottom:0;background:var(--brand)}
 .rwohn .rs{font-size:14px;color:var(--soft)}
 /* News + Parlament */
-.rg>.rnl{grid-column:span 7;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--rl)}
+.rg>.rnl{grid-column:span 8;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--rl)}
 .rnl>*{background:var(--bg)}
 .rline{grid-column:1/-1;flex-direction:row;justify-content:space-between;align-items:baseline;padding:40px 40px 16px}
 .rline .rmore{margin-top:0}
 .rnw{min-height:170px}
 .rnw:nth-child(even){padding-left:40px}
 .rnw strong{font-size:22px;line-height:1.2}
-.rg>.rparl{grid-column:span 5;padding:40px;background:var(--tint-2)}
+.rg>.rparl{grid-column:span 4;padding:40px;background:var(--tint-2)}
 .rparl h2{margin-bottom:10px}
 .rpl a{display:flex;flex-direction:column;gap:6px;padding:18px 0;border-top:1px solid var(--line-strong);color:var(--fg);text-decoration:none}
 .rpl a:last-child{border-bottom:1px solid var(--line-strong)}
@@ -811,3 +811,4 @@ html[lang="en"] .v3 header nav a.lang::before{content:"EN  |  "}
 .rblue>.rhead .rmore{color:var(--on-blue)}
 .rblue>.rhead .rmore:hover{color:var(--on-blue);text-decoration:underline}
 .rev,.rmi,.rwv{min-height:230px}
+@media (min-width:1500px){.rpl strong{font-size:clamp(17px,1.15vw,21px)}}
