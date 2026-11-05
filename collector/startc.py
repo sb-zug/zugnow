@@ -124,7 +124,7 @@ def _news_parl4(pool, politik):
     news = "".join(
         f'<a class="rc rnw" href="{B.esc(n["url"])}"><span class="rk">{B.esc(B.topic_of(n))} · {int(n["date"][8:10])}.{int(n["date"][5:7])}.</span>'
         f'<strong>{B.esc(n["title"])}</strong>' + (f'<span class="rex">{B.esc(x)}</span>' if (x := _excerpt(n, field="lead")) else "")
-        + f'{ARR}</a>' for n in pool[:4])
+        + f'{ARR}</a>' for n in pool[:4]) + '<div class="rc rx" aria-hidden="true"></div>' * (len(pool[:4]) % 2)
     parl = "".join(
         f'<a href="{B.esc(u)}"><span class="rk">{re.sub(r"<[^>]+>", " ", k).strip()} · {B.dlabel(d)}</span><strong>{B.esc(t)}</strong></a>'
         for d, k, t, st, u in SB.parl_rows(politik)[:3])
@@ -140,7 +140,7 @@ def _news_parl(pool, politik):
     news = "".join(
         f'<a class="rc rnw" href="{B.esc(n["url"])}"><span class="rk">{B.esc(B.topic_of(n))} · {int(n["date"][8:10])}.{int(n["date"][5:7])}.</span>'
         f'<strong>{B.esc(n["title"])}</strong>' + (f'<span class="rex">{B.esc(x)}</span>' if (x := _excerpt(n, field="lead")) else "")
-        + f'{ARR}</a>' for n in pool[:4])
+        + f'{ARR}</a>' for n in pool[:4]) + '<div class="rc rx" aria-hidden="true"></div>' * (len(pool[:4]) % 2)
     parl = "".join(
         f'<a href="{B.esc(u)}"><span class="rk">{re.sub(r"<[^>]+>", " ", k).strip()} · {B.dlabel(d)}</span><strong>{B.esc(t)}</strong></a>'
         for d, k, t, st, u in SB.parl_rows(politik)[:3])
