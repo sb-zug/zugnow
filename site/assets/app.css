@@ -799,3 +799,7 @@ html[lang="en"] .v3 header nav a.lang::before{content:"EN  |  "}
 .v3 main+#ftr,.v3 #ftr{margin-top:0}
 .v3 footer{border-top:0;background:var(--bg);margin-top:0}
 .v3 footer .wrap{padding-block:40px 48px}
+/* Raster: Kopfzeile bleibt oben stehen */
+.v3 #hdr{display:contents}
+.v3 header{position:sticky;top:0;z-index:50;background:var(--bg)}
+.v3 .search{position:sticky;top:var(--hh,81px);z-index:49;background:var(--bg)}
