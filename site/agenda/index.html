@@ -23,32 +23,31 @@
 <meta name="theme-color" content="#1F55C4">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..800&family=Inter:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="assets/app.css?v=202611051500">
+<link rel="stylesheet" href="assets/app.css?v=202611051545">
 </head>
 <body data-page="agenda">
 <div id="hdr"><header><div class="wrap"><a class="logo" href="/" aria-label="zug.now Startseite">zug<span class="dot">.</span><span class="now">now</span></a><nav aria-label="Hauptnavigation"><a href="/">Start</a><a href="agenda/" aria-current="page">Agenda</a><a href="news/">News</a><a href="amtlich/">Amtlich</a><a href="politik/">Politik</a><a href="wandel/">Wandel</a><a class="lang" href="/en/" hreflang="en" lang="en" aria-label="English">EN</a></nav><button type="button" class="sbtn" id="sBtn" aria-expanded="false" aria-controls="sPanel" aria-label="Suchen"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="M15.5 15.5L20 20"></path></svg></button></div></header><div class="search" id="sPanel" role="search" hidden><div class="wrap"><label class="vh" for="sIn">Suche in News, Agenda und Amtlichem</label><div class="sfield"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="M15.5 15.5L20 20"></path></svg><input id="sIn" type="search" placeholder="News, Anlässe, Amtliches durchsuchen" autocomplete="off" enterkeyhint="search"><button type="button" class="sclose" id="sClose">Schliessen</button></div><p class="scount" id="sCount" aria-live="polite"></p><div class="sres" id="sRes"></div></div></div></div>
-<main class="wrap">
-  <div class="pagehead withv"><div class="phtext"><h1>Agenda Stadt Zug</h1><p>Alle Anlässe in der Stadt Zug, automatisch aus dem offiziellen Veranstaltungskalender. Anlass anklicken für Details und Kalendereintrag.</p></div><a class="violator" href="/wochenende/"><span class="v1">Das läuft am</span><span class="v2">Wochenende</span><span class="v3" id="wkBadgeN"></span></a></div>
-  <section class="block">
-    <div class="shead"><span id="agCount"></span></div>
-    <div class="filters">
-      <div class="chips time" role="group" aria-label="Zeitraum" id="timeChips"></div>
-      <div class="chips" role="group" aria-label="Kategorie" id="catChips"></div>
-      <div class="chips" role="group" aria-label="Ort" id="placeChips"></div>
-    </div>
+<main class="wrap rpage">
+  <section class="rg r4 rphead">
+    <div class="rc rhead"><h1>Agenda Stadt Zug</h1><p class="rs">Alle Anlässe in der Stadt Zug, automatisch aus dem offiziellen Veranstaltungskalender. Anlass anklicken für Details und Kalendereintrag.</p><span class="rk" id="agCount"></span><a class="rmore" href="/wochenende/">Das läuft am Wochenende · <span id="wkBadgeN"></span></a></div>
+    <div class="rc rflt"><span class="rk">Zeitraum</span><div class="chips time" role="group" aria-label="Zeitraum" id="timeChips"></div></div>
+    <div class="rc rflt"><span class="rk">Kategorie</span><div class="chips" role="group" aria-label="Kategorie" id="catChips"></div></div>
+    <div class="rc rflt"><span class="rk">Ort</span><div class="chips" role="group" aria-label="Ort" id="placeChips"></div></div>
+  </section>
+  <section class="rlist" aria-label="Anlässe">
     <div class="agenda" id="agList"></div>
-    <button type="button" class="showmore" id="more" hidden>Mehr anzeigen</button>
+    <div class="rmorebar"><button type="button" class="showmore" id="more" hidden>Mehr anzeigen</button></div>
   </section>
-  <section class="block" id="wochenende-sec">
-    <div class="shead"><h2 id="wkTitle">Dieses Wochenende</h2><a href="/wochenende/">Alles am Wochenende →</a></div>
-    <div class="cards" id="wkCards"></div>
+  <section class="rg r4" id="wochenende-sec" aria-labelledby="wkTitle">
+    <div class="rc rhead"><h2 id="wkTitle">Dieses Wochenende</h2><a class="rmore" href="/wochenende/">Alles am Wochenende →</a></div>
+    <div class="cards rcards" id="wkCards"></div>
   </section>
-  <section id="laufend" class="block">
-    <div class="shead"><h2>Laufend</h2><span>Ausstellungen und Angebote, die über Wochen offen sind</span></div>
-    <div class="lauf" id="laufGrid"></div>
+  <section class="rg r4" id="laufend" aria-labelledby="laTitle">
+    <div class="rc rhead"><h2 id="laTitle">Laufend</h2><span class="rs">Ausstellungen und Angebote, die über Wochen offen sind</span></div>
+    <div class="lauf rcards" id="laufGrid"></div>
   </section>
 </main>
 <div id="ftr"><footer><div class="wrap"><div class="col"><span style="font-family:var(--display);font-weight:800;font-size:22px;color:var(--fg)">zug<span style="color:var(--red)">.</span>now</span><span>Unabhängig. Automatisch aktualisiert. Jede Meldung mit Quelle und Link zum Original.</span></div><div class="col"><span style="font-weight:600;color:var(--fg)">Quellen</span><span>stadtzug.ch · veranstaltungen.zug.ch · amtsblatt.zg.ch · Kulturhäuser · kinozug.ch · eventfrog.ch · Open-Meteo</span><span id="srcState"></span></div></div></footer></div>
-<script src="assets/app.js?v=202611051500"></script>
+<script src="assets/app.js?v=202611051545"></script>
 </body>
 </html>

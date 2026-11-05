@@ -828,3 +828,79 @@ html[lang="en"] .v3 header nav a.lang::before{content:"EN  |  "}
 /* Raster-Rahmen auf allen Seiten (body.v3): Titelschrift, Fuss mit Linie */
 .v3{--display:"Inter Tight","Archivo","Arial Narrow",system-ui,sans-serif}
 .v3:not(.vhome) footer{border-top:1px solid var(--rl)}
+
+/* ---------- Raster-Seiten (main.rpage): Übersicht, z. B. Agenda */
+.v3 main.rpage{max-width:none;padding:0;margin:0}
+.rpage .rhead h1{margin:0;font:800 56px/1 var(--rf);letter-spacing:-.03em}
+.rphead .rhead{gap:14px}
+.rphead .rhead .rk{color:var(--soft);margin-top:auto}
+.rphead .rhead .rmore{margin-top:0}
+.rflt{gap:14px}
+.rflt .rk{color:var(--soft)}
+.v3 .rflt .chips{margin:0;gap:6px}
+.v3 .chip,.v3 .chips.time .chip{min-height:40px;padding:0 14px;border-radius:0;border:1px solid var(--fg);background:var(--bg);color:var(--fg);font:600 14px var(--body)}
+.v3 .chip[aria-pressed="true"]{background:var(--fg);border-color:var(--fg);color:var(--bg)}
+.v3 .chip:hover{border-color:var(--brand);color:var(--brand)}
+.v3 .chip[aria-pressed="true"]:hover{color:var(--bg)}
+/* Liste: Zeilen im 4er-Raster (Datum | Titel ×2 | Kategorie) */
+.rlist{border-bottom:1px solid var(--rl)}
+.rlist .agenda{border-top:0}
+.rlist details.ev{border-top:1px solid var(--rl);border-bottom:0}
+.rlist details.ev:first-child{border-top:0}
+.rlist details.ev>summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;padding:0;position:relative;align-items:stretch}
+.rlist details.ev>summary>*{padding:20px 28px;min-width:0}
+.rlist .date{grid-column:1;width:auto;flex-direction:row;align-items:baseline;gap:8px;border-radius:0;background:none;padding-left:40px;border-right:1px solid var(--rl)}
+.rlist .date .wd,.rlist .date .mo{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+.rlist .date .d{font:800 30px/1 var(--rf);color:var(--fg)}
+.rlist .thumb{display:none}
+.rlist .evmain{grid-column:2/span 2;border-right:1px solid var(--rl);gap:6px}
+.rlist .evmain .ttl{font:700 22px/1.2 var(--rf);letter-spacing:-.01em}
+.rlist .evmain .meta{font-size:15px;color:var(--muted)}
+.rlist .evside{grid-column:4;flex-direction:column;gap:6px;padding-right:64px}
+.v3 .tag{border-radius:0;background:none;padding:0;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--brand)}
+.v3 .tag.off{color:var(--red)}
+.rlist details.ev>summary>svg{position:absolute;right:28px;top:22px;padding:0}
+.rlist details.ev>summary:hover .ttl{text-decoration:none;color:var(--brand)}
+.rlist details.ev[open]>summary .evmain,.rlist details.ev[open]>summary .date{border-bottom:0}
+.rlist .panel{padding:4px 28px 28px calc(25% + 28px)}
+.v3 .panel .pimg{border-radius:0}
+.v3 .btn{border-radius:0}
+.rmorebar{padding:20px 40px;border-top:1px solid var(--rl)}
+.rmorebar:has(.showmore[hidden]){display:none}
+.v3 .showmore{margin:0;border-radius:0;border:1px solid var(--fg)}
+/* Kachel-Bänder mit Bild (Wochenende, Laufend): Linien nur wo Kacheln sind */
+.rg>.rcards{grid-column:span 3;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;background:var(--bg);margin:0 -1px -1px 0}
+.rg:has(>.rcards){overflow:hidden}
+.rcards>a{padding:28px;gap:10px;box-shadow:inset -1px 0 0 var(--rl),inset 0 -1px 0 var(--rl);background:var(--bg)}
+.rcards>p{padding:28px;margin:0}
+.v3 .rcards .ph{border-radius:0;aspect-ratio:16/10}
+.v3 .rcards .ph img{border-radius:0}
+.v3 .rcards .when{border-radius:0}
+.rcards strong{font:700 22px/1.2 var(--rf);letter-spacing:-.01em}
+.rcards a:hover strong{text-decoration:none;color:var(--brand)}
+.rcards .eyebrow{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--brand)}
+@media (min-width:1500px){.rpage .rhead h1{font-size:clamp(56px,3.8vw,76px)}.rlist .evmain .ttl,.rcards strong{font-size:clamp(22px,1.5vw,30px)}}
+@media (max-width:900px){
+  .rpage .rhead h1{font-size:42px}
+  .rflt{grid-column:1/-1}
+  .rlist details.ev>summary{grid-template-columns:96px minmax(0,1fr)}
+  .rlist details.ev>summary>*{padding:16px 20px}
+  .rlist .date{flex-direction:column;align-items:flex-start;gap:2px;padding-left:20px}
+  .rlist .evmain{grid-column:2;border-right:0;padding-right:52px}
+  .rlist .evside{grid-column:2;padding-top:0}
+  .rlist details.ev>summary>svg{right:16px;top:18px}
+  .rlist .panel{padding:0 20px 24px 116px}
+  .rg>.rcards{grid-column:1/-1;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .rmorebar{padding:16px 20px}
+}
+@media (max-width:560px){.rg>.rcards{grid-template-columns:minmax(0,1fr)}.rlist .panel{padding:0 20px 24px}}
+.rlist details.ev.same .date>*{visibility:hidden}
+.rlist details.ev.same{border-top:0}
+.rlist details.ev.same>summary>.evmain,.rlist details.ev.same>summary>.evside{box-shadow:0 -1px 0 var(--rl)}
+@media (max-width:900px){
+  .rlist .date{grid-row:span 2}
+  .rflt .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-right:-20px;padding-right:20px}
+  .rflt .chip{flex:0 0 auto}
+}
+@media (max-width:720px){.v3 header nav{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;max-width:100%}.v3 header nav a{flex:0 0 auto}}
+@media (max-width:900px){.rlist details.ev.same>summary>.evside{box-shadow:none}}

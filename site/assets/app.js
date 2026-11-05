@@ -321,10 +321,13 @@
       '</div>' + (e.image ? '<div class="pimg">' + img(e.image) + '</div>' : '') + '</div></details>';
   }
 
+  // Raster: Datum pro Tag nur in der ersten Zeile
+  function sameDay(el) { var last = ''; [].forEach.call(el.querySelectorAll('details.ev'), function (d) { var k = (d.querySelector('.date') || {}).getAttribute ? d.querySelector('.date').getAttribute('aria-label') : ''; d.classList.toggle('same', k === last); last = k }) }
   function renderList() {
     var list = filtered(), lbl = { alle: 'in den nächsten 60 Tagen', heute: 'heute', morgen: 'morgen', wochenende: 'am Wochenende', woche: 'diese Woche' }[st.time];
     $('agCount').textContent = list.length + (list.length === 1 ? ' Anlass ' : ' Anlässe ') + lbl;
-    $('agList').innerHTML = list.slice(0, st.limit).map(evRow).join('') || '<p style="color:var(--soft);padding:18px 0">Keine Anlässe für diese Auswahl.</p>';
+    $('agList').innerHTML = list.slice(0, st.limit).map(evRow).join('') || '<p style="color:var(--soft);padding:18px 40px">Keine Anlässe für diese Auswahl.</p>';
+    sameDay($('agList'));
     var m = $('more'); m.hidden = list.length <= st.limit; m.textContent = 'Weitere ' + Math.min(20, list.length - st.limit) + ' anzeigen';
     m.onclick = function () { st.limit += 20; renderList() };
   }

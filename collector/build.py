@@ -199,7 +199,13 @@ def build():
     # Agenda: Liste (erste 20 wie app.js), Wochenende, Laufend
     p = pages["agenda.html"]
     p = fill(p, "agCount", f'{len(events)} {"Anlass" if len(events) == 1 else "Anlässe"} in den nächsten 60 Tagen')
-    p = fill(p, "agList", "".join(ev_row(e) for e in events[:20]))
+    rows_html, last = [], None
+    for e in events[:20]:  # Raster: Datum pro Tag nur in der ersten Zeile
+        d = dt(e["start"]).date()
+        r = ev_row(e)
+        rows_html.append(r.replace('<details class="ev"', '<details class="ev same"', 1) if d == last else r)
+        last = d
+    p = fill(p, "agList", "".join(rows_html))
     wa, wb = weekend()
     wk = [e for e in events if wa <= dt(e["start"]).date() <= wb and not e.get("cancelled")]
     seen, pick = set(), []
