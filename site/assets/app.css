@@ -641,7 +641,7 @@ nav a.lang:hover{border-color:var(--brand);color:var(--brand)}
 /* ---------- Startseite Raster (body.v3, Variante C, Vorschau /start-c/) */
 .v3{--rl:var(--fg);--rf:"Inter Tight",var(--display)}
 .v3 header .wrap,.v3 .infobar .wrap,.v3 .search .wrap{max-width:none;padding-left:max(40px,env(safe-area-inset-left,0px));padding-right:max(40px,env(safe-area-inset-right,0px))}
-.v3 header{border-bottom:2px solid var(--rl)}
+.v3 header{border-bottom:1px solid var(--rl)}
 .v3 .logo{font-family:var(--rf)}
 .v3 .logo .now{color:var(--fg)}
 .v3 nav a{font-weight:600;font-size:16px;color:var(--fg)}
