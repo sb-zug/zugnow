@@ -27,6 +27,18 @@ def _tile(d, live=False):
 
 
 def _mitreden(projekte, pol_news, politik):
+    rows = mitreden_rows(projekte, pol_news, politik)
+    if not rows:
+        return ""
+    return ('<section class="block" aria-labelledby="mTitle"><div class="shead"><h2 id="mTitle">Jetzt mitreden</h2>'
+            '<a href="wandel/">Alle Termine →</a></div><div class="mrow">'
+            + "".join(f'<a class="mi{" live" if live else ""}" href="{B.esc(u)}">{_tile(td, live)}<span class="mc"><span class="eyebrow">{B.esc(lbl)}</span>'
+                      f'<strong>{B.esc(t)}</strong><span>{B.esc(x)}</span></span></a>' for _, td, live, lbl, t, x, u in rows[:4])
+            + "</div></section>")
+
+
+def mitreden_rows(projekte, pol_news, politik):
+    """Nächste Termine zum Mitreden, sortiert: (sort, datum, live, label, titel, text, url)."""
     rows = []  # (sortdatum, tile-datum, live, label, titel, text, url)
     for p in projekte:
         for m, s in zip(p["meilensteine"], W._state(p["meilensteine"])):
@@ -56,13 +68,13 @@ def _mitreden(projekte, pol_news, politik):
         rows.append((nv, nv, False, "Abstimmung", "Abstimmungssonntag",
                      f'{k} {"Vorlage" if k == 1 else "Vorlagen"} · Unterlagen und Resultate' if k else "Vorlagen werden aufgeschaltet", "politik/#pAbst"))
     rows.sort(key=lambda r: r[0])
-    if not rows:
-        return ""
-    return ('<section class="block" aria-labelledby="mTitle"><div class="shead"><h2 id="mTitle">Jetzt mitreden</h2>'
-            '<a href="wandel/">Alle Termine →</a></div><div class="mrow">'
-            + "".join(f'<a class="mi{" live" if live else ""}" href="{B.esc(u)}">{_tile(td, live)}<span class="mc"><span class="eyebrow">{B.esc(lbl)}</span>'
-                      f'<strong>{B.esc(t)}</strong><span>{B.esc(x)}</span></span></a>' for _, td, live, lbl, t, x, u in rows[:4])
-            + "</div></section>")
+    return rows
+
+
+def soon(p):
+    m, s = W._next(p)
+    a = W._d(m.get("datum"))[0] if m else None
+    return (0 if s == "now" else 1, a or date(2100, 1, 1))
 
 
 def _wandel(projekte):
@@ -71,10 +83,6 @@ def _wandel(projekte):
     wp = [p for p in projekte if p.get("wohnen")]
     pg = sum(p["wohnen"].get("preisguenstig") or 0 for p in wp)
 
-    def soon(p):
-        m, s = W._next(p)
-        a = W._d(m.get("datum"))[0] if m else None
-        return (0 if s == "now" else 1, a or date(2100, 1, 1))
     pick = sorted(projekte, key=soon)[:3]
     band = (f'<a class="wband" href="wohnen/"><strong>{B.esc(f"{pg:,}".replace(",", "’"))}</strong>'
             f'<span>preisgünstige Wohnungen sind geplant oder im Bau</span><em>Günstig wohnen →</em></a>') if pg else ""
@@ -84,6 +92,18 @@ def _wandel(projekte):
 
 
 def _parlament(politik):
+    rows = parl_rows(politik)
+    if not rows:
+        return ""
+    return ('<section class="block" aria-labelledby="pTitle"><div class="shead"><h2 id="pTitle">Aus dem Parlament</h2>'
+            '<a href="politik/#pGes">Alle Geschäfte →</a></div><div class="glist2">'
+            + "".join(f'<a class="gr" href="{B.esc(u)}"><span class="d">{B.dlabel(d)}</span><span class="c"><span class="gk">{k}</span>'
+                      f'<span class="t">{B.esc(t)}</span>{st}</span></a>' for d, k, t, st, u in rows[:3])
+            + "</div></section>")
+
+
+def parl_rows(politik):
+    """Neueste Ratsinfo-Geschäfte: (datum, kopf-html, titel, status-html, url)."""
     G = politik.get("geschaefte") or {}
     col = {p[0]: p[3] for p in (politik.get("ggr") or {}).get("parteien") or [] if len(p) > 3}
     badge = lambda p: f'<span class="pbadge"><i style="background:{B.esc(col.get(p, "var(--soft)"))}"></i>{B.esc(p)}</span>'
@@ -93,13 +113,7 @@ def _parlament(politik):
     rows += [(v["date"], f'<b>{B.esc(v.get("bereich") or "Vorlage")}</b><span class="muted">Stadtrat · Nr. {B.esc(v["nr"])}</span>',
               v["title"], f'<span class="gs">Bei {B.esc(v.get("stage") or "Kommission")}</span>', v["url"]) for v in G.get("vorlagen") or []]
     rows.sort(key=lambda r: r[0], reverse=True)
-    if not rows:
-        return ""
-    return ('<section class="block" aria-labelledby="pTitle"><div class="shead"><h2 id="pTitle">Aus dem Parlament</h2>'
-            '<a href="politik/#pGes">Alle Geschäfte →</a></div><div class="glist2">'
-            + "".join(f'<a class="gr" href="{B.esc(u)}"><span class="d">{B.dlabel(d)}</span><span class="c"><span class="gk">{k}</span>'
-                      f'<span class="t">{B.esc(t)}</span>{st}</span></a>' for d, k, t, st, u in rows[:3])
-            + "</div></section>")
+    return rows
 
 
 VOTE_ICON = ('<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" '
