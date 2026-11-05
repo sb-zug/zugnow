@@ -823,3 +823,5 @@ html[lang="en"] .v3 header nav a.lang::before{content:"EN  |  "}
 .rprev{left:0}.rnext{right:0}
 .rcnt{position:absolute;right:12px;top:12px;font-size:12px;font-weight:600;letter-spacing:.04em;color:#3E5266;background:#fff;padding:4px 8px;border-radius:4px}
 .rsa:focus-visible,.rsd:focus-visible{outline:2px solid #fff;outline-offset:2px}
+/* News: Titelzeile so hoch wie nötig, zusätzliche Höhe geht an die Kacheln */
+.rg>.rnl{grid-template-rows:auto;grid-auto-rows:1fr}
