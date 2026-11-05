@@ -653,7 +653,7 @@ nav a.lang:hover{border-color:var(--brand);color:var(--brand)}
 .v3 .iitem::before,.v3 .iic,.v3 .ichev{display:none}
 .v3 .itx{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--soft)}
 .v3 .itx strong,.v3 #sunT{font:700 22px/1.15 var(--rf);letter-spacing:-.01em;text-transform:none;color:var(--fg)}
-.rwrap{max-width:none;margin:0;padding-bottom:48px}
+.rwrap{max-width:none;margin:0;padding-bottom:0}
 .rg{display:grid;gap:1px;background:var(--rl);border-bottom:1px solid var(--rl)}
 .rg>*{background:var(--bg);min-width:0}
 .r4{grid-template-columns:repeat(4,minmax(0,1fr))}
@@ -795,3 +795,7 @@ html[lang="en"] .v3 header nav a.lang::before{content:"EN  |  "}
   .rwohn strong{font-size:clamp(56px,3.8vw,80px)}
   .rh1 p,.rlt .rs{font-size:clamp(18px,1.1vw,21px)}
 }
+/* Raster: Fuss schliesst direkt an, weiss wie das Raster */
+.v3 main+#ftr,.v3 #ftr{margin-top:0}
+.v3 footer{border-top:0;background:var(--bg);margin-top:0}
+.v3 footer .wrap{padding-block:40px 48px}
