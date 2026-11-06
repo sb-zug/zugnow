@@ -177,7 +177,7 @@ var x=null;r.addEventListener('touchstart',function(e){x=e.touches[0].clientX},{
 r.addEventListener('touchend',function(e){if(x==null)return;var d=e.changedTouches[0].clientX-x;if(Math.abs(d)>40)show(c+(d<0?1:-1));x=null})})();
 (function(){var a=document.querySelector('.v3 .ilink[href*="pAbst"] strong'),d=document.body.dataset.vote;if(!a||!d)return;
 var t=new Date(),n=Math.round((Date.UTC(+d.slice(0,4),+d.slice(5,7)-1,+d.slice(8,10))-Date.UTC(t.getFullYear(),t.getMonth(),t.getDate()))/864e5);
-if(n>0){var s=document.createElement('em');s.className='rcd';s.textContent=' · in '+n+(n===1?' Tag':' Tagen');a.appendChild(s)}})();
+if(n>0){var s=document.createElement('em');s.className='rcd';s.textContent='in '+n+(n===1?' Tag':' Tagen');a.appendChild(s)}})();
 </script>"""
 
 
