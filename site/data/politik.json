@@ -192,6 +192,24 @@
  "upcoming": [],
  "posts": [
   {
+   "title": "Parolenfassung Die Mitte – Stadt Zug: Einstimmige Unterstützung für die ETH Learning Factory Zug",
+   "url": "https://stadtzug-diemitte.ch/parolenfassung-die-mitte-stadt-zug-einstimmige-unterstuetzung-fuer-die-eth-learning-factory-zug/",
+   "date": "2026-11-05",
+   "lead": "Die Mitte Stadt Zug steht hinter der ETH Learning Factory Zug:  Die Partei hat an Ihrer Parolenversammlung vom 27. Oktober 2026 den Beschluss dazu einstimmig gefällt. An der Parolen-",
+   "party": "Mitte",
+   "partyName": "Die Mitte Stadt Zug",
+   "level": "Stadt"
+  },
+  {
+   "title": "Parolenfassung Die Mitte – Stadt Zug: Klares JA zur Sicherung des «Unteren Frauensteins» mit Parkanlage und freiem Seezugang",
+   "url": "https://stadtzug-diemitte.ch/parolenfassung-die-mitte-stadt-zug-klares-ja-zur-sicherung-des-unteren-frauensteins-mit-parkanlage-und-freiem-seezugang/",
+   "date": "2026-11-05",
+   "lead": "An der Parolenversammlung vom 27. Oktober 2026 hat Die Mitte – Stadt Zug nach einer engagierten und differenzierten Diskussion die Parolen für die kommenden Vorlagen gefasst.  Im Zentrum stand dabei",
+   "party": "Mitte",
+   "partyName": "Die Mitte Stadt Zug",
+   "level": "Stadt"
+  },
+  {
    "title": "SP Votum zu den Leerkündigungen im Herti-Zentrum 2-5 in Zug.",
    "url": "https://stadtzug.sp-zug.ch/blog/2026/11/04/sp-votum-zu-den-leerkuendigungen-im-herti-zentrum-2-5-in-zug/",
    "date": "2026-11-04",
@@ -381,15 +399,6 @@
    "level": "Kanton"
   },
   {
-   "title": "Die Mitte Stadt Zug besucht Siemens Smart Infrastructure",
-   "url": "https://stadtzug-diemitte.ch/die-mitte-stadt-zug-besucht-siemens-smart-infrastructure/",
-   "date": "2026-08-29",
-   "lead": "Mehrmals jährlich lädt die Mitte Stadt Zug ihre Mitglieder sowie Sympathisanten zu spannenden Anlässen mit Blick hinter die Kulissen ein. Eine ansehnliche Gruppe folgte dieses Mal der Einladung an den",
-   "party": "Mitte",
-   "partyName": "Die Mitte Stadt Zug",
-   "level": "Stadt"
-  },
-  {
    "title": "Grünes Telegramm vom 18. August 2026",
    "url": "https://gruene-stadt-zug.ch/blog/news/telegram-aus-dem-ggr/grnes-telegramm-vom-18-august-2026",
    "date": "2026-08-25",
@@ -413,12 +422,12 @@
   "Mitte": {
    "ok": true,
    "source": "https://stadtzug-diemitte.ch/feed/",
-   "count": 3
+   "count": 4
   },
   "EVP": {
-   "ok": true,
+   "ok": false,
    "source": "https://www.evp-zg.ch/aktuell",
-   "count": 1
+   "error": "TimeoutError: The read operation timed out"
   },
   "FDP": {
    "ok": true,
