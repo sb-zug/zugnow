@@ -116,7 +116,7 @@ def _wandel(projekte):
                    f'<span class="rs">Ziel Initiative: {ziel["zahl"]:,} bis {ziel.get("jahr", "")} →</span>'.replace(",", "’") if pct else '<span class="rs">Günstig wohnen →</span>')
                 + "</a>")
     return ('<section class="rg r4" aria-labelledby="rWa"><div class="rc rhead"><h2 id="rWa">Wie sich Zug verändert</h2>'
-            f'<a class="rmore" href="wandel/">Alle {len(projekte)} Vorhaben →</a></div>' + "".join(cells) + band + "</section>")
+            f'<a class="rmore" href="wandel/">Alle {len(projekte)} Vorhaben →</a></div>' + '<div class="rswipe rwvwrap">' + "".join(cells) + "</div>" + band + "</section>")
 
 
 def _news_parl(pool, politik):
