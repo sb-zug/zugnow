@@ -87,7 +87,7 @@ def _mitreden(projekte, pol_news, politik):
              for _, td, live, lbl, t, x, u in rows]
     return ('<section class="rg r4 rblue" aria-labelledby="rMit"><div class="rc rhead"><h2 id="rMit">Jetzt mitreden</h2>'
             '<span class="rs">Auflagen, Infoanlässe, Parlament und Urne – die nächsten Termine</span>'
-            '<a class="rmore" href="wandel/">Alle Termine →</a></div>' + "".join(_fill(cells, 3)) + "</section>")
+            '<a class="rmore" href="wandel/">Alle Termine →</a></div><div class="rswipe">' + "".join(_fill(cells, 3)) + "</div></section>")
 
 
 def _phases(n):
@@ -128,7 +128,7 @@ def _news_parl(pool, politik):
         f'<a href="{B.esc(u)}"><span class="rk">{re.sub(r"<[^>]+>", " ", k).strip()} · {B.dlabel(d)}</span><strong>{B.esc(t)}</strong></a>'
         for d, k, t, st, u in SB.parl_rows(politik)[:3])
     return ('<section class="rg r12 rnews"><div class="rnl" aria-labelledby="rNw"><div class="rc rhead rline"><h2 id="rNw">News</h2>'
-            f'<a class="rmore" href="news/">Alle News →</a></div>{news}</div>'
+            f'<a class="rmore" href="news/">Alle News →</a></div><div class="rswipe rnwrap">{news}</div></div>'
             + (f'<div class="rc rparl" aria-labelledby="rPa"><h2 id="rPa">Aus dem Parlament</h2><div class="rpl">{parl}</div>'
                '<a class="rmore" href="politik/#pGes">Alle Geschäfte →</a></div>' if parl else "")
             + "</section>")
