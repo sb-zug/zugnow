@@ -270,6 +270,10 @@ def build():
     pages.update(startb.build_start_b(pages["index.html"], pol_news))
     import startc
     pages.update(startc.build_start_c(pages["index.html"], events, news, pol_news))
+    import newsletter
+    nl = newsletter.build_newsletter(pages["agenda.html"], events, pol_news)
+    mail = nl.pop("newsletter/mail.html")
+    pages.update(nl)
     for name, doc in pages.items():
         if name.endswith(".html"):
             doc = doc.replace("</div></div></footer>", "</div>" + hubs.FOOTER_COL + "</div></footer>", 1)
@@ -277,6 +281,7 @@ def build():
         name = PATHS.get(name, name)
         (OUT / name).parent.mkdir(parents=True, exist_ok=True)
         (OUT / name).write_text(doc, encoding="utf-8")
+    (OUT / "newsletter" / "mail.html").write_text(mail, encoding="utf-8")
     (OUT / "sitemap.xml").write_text(hubs.sitemap(pages), encoding="utf-8")
     import i18n
     written = {PATHS.get(n, n): (OUT / PATHS.get(n, n)).read_text(encoding="utf-8") for n in pages if n.endswith(".html")}
