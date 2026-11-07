@@ -15,6 +15,7 @@ P = [
     [r"(\d+) Geschäfte & Vorhaben", r"\1 items & projects"],
     [r"(\d+) Parteimeldungen", r"\1 party posts"],
     [r"1 Meldungen?", "1 update"], [r"(\d+) Meldungen", r"\1 updates"],
+    [r"(\d+) Wohnungen · (.+)", r"\1 flats · {{\2}}"],
     [r"1 Baugesuch", "1 building application"], [r"(\d+) Baugesuche", r"\1 building applications"],
     [r"1 Publikationen?", "1 notice"], [r"(\d+) Publikationen", r"\1 notices"],
     [r"(\d+) Dossiers", r"\1 dossiers"],

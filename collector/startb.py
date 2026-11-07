@@ -23,6 +23,8 @@ def _iso(s):
 
 
 def _tile(d, live=False):
+    if d is None:
+        return f'<span class="mt live"><b>Jetzt</b></span>'
     return (f'<span class="mt{" live" if live else ""}"><b>{d.day}</b>{MON[d.month - 1]}</span>')
 
 
@@ -42,6 +44,14 @@ def mitreden_rows(projekte, pol_news, politik):
     rows = []  # (sortdatum, tile-datum, live, label, titel, text, url)
     for p in projekte:
         for m, s in zip(p["meilensteine"], W._state(p["meilensteine"])):
+            if m.get("typ") == "vermietung":   # Wohnungen: nur solange man sich jetzt bewerben kann (seit 7.11.2026)
+                if s == "now":
+                    n = (p.get("wohnen") or {}).get("total")
+                    b, _ = W._d(m.get("bis")) if m.get("bis") else (None, "")
+                    rows.append((date(2000, 1, 1), b, True, "Jetzt bewerben", p["titel"],
+                                 (f"{n} Wohnungen · " if n else "") + m["text"],
+                                 f'wandel/{p["slug"]}/'))
+                continue
             a, _ = W._d(m.get("datum"))
             if s not in ("now", "next", "later") or not a or (a - B.TODAY).days > 60:
                 continue

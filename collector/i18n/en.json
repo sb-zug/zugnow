@@ -622,6 +622,10 @@
 "\\1 updates"
 ],
 [
+"(\\d+) Wohnungen · (.+)",
+"\\1 flats · {{\\2}}"
+],
+[
 "1 Baugesuch",
 "1 building application"
 ],

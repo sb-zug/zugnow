@@ -3,7 +3,7 @@
 Strenges Kachelraster mit durchgezogenen Linien (CSS-Block «Startseite Raster (body.v3)» in app.css).
 Baut auf der fertigen Startseite (Variante B) auf: Kopf, Infoleiste (inkl. Abstimmung) und Fuss bleiben,
 der Inhalt wird neu gesetzt: Hero (H1 + Top-Meldung), Agenda (Heute/Morgen/Wochenende), Jetzt mitreden,
-Wie sich Zug verändert (+ Wohnband), News, Aus dem Parlament. Alles beim Build (2× täglich) vorgerendert;
+Wie sich Zug verändert (ohne Wohnzähler seit 7.11.2026), News, Aus dem Parlament. Alles beim Build (2× täglich) vorgerendert;
 Anlässe heute und das Wochenend-Wetter (nur im Reiter «Wochenende») füllt app.js.
 Infoleiste (seit 7.11.2026, ohne Wetter/Sonnenuntergang): Anlässe heute · Parlament · Abstimmung · Neu im Amtsblatt.
 Wird von build.py aufgerufen. Übernahme als Startseite: Ausgabe in build.py auf "index.html" umstellen.
@@ -85,7 +85,7 @@ def _mitreden(projekte, pol_news, politik):
     if not rows:
         return ""
     cells = [f'<a class="rc rmi{" live" if live else ""}" href="{B.esc(u)}"><span class="rk">{B.esc(lbl)}</span>'
-             f'<span class="rd">{td.day}.{td.month}.</span><strong>{B.esc(t)}</strong><span class="rs">{B.esc(x)}</span></a>'
+             f'<span class="rd">{f"{td.day}.{td.month}." if td else "Jetzt"}</span><strong>{B.esc(t)}</strong><span class="rs">{B.esc(x)}</span></a>'
              for _, td, live, lbl, t, x, u in rows]
     return ('<section class="rg r4 rblue" aria-labelledby="rMit"><div class="rc rhead"><h2 id="rMit">Jetzt mitreden</h2>'
             '<span class="rs">Auflagen, Infoanlässe, Parlament und Urne – die nächsten Termine</span>'
@@ -106,19 +106,8 @@ def _wandel(projekte):
         nx = (f'<span class="rs"><b>{B.esc(W._when(m))}</b> {B.esc(m["text"])}</span>') if m else ""
         cells.append(f'<a class="rc rwv ph{n}" href="wandel/{B.esc(p["slug"])}/"><span class="rk">Phase {n} von 7 · {B.esc(W.PHASEN[n - 1])}</span>'
                      f'{_phases(n)}<strong>{B.esc(p["titel"])}</strong>{nx}</a>')
-    wp = [p for p in projekte if p.get("wohnen")]
-    pg = sum(p["wohnen"].get("preisguenstig") or 0 for p in wp)
-    ziel = (B.load("wohnen", {}).get("ziel") or {})
-    band = ""
-    if pg:
-        pct = min(100, round(pg / ziel["zahl"] * 100)) if ziel.get("zahl") else 0
-        band = (f'<a class="rc rwohn" href="wohnen/"><strong>{B.esc(f"{pg:,}".replace(",", "’"))}</strong>'
-                '<span class="rt">preisgünstige Wohnungen fest geplant oder im Bau</span>'
-                + (f'<span class="rbarw" role="img" aria-label="{pct} Prozent des Ziels"><i style="width:{pct}%"></i></span>'
-                   f'<span class="rs">Ziel Initiative: {ziel["zahl"]:,} bis {ziel.get("jahr", "")} →</span>'.replace(",", "’") if pct else '<span class="rs">Günstig wohnen →</span>')
-                + "</a>")
     return ('<section class="rg r4" aria-labelledby="rWa"><div class="rc rhead"><h2 id="rWa">Wie sich Zug verändert</h2>'
-            f'<a class="rmore" href="wandel/">Alle {len(projekte)} Vorhaben →</a></div>' + '<div class="rswipe rwvwrap">' + "".join(cells) + "</div>" + band + "</section>")
+            f'<a class="rmore" href="wandel/">Alle {len(projekte)} Vorhaben →</a><a class="rmore rmore2" href="wohnen/">Günstig wohnen →</a></div>' + '<div class="rswipe rwvwrap">' + "".join(cells) + "</div></section>")
 
 
 def _news_parl(pool, politik):
