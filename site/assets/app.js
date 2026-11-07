@@ -157,20 +157,7 @@
     el._upd = upd; upd();
   }
 
-  function renderWeekend() {
-    var el = $('wkCards'); if (!el) return;
-    var list = D.events.filter(function (e) { return inTime(e, 'wochenende') && !e.cancelled });
-    // Bilder zuerst, pro Titel nur einmal
-    var seen = {}, pick = [];
-    list.filter(function (e) { return e.image }).concat(list.filter(function (e) { return !e.image })).forEach(function (e) { if (!seen[e.title] && pick.length < 6) { seen[e.title] = 1; pick.push(e) } });
-    pick.sort(function (a, b) { return a.start < b.start ? -1 : 1 });
-    if ($('wkBadgeN')) $('wkBadgeN').textContent = list.length + (list.length === 1 ? ' Anlass →' : ' Anlässe →');
-    var r = range('wochenende'); $('wkTitle').textContent = r[0] === todayKey() && dowOf(r[0]) === 0 ? 'Heute, Sonntag' : 'Dieses Wochenende';
-    el.innerHTML = pick.map(function (e) {
-      var p = parts(e.start);
-      return '<a href="' + esc(evHref(e)) + '"><div class="ph">' + img(e.image) + '<span class="when">' + dShort(p.key) + ' · ' + (e.allday ? 'ganztags' : p.hm) + '</span></div><span class="eyebrow">' + esc(e.catLabel) + '</span><strong>' + esc(e.title) + '</strong><span class="s">' + esc(e.place) + '</span></a>'
-    }).join('') || '<p style="color:var(--soft)">Für dieses Wochenende sind noch keine Anlässe gemeldet.</p>';
-  }
+
 
   function newsRow(n) {
     var mm = /Medien/.test(n.type || '');
@@ -352,6 +339,7 @@
   function byDay(list) { var g = [], m = {}; list.forEach(function (e) { var k = parts(e.start).key; if (!m[k]) { m[k] = []; g.push([k, m[k]]) } m[k].push(e) }); return g }
   function renderList() {
     var list = filtered();
+    if ($('wkLink')) $('wkLink').hidden = st.time !== 'wochenende';
     var g = byDay(list), el = $('agList');
     el.innerHTML = g.slice(0, st.days).map(function (x, i) { return dayGroup(x[0], x[1], i, g.length) }).join('') || '<p style="color:var(--soft);padding:18px 40px">Keine Anlässe für diese Auswahl.</p>';
     if (!el._tg) { el._tg = 1; el.addEventListener('toggle', function (ev) { var d = ev.target; if (d.classList && d.classList.contains('aday')) st.open[d.dataset.day] = d.open }, true) }
@@ -644,7 +632,7 @@
     if (!$('sPanel').hidden) searchInit.run();
     if (page === 'start') { renderToday(); renderNewsTeaser(); renderThemes(); get('kino').then(renderKino) }
     if (page === 'agenda') {
-      var open = agendaFromHash(); renderFilters(); renderList(); renderWeekend(); renderLauf(); if (open) openEvent(open);
+      var open = agendaFromHash(); renderFilters(); renderList(); renderLauf(); if (open) openEvent(open);
       window.addEventListener('hashchange', function () { var o = agendaFromHash(); renderFilters(); renderList(); if (o) openEvent(o) });
     }
     if (page === 'news') renderNewsPage();

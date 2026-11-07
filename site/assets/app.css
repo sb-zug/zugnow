@@ -1132,3 +1132,8 @@ html[lang="en"] .v3 header nav a.lang::before{content:"EN  |  "}
 @media (max-width:900px){.rlist .dn{flex-wrap:wrap}.rlist .dwx{margin-top:0;font-size:13px}.rlist .dwx svg{width:22px;height:22px}}
 /* Offener Tag: Anzahl weg (man sieht die Anlässe), nur «Heute/Morgen» (7.11.2026) */
 .rlist .aday[open] .dn strong{display:none}
+/* Agenda: Hinweis auf /wochenende/, nur bei Filter «Wochenende» (7.11.2026) */
+.rlist .wklink{display:block;padding:16px 40px;border-bottom:1px solid var(--rl);font-weight:600;color:var(--brand);text-decoration:none;background:var(--bg)}
+.rlist .wklink[hidden]{display:none}
+@media (hover:hover){.rlist .wklink:hover{text-decoration:underline}}
+@media (max-width:900px){.rlist .wklink{padding:14px 20px}}

@@ -183,7 +183,7 @@ TABS_JS = """<script>
 (function(){var g=document.querySelector('.ragenda');if(!g)return;g.addEventListener('click',function(ev){var b=ev.target.closest('.rtab');if(!b)return;
 g.querySelectorAll('.rtab').forEach(function(x){x.setAttribute('aria-pressed',x===b)});g.dataset.t=b.dataset.t;
 g.querySelectorAll('.rpanel').forEach(function(p){p.hidden=p.dataset.p!==b.dataset.t});
-var m=document.getElementById('rAgMore');if(m)m.setAttribute('href','agenda/#'+b.dataset.t)})})();
+var m=document.getElementById('rAgMore');if(m){if(!m.dataset.txt)m.dataset.txt=m.textContent;var w=b.dataset.t==='wochenende';m.setAttribute('href',w?'wochenende/':'agenda/#'+b.dataset.t);m.textContent=w?'Alles am Wochenende →':m.dataset.txt}})})();
 (function(){var r=document.querySelector('.rslider');if(!r)return;var S=r.querySelectorAll('.rslide'),n=S.length,c=0;if(n<2)return;
 function show(i){c=(i+n)%n;S.forEach(function(s,j){s.hidden=j!==c});var lv=r.querySelector('.rlive');if(lv)lv.textContent='Meldung '+(c+1)+' von '+n}
 r.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;e.preventDefault();show(b.dataset.to!=null?+b.dataset.to:c+(+b.dataset.go));

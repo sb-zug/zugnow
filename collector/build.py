@@ -226,10 +226,6 @@ def build():
         if e["title"] not in seen and len(pick) < 6:
             seen.add(e["title"]); pick.append(e)
     pick.sort(key=lambda e: e["start"])
-    p = fill(p, "wkBadgeN", f'{len(wk)} {"Anlass" if len(wk) == 1 else "Anlässe"} →')
-    p = fill(p, "wkCards", "".join(
-        f'<a href="{esc(e.get("page") or "agenda/#ev-" + e["id"])}"><div class="ph">{img(e.get("image"))}<span class="when">{dshort(dt(e["start"]).date())} · {"ganztags" if e.get("allday") else hm(e["start"])}</span></div>'
-        f'<span class="eyebrow">{esc(e.get("catLabel"))}</span><strong>{esc(e["title"])}</strong><span class="s">{esc(e.get("place"))}</span></a>' for e in pick))
     lauf, keys = [], set()
     for e in ongoing:
         k = (e["title"], e.get("place"))
