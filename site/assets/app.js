@@ -284,6 +284,8 @@
     var fb = $('fBtn'); if (!fb) return;
     function lab(defs, v) { return (defs.filter(function (d) { return d[0] === v })[0] || [])[1] }
     var on = [lab(TIMES, st.time)]; if (st.cat !== 'alle') on.push(lab(CATS, st.cat)); if (st.place !== 'alle') on.push(lab(PLACES, st.place));
+    // Zahl nur, wenn ein Filter aktiv ist (7.11.2026)
+    if (st.time !== 'alle' || st.cat !== 'alle' || st.place !== 'alle') { if (st.time === 'alle') on.shift(); on.push(String(filtered().length)) }
     fSum(on.join(' · '));
   }
 
@@ -349,8 +351,7 @@
   }
   function byDay(list) { var g = [], m = {}; list.forEach(function (e) { var k = parts(e.start).key; if (!m[k]) { m[k] = []; g.push([k, m[k]]) } m[k].push(e) }); return g }
   function renderList() {
-    var list = filtered(), lbl = { alle: 'in den nächsten 60 Tagen', heute: 'heute', morgen: 'morgen', wochenende: 'am Wochenende', woche: 'diese Woche' }[st.time];
-    $('agCount').textContent = list.length + (list.length === 1 ? ' Anlass ' : ' Anlässe ') + lbl;
+    var list = filtered();
     var g = byDay(list), el = $('agList');
     el.innerHTML = g.slice(0, st.days).map(function (x, i) { return dayGroup(x[0], x[1], i, g.length) }).join('') || '<p style="color:var(--soft);padding:18px 40px">Keine Anlässe für diese Auswahl.</p>';
     if (!el._tg) { el._tg = 1; el.addEventListener('toggle', function (ev) { var d = ev.target; if (d.classList && d.classList.contains('aday')) st.open[d.dataset.day] = d.open }, true) }

@@ -217,7 +217,6 @@ def build():
 
     # Agenda: Liste (erste 20 wie app.js), Wochenende, Laufend
     p = pages["agenda.html"]
-    p = fill(p, "agCount", f'{len(events)} {"Anlass" if len(events) == 1 else "Anlässe"} in den nächsten 60 Tagen')
     rows_html = [day_groups(events, days=14)]  # Tage auf- und zuklappbar (wie app.js dayGroup)
     p = fill(p, "agList", "".join(rows_html))
     wa, wb = weekend()
