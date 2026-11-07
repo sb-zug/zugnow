@@ -1107,3 +1107,13 @@ html[lang="en"] .v3 header nav a.lang::before{content:"EN  |  "}
   .rlist .dbody .panel::before,.rlist .dbody .panel::after{display:none}
   .rlist .dbody .panel>div:first-child,.rlist .dbody .panel>.pimg{grid-column:1;padding:4px 20px 20px}
 }
+/* Agenda mobil: Filter einklappbar (7.11.2026) */
+.fbtn{display:none}
+@media (max-width:900px){
+  .rphead .fbtn{display:flex;flex-direction:row;justify-content:flex-start;grid-column:1/-1;align-items:center;min-height:0;gap:12px;width:100%;padding:16px 20px;border:0;background:var(--tint-2);color:var(--fg);font:inherit;text-align:left;cursor:pointer}
+  .fbtn .fl{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+  .fbtn .fs{flex:1;min-width:0;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .fbtn .chev{width:22px;height:22px}
+  #agHead.fopen .fbtn .chev{transform:rotate(180deg)}
+  #agHead:not(.fopen) .rflt{display:none}
+}

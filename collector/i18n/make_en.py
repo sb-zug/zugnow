@@ -131,7 +131,7 @@ T = {
     "Quelle: eventfrog.ch": "Source: eventfrog.ch", "Quelle: galvanik-zug.ch": "Source: galvanik-zug.ch",
     "Quelle: kinozug.ch": "Source: kinozug.ch", "Quelle: theatercasino.ch": "Source: theatercasino.ch",
     "Quelle: veranstaltungen.zug.ch": "Source: veranstaltungen.zug.ch",
-    "Keine Anlässe für diese Auswahl.": "No events for this selection.",
+    "Keine Anlässe für diese Auswahl.": "No events for this selection.", "Filter": "Filter",
     "Weitere 20 anzeigen": "Show 20 more",
     # ── News ──
     "News Stadt Zug": "News from the City of Zug", "News Stadt Zug – zug.now": "News from the City of Zug – zug.now",

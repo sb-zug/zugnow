@@ -268,6 +268,12 @@
     chipRow('timeChips', TIMES, 'time', function (v) { return D.events.filter(function (e) { return inTime(e, v) && (st.cat === 'alle' || e.cat === st.cat) && (st.place === 'alle' || e.institution === st.place) }).length });
     chipRow('catChips', CATS, 'cat', function (v) { return D.events.filter(function (e) { return inTime(e, st.time) && (v === 'alle' || e.cat === v) && (st.place === 'alle' || e.institution === st.place) }).length });
     chipRow('placeChips', PLACES, 'place', function (v) { return D.events.filter(function (e) { return inTime(e, st.time) && (st.cat === 'alle' || e.cat === st.cat) && (v === 'alle' || e.institution === v) }).length });
+    // Mobil: Filter einklappbar, Zusammenfassung der aktiven Filter im Knopf
+    var fb = $('fBtn'); if (!fb) return;
+    function lab(defs, v) { return (defs.filter(function (d) { return d[0] === v })[0] || [])[1] }
+    var on = [lab(TIMES, st.time)]; if (st.cat !== 'alle') on.push(lab(CATS, st.cat)); if (st.place !== 'alle') on.push(lab(PLACES, st.place));
+    $('fSum').textContent = on.join(' · ');
+    fb.onclick = function () { var o = $('agHead').classList.toggle('fopen'); fb.setAttribute('aria-expanded', o) };
   }
 
   function icsDate(iso) { return new Date(iso).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '') }
