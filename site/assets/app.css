@@ -1080,3 +1080,6 @@ html[lang="en"] .v3 header nav a.lang::before{content:"EN  |  "}
   .rlist details.aday>summary{row-gap:0}
   .rlist details.aday>summary>svg{right:16px;top:18px;margin-top:0}
 }
+/* Agenda: Tageszeilen hinterlegt, Anlässe weiss (7.11.2026) */
+.rlist details.aday>summary>*:not(svg){background:var(--tint-2)}
+.rlist details.aday>summary:hover>*:not(svg){background:var(--tint)}
