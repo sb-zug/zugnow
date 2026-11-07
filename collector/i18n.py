@@ -96,6 +96,13 @@ def to_en(doc, de_path, tr, en_paths):
                 for x in pts:
                     x["t"] = tr(x["t"])
                 seg = head + ">" + json.dumps(pts, ensure_ascii=False) + "</script>" + tail
+            elif low.startswith("<script") and 'id="bgdata"' in seg:  # Karte /baugesuche/: Vorhaben-Namen
+                head, body = seg.split(">", 1)
+                js, tail = body.rsplit("</script>", 1)
+                pts = json.loads(js)
+                for x in pts.get("v", []):
+                    x["t"] = tr(x["t"])
+                seg = head + ">" + json.dumps(pts, ensure_ascii=False) + "</script>" + tail
             elif not low.startswith(("<script", "<style")):
                 seg = ATTRS.sub(lambda m: f'{m[1]}="{html.escape(tr(html.unescape(m[2])))}"', seg)
                 seg = re.sub(r'\bhref="([^"]*)"', lambda m: f'href="{html.escape(_href(html.unescape(m[1]), en_paths))}"', seg)

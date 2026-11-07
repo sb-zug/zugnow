@@ -774,6 +774,29 @@ def parse_amtsblatt(data: dict) -> list[dict]:
     return out
 
 
+# Adresse → Koordinaten über die Adresssuche von swisstopo (frei, ohne Schlüssel); nur für Baugesuche (seit 7.11.2026)
+GEO_URL = ("https://api3.geo.admin.ch/rest/services/api/SearchServer?type=locations&origins=address&sr=4326&limit=1"
+           "&searchText={q}")
+ZUG_BOX = (47.08, 47.21, 8.44, 8.62)   # lat min/max, lon min/max: Stadtgebiet Zug mit Rand
+
+
+def parse_geo(data: dict):
+    """Erster Treffer der swisstopo-Suche als [lat, lon] – nur wenn er in der Stadt Zug liegt."""
+    for r in data.get("results") or []:
+        a = r.get("attrs") or {}
+        lat, lon = a.get("lat"), a.get("lon")
+        if lat is None or lon is None or "Zug" not in (a.get("label") or ""):
+            continue
+        if ZUG_BOX[0] <= lat <= ZUG_BOX[1] and ZUG_BOX[2] <= lon <= ZUG_BOX[3]:
+            return [round(lat, 6), round(lon, 6)]
+    return None
+
+
+def bg_address(title: str) -> str:
+    """«Fridbachweg 3, Zug» → «Fridbachweg 3»."""
+    return re.sub(r",\s*(6\d{3}\s*)?Zug$", "", title.strip()).strip()
+
+
 # ---------------------------------------------------------------- Politik
 
 # Feste Angaben, nach Wahlen von Hand nachführen. Quelle: stadtzug.ch (Gesamterneuerungswahlen 4.10.2026)
@@ -1107,8 +1130,23 @@ def run(offline: Path | None, only: set[str]) -> int:
             s.update({"image": f.get("image"), "duration": f.get("duration", ""), "age": f.get("age", "")})
         return shows
 
+    geo = load_json(OUT / "geo_cache.json", {})
+
     def amtlich():
-        return parse_amtsblatt(json.loads(get(AMTSBLATT_URL, "amtsblatt.json", "application/json")))
+        items = parse_amtsblatt(json.loads(get(AMTSBLATT_URL, "amtsblatt.json", "application/json")))
+        for it in items:   # Baugesuche auf die Karte: Adresse einmal nachschlagen, Ergebnis (auch «nicht gefunden») merken
+            if it["label"] != "Baugesuch":
+                continue
+            adr = bg_address(it["title"])
+            if adr not in geo and not offline:
+                try:
+                    geo[adr] = parse_geo(json.loads(fetch(GEO_URL.format(q=urllib.parse.quote(adr + " Zug")), "application/json", 15)))
+                except Exception as e:
+                    print(f"    geo {adr}: {e}", file=sys.stderr)
+                    continue   # beim nächsten Lauf nochmals versuchen
+            if geo.get(adr):
+                it["lat"], it["lon"] = geo[adr]
+        return items
 
     def politik():
         """Feste Angaben immer; Abstimmungen von wab.zug.ch (fällt die Quelle aus, bleibt der letzte Stand)."""
@@ -1213,6 +1251,7 @@ def run(offline: Path | None, only: set[str]) -> int:
     write_json("meta.json", meta)
     # Cache klein halten
     write_json("image_cache.json", dict(list(cache.items())[-400:]))
+    write_json("geo_cache.json", dict(list(geo.items())[-600:]))
     return 1 if errors >= 3 else 0
 
 

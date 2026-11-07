@@ -1042,3 +1042,8 @@ html[lang="en"] .v3 header nav a.lang::before{content:"EN  |  "}
 .pagehead .wkwx{margin-top:14px}
 /* Mobil: Countdown «in N Tagen» ausblenden, Infoleiste bleibt ruhig zweizeilig (7.11.2026) */
 @media (max-width:900px){.v3 .rcd{display:none}}
+/* Karte Baugesuche (7.11.2026) */
+.bgmap{height:min(52vh,440px)}
+.wlegend i.lg-ring{background:transparent;border:3px solid var(--brand);box-sizing:border-box}
+.bgpop .leaflet-popup-content{font:15px/1.45 var(--sans,inherit);margin:12px 16px}
+.bgpop .leaflet-popup-content-wrapper{border-radius:0}

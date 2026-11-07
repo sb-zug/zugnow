@@ -8,6 +8,7 @@ Erzeugt statische Seiten unter eigenen Adressen:
 Wird von build.py aufgerufen; nutzt dessen Helfer und das Seitengerüst der Agenda.
 Seiten mit weniger als MIN_EVENTS Einträgen erhalten noindex und fehlen in der Sitemap.
 """
+import json
 import re
 from collections import Counter
 
@@ -187,8 +188,46 @@ def orte(frame, events, ongoing):
     return pages
 
 
+BG_MAP_JS = """<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script>
+(function(){
+  var el=document.getElementById('bgmap'); if(!el||!window.L) return;
+  var en=document.documentElement.lang==='en', d=JSON.parse(document.getElementById('bgdata').textContent);
+  var map=L.map(el,{scrollWheelZoom:false,zoomControl:true,attributionControl:true,zoomSnap:.25}).setView([47.1700,8.5150],14);
+  L.tileLayer('https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-grau/default/current/3857/{z}/{x}/{y}.jpeg',
+    {maxZoom:18,attribution:'&copy; <a href="https://www.swisstopo.admin.ch/">swisstopo</a>'}).addTo(map);
+  var cs=getComputedStyle(document.documentElement), b=[];
+  function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  // Grosse Vorhaben: blaue Ringe, antippen → Dossier
+  d.v.forEach(function(p){
+    var m=L.circleMarker([p.lat,p.lon],{radius:11,weight:3,color:cs.getPropertyValue('--brand').trim(),fillColor:'#fff',fillOpacity:.9}).addTo(map);
+    m.bindTooltip(esc(p.t),{direction:'top',offset:[0,-10],className:'wtip'});
+    m.on('click',function(){location.href=(en?'/en/':'/')+'wandel/'+p.s+'/'});
+    b.push([p.lat,p.lon]);
+  });
+  // Baugesuche: rote Punkte, antippen → Adresse, Frist, Link ins Amtsblatt
+  d.b.forEach(function(p){
+    var m=L.circleMarker([p.lat,p.lon],{radius:8,weight:2,color:'#fff',fillColor:cs.getPropertyValue('--red').trim(),fillOpacity:1}).addTo(map);
+    m.bindPopup('<strong>'+esc(p.t)+'</strong>'+(p.e?'<br>'+(en?'Open for inspection until ':'Einsehbar bis ')+esc(p.e):'')+
+      '<br><a href="'+esc(p.u)+'" target="_blank" rel="noopener">'+(en?'Official Gazette (in German) ↗':'Im Amtsblatt ↗')+'</a>',{className:'bgpop'});
+    b.push([p.lat,p.lon]);
+  });
+  if(b.length) map.fitBounds(b,{padding:[30,30],maxZoom:16});
+})();
+</script>"""
+
+
+def _current(a):
+    """Baugesuch steht, solange die Auflage läuft (Einsicht/Einsprache möglich). Den Entscheid publiziert das Amtsblatt nicht."""
+    return not a.get("expires") or a["expires"] >= B.TODAY.isoformat()
+
+
 def baugesuche(frame, amtlich, news):
-    bg = [a for a in amtlich if a.get("label") == "Baugesuch"]
+    bg = [a for a in amtlich if a.get("label") == "Baugesuch" and _current(a)]
+    pts = {"b": [{"t": a["title"], "lat": a["lat"], "lon": a["lon"], "u": a["url"], "e": B.dlabel(a["expires"]) if a.get("expires") else ""}
+                 for a in bg if a.get("lat")],
+           "v": [{"s": p["slug"], "t": p["titel"], "lat": p["lat"], "lon": p["lon"]}
+                 for p in (B.load("wandel", {}).get("projekte") or []) if p.get("lat")]}
     rows = "".join(
         f'<a href="{B.esc(a["url"])}"><span class="d">{B.dlabel(a["date"])}</span><span class="t">{B.esc(a["title"])}</span>'
         f'<span class="o">Publiziert im Amtsblatt' + (f' · einsehbar bis {B.dlabel(a["expires"])}' if a.get("expires") else "") + "</span></a>"
@@ -196,19 +235,27 @@ def baugesuche(frame, amtlich, news):
     lists = [n for n in news if re.match(r"(Baugesuche vom|Publikationen von Baugesuchen)", n["title"], re.I)]
     body = ('<div class="pagehead"><h1>Baugesuche Stadt Zug</h1>'
             '<p>Die Stadt Zug publiziert neue Baugesuche im Amtsblatt des Kantons Zug. Während der Auflage können die Pläne '
-            'eingesehen werden. Hier stehen die aktuellen Publikationen mit Adresse, automatisch übernommen und zweimal täglich '
-            'aktualisiert. Massgebend für Fristen und Auflageort ist die Publikation im Amtsblatt.</p>'
+            'eingesehen und Einsprachen erhoben werden. Hier steht jedes Baugesuch mit Adresse, solange die Auflage läuft – automatisch '
+            'übernommen und zweimal täglich aktualisiert. Massgebend für Fristen und Auflageort ist die Publikation im Amtsblatt.</p>'
             + _crumb(("Amtlich", "amtlich/"), ("Baugesuche", None)) + "</div>"
-            f'<section class="block"><div class="shead"><h2>Aktuelle Baugesuche</h2><span>{_n(len(bg), "Publikation", "Publikationen")}</span></div>'
+            + ('<section class="block"><div class="shead"><h2>Karte</h2><span>Baugesuche in Auflage und grosse Vorhaben</span></div>'
+               '<div id="bgmap" class="wmap bgmap" role="img" aria-label="Karte der Baugesuche in der Stadt Zug"></div>'
+               '<p class="wlegend"><span><i class="lg-plan"></i>Baugesuch in Auflage</span><span><i class="lg-ring"></i>Grosses Vorhaben · Dossier</span></p>'
+               f'<script type="application/json" id="bgdata">{json.dumps(pts, ensure_ascii=False)}</script></section>' if pts["b"] else "")
+            + f'<section class="block"><div class="shead"><h2>Aktuelle Baugesuche</h2><span>{_n(len(bg), "Publikation", "Publikationen")}</span></div>'
             + (f'<div class="amtlist">{rows}</div>' if bg else '<p class="note">Zurzeit sind keine Baugesuche publiziert.</p>') + "</section>")
     if lists:
         body += ('<section class="block"><div class="shead"><h2>Wöchentliche Übersichten der Stadt</h2><span>stadtzug.ch</span></div><div class="amtlist">'
                  + "".join(f'<a href="{B.esc(n["url"])}"><span class="d">{B.dlabel(n["date"])}</span><span class="t">{B.esc(n["title"])}</span></a>' for n in lists)
                  + "</div></section>")
     body += '<section class="block"><p><a href="wandel/">Wie sich Zug verändert: alle grossen Vorhaben →</a> · <a href="amtlich/">Alle amtlichen Publikationen →</a></p></section>'
-    return _page(frame, "baugesuche/", "Baugesuche Stadt Zug – aktuelle Publikationen | zug.now",
+    page = _page(frame, "baugesuche/", "Baugesuche Stadt Zug – aktuelle Publikationen | zug.now",
                  f"Aktuelle Baugesuche der Stadt Zug aus dem Amtsblatt: {_n(len(bg), 'Publikation', 'Publikationen')} mit Adresse und Auflagefrist, täglich aktualisiert.",
                  body, nav="amtlich/", index=len(bg) + len(lists) >= 1)
+    if pts["b"]:
+        page = (page.replace("</head>", '<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">\n</head>', 1)
+                .replace("</body>", BG_MAP_JS + "\n</body>", 1))
+    return page
 
 
 def build_hubs(agenda_html, events, ongoing, amtlich, all_news):
