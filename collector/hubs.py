@@ -108,11 +108,11 @@ def _crumb(*items):
     return f'<p class="facts" style="margin-top:8px">{" › ".join(parts)}</p>'
 
 
-def _days(evs, empty, open_all=False):
+def _days(evs, empty, open_all=False, wx=False):
     """Anlässe im Agenda-Raster, nach Tagen auf- und zuklappbar (7.11.2026)."""
     if not evs:
         return f'<section class="block"><p class="note">{empty}</p></section>'
-    return f'<section class="rlist" aria-label="Anlässe"><div class="agenda">{B.day_groups(evs, open_all=open_all)}</div></section>'
+    return f'<section class="rlist"{" data-wx" if wx else ""} aria-label="Anlässe"><div class="agenda">{B.day_groups(evs, open_all=open_all)}</div></section>'
 
 
 def _lauf(items):
@@ -140,9 +140,8 @@ def wochenende(frame, events, ongoing):
             f'<p>Was läuft am Wochenende in der Stadt Zug? {span}: {_n(len(evs), "Anlass", "Anlässe")} – Konzerte, Theater, '
             'Ausstellungen, Märkte, Sport und Angebote für Familien. Automatisch aus dem offiziellen Veranstaltungskalender '
             'und den Programmen der Kulturhäuser, zweimal täglich aktualisiert.</p>'
-            '<p class="wkwx" hidden></p>'  # Wetter fürs Wochenende, füllt app.js
             + _crumb(("Agenda", "agenda/"), ("Wochenende", None)) + "</div>")
-    body += _days(evs, "Für dieses Wochenende sind noch keine Anlässe gemeldet.", open_all=True)
+    body += _days(evs, "Für dieses Wochenende sind noch keine Anlässe gemeldet.", open_all=True, wx=True)  # Wetter pro Tag, füllt app.js
     if ongoing:
         body += ('<section class="block"><div class="shead"><h2>Ausstellungen und Laufendes</h2>'
                  '<span>Auch am Wochenende offen</span></div>' + _lauf(ongoing) + "</section>")

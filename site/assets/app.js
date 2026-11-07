@@ -82,7 +82,7 @@
 
   // Wetter nur dort, wo es bei der Entscheidung hilft: im Wochenend-Reiter und auf /wochenende/ (seit 7.11.2026)
   function wkWx() {
-    var els = document.querySelectorAll('.wkwx'); if (!els.length) return;
+    var els = document.querySelectorAll('.wkwx'), days = document.querySelectorAll('[data-wx] details.aday'); if (!els.length && !days.length) return;
     var r = range('wochenende');
     fetch('https://api.open-meteo.com/v1/forecast?latitude=47.166&longitude=8.516&daily=weather_code,temperature_2m_max,temperature_2m_min&forecast_days=8&timezone=Europe%2FZurich')
       .then(function (x) { return x.json() }).then(function (j) {
@@ -92,6 +92,12 @@
           return '<span class="wkd" title="' + esc(w[1]) + '"><b>' + dw + '</b>' + IC[w[0]] + '<span>' + esc(w[1]) + '</span><span>' +
             Math.round(d.temperature_2m_max[i]) + '° / ' + Math.round(d.temperature_2m_min[i]) + '°</span></span>';
         }).join('');
+        // Wochenende-Seite: Wetter direkt in der Tageszeile Sa/So (seit 7.11.2026)
+        [].forEach.call(days, function (g) {
+          var i = d.time.indexOf(g.dataset.day), dn = g.querySelector('.dn'); if (i < 0 || !dn || dn.querySelector('.dwx')) return;
+          var w = wxOf(d.weather_code[i], 1);
+          dn.insertAdjacentHTML('beforeend', '<span class="dwx" title="' + esc(w[1]) + '">' + IC[w[0]] + '<span>' + esc(w[1]) + ' · ' + Math.round(d.temperature_2m_max[i]) + '° / ' + Math.round(d.temperature_2m_min[i]) + '°</span></span>');
+        });
         if (!h) return;
         els.forEach(function (el) { el.innerHTML = h; el.hidden = false });
       }).catch(function () { });

@@ -1126,3 +1126,7 @@ html[lang="en"] .v3 header nav a.lang::before{content:"EN  |  "}
   .rlist .nlist .t,.rlist .amtlist .t{font-size:18px}
   .rlist .nlist .i{display:none}
 }
+/* Wochenende: Wetter in der Tageszeile (7.11.2026) */
+.rlist .dwx{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:500;color:var(--muted);margin-top:4px}
+.rlist .dwx svg{width:26px;height:26px;flex:0 0 auto}
+@media (max-width:900px){.rlist .dn{flex-wrap:wrap}.rlist .dwx{margin-top:0;font-size:13px}.rlist .dwx svg{width:22px;height:22px}}
