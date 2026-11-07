@@ -321,13 +321,13 @@
   }
 
   // Agenda nach Tagen gruppiert, Tage auf- und zuklappbar (7.11.2026)
-  var DAYS = 14, WDF = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'], MOF = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+  var DAYS = 14;
   function dayOpen(k, i, n) { return k in st.open ? st.open[k] : (i === 0 || n <= 2) }
   function dayGroup(k, evs, i, n) {
     var p = k.split('-'), tk = todayKey(), rel = k === tk ? 'Heute' : k === addDays(tk, 1) ? 'Morgen' : '';
     var pv = evs.slice(0, 4).map(function (e) { return '<span class="pv">' + esc(e.title) + '</span>' }).join('');
     return '<details class="aday" data-day="' + k + '"' + (dayOpen(k, i, n) ? ' open' : '') + '><summary><div class="date" aria-label="' + dLabel(k) + '"><span class="wd">' + WD[dowOf(k)] + '</span><span class="d">' + (+p[2]) + '</span><span class="mo">' + MO[+p[1] - 1] + '</span></div>' +
-      '<div class="dpv"><span class="dfull">' + WDF[dowOf(k)] + ', ' + (+p[2]) + '. ' + MOF[+p[1] - 1] + ' ' + p[0] + '</span><span class="pvs">' + pv + '</span></div><div class="dn">' + (rel ? '<span class="rel">' + rel + '</span>' : '') + '<strong>' + evs.length + (evs.length === 1 ? ' Anlass' : ' Anlässe') + '</strong></div>' + CHEV + '</summary>' +
+      '<div class="dpv"><span class="pvs">' + pv + '</span></div><div class="dn">' + (rel ? '<span class="rel">' + rel + '</span>' : '') + '<strong>' + evs.length + (evs.length === 1 ? ' Anlass' : ' Anlässe') + '</strong></div>' + CHEV + '</summary>' +
       '<div class="dbody">' + evs.map(evRow).join('').replace(/<details class="ev"/g, '<details class="ev same"') + '</div></details>';
   }
   function byDay(list) { var g = [], m = {}; list.forEach(function (e) { var k = parts(e.start).key; if (!m[k]) { m[k] = []; g.push([k, m[k]]) } m[k].push(e) }); return g }

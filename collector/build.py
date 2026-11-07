@@ -199,8 +199,6 @@ def build():
     # Agenda: Liste (erste 20 wie app.js), Wochenende, Laufend
     p = pages["agenda.html"]
     p = fill(p, "agCount", f'{len(events)} {"Anlass" if len(events) == 1 else "Anlässe"} in den nächsten 60 Tagen')
-    WDF = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"]
-    MOF = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"]
     # Tage auf- und zuklappbar (wie app.js dayGroup): erste 14 Tage, erster Tag offen
     groups = {}
     for e in events:
@@ -211,7 +209,7 @@ def build():
         pv = "".join(f'<span class="pv">{esc(e["title"])}</span>' for e in evs[:4])
         rows_html.append(f'<details class="aday" data-day="{d.isoformat()}"{" open" if i == 0 else ""}><summary><div class="date" aria-label="{dlabel(d)}">'
                          f'<span class="wd">{WD[d.weekday()]}</span><span class="d">{d.day}</span><span class="mo">{MO[d.month - 1]}</span></div>'
-                         f'<div class="dpv"><span class="dfull">{WDF[d.weekday()]}, {d.day}. {MOF[d.month - 1]} {d.year}</span><span class="pvs">{pv}</span></div><div class="dn">' + (f'<span class="rel">{rel}</span>' if rel else "")
+                         f'<div class="dpv"><span class="pvs">{pv}</span></div><div class="dn">' + (f'<span class="rel">{rel}</span>' if rel else "")
                          + f'<strong>{len(evs)} {"Anlass" if len(evs) == 1 else "Anlässe"}</strong></div>{CHEV}</summary><div class="dbody">'
                          + "".join(ev_row(e).replace('<details class="ev"', '<details class="ev same"', 1) for e in evs) + "</div></details>")
     p = fill(p, "agList", "".join(rows_html))

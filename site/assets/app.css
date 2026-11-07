@@ -1061,9 +1061,6 @@ html[lang="en"] .v3 header nav a.lang::before{content:"EN  |  "}
 .rlist .dpv{grid-column:2/span 2;align-self:stretch;display:flex;align-items:center;font-size:15px;line-height:1.5;color:var(--muted)}
 .rlist .dpv .pvs{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
 .rlist .dpv .pv:not(:last-child)::after{content:" · ";color:var(--soft)}
-.rlist .dpv .dfull{display:none;font:700 18px/1.2 var(--rf);color:var(--fg)}
-.rlist .aday[open] .dpv .pvs{display:none}
-.rlist .aday[open] .dpv .dfull{display:block}
 .rlist .dn{grid-column:4;display:flex;flex-direction:column;justify-content:center;gap:2px;padding-right:64px}
 .rlist .dn strong{font:700 18px/1.2 var(--rf)}
 .rlist .dn .rel{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--brand)}
@@ -1077,9 +1074,13 @@ html[lang="en"] .v3 header nav a.lang::before{content:"EN  |  "}
   .rlist .dpv{grid-column:2;grid-row:2;align-items:flex-start;padding-top:4px;padding-right:52px;font-size:14px}
   .rlist .dn{grid-column:2;grid-row:1;padding-bottom:0;padding-right:52px;flex-direction:row;justify-content:flex-start;align-items:baseline;gap:10px}
   .rlist .aday[open] .dpv{display:none}
+  .rlist .aday[open]>summary>.date{grid-row:auto}
   .rlist details.aday>summary{row-gap:0}
   .rlist details.aday>summary>svg{right:16px;top:18px;margin-top:0}
 }
+/* offener Tag: keine Vorschau, Anzahl rückt nach links */
+.rlist .aday[open] .dpv{display:none}
+@media (min-width:901px){.rlist .aday[open] .dn{grid-column:2/span 3}}
 /* Agenda: Tageszeilen hinterlegt, Anlässe weiss (7.11.2026) */
 .rlist details.aday>summary>*:not(svg){background:var(--tint-2)}
 .rlist details.aday>summary:hover>*:not(svg){background:var(--tint)}
