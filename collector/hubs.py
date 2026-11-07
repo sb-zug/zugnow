@@ -108,8 +108,11 @@ def _crumb(*items):
     return f'<p class="facts" style="margin-top:8px">{" › ".join(parts)}</p>'
 
 
-def _evlist(evs, empty):
-    return f'<div class="agenda">{"".join(B.ev_row(e) for e in evs)}</div>' if evs else f'<p class="note">{empty}</p>'
+def _days(evs, empty, open_all=False):
+    """Anlässe im Agenda-Raster, nach Tagen auf- und zuklappbar (7.11.2026)."""
+    if not evs:
+        return f'<section class="block"><p class="note">{empty}</p></section>'
+    return f'<section class="rlist" aria-label="Anlässe"><div class="agenda">{B.day_groups(evs, open_all=open_all)}</div></section>'
 
 
 def _lauf(items):
@@ -139,13 +142,7 @@ def wochenende(frame, events, ongoing):
             'und den Programmen der Kulturhäuser, zweimal täglich aktualisiert.</p>'
             '<p class="wkwx" hidden></p>'  # Wetter fürs Wochenende, füllt app.js
             + _crumb(("Agenda", "agenda/"), ("Wochenende", None)) + "</div>")
-    for d in sorted({B.dt(e["start"]).date() for e in evs}):
-        day = [e for e in evs if B.dt(e["start"]).date() == d]
-        name = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"][d.weekday()]
-        body += (f'<section class="block"><div class="shead"><h2>{name}, {d.day}.{d.month}.</h2>'
-                 f'<span>{_n(len(day), "Anlass", "Anlässe")}</span></div>{_evlist(day, "")}</section>')
-    if not evs:
-        body += '<section class="block"><p class="note">Für dieses Wochenende sind noch keine Anlässe gemeldet.</p></section>'
+    body += _days(evs, "Für dieses Wochenende sind noch keine Anlässe gemeldet.", open_all=True)
     if ongoing:
         body += ('<section class="block"><div class="shead"><h2>Ausstellungen und Laufendes</h2>'
                  '<span>Auch am Wochenende offen</span></div>' + _lauf(ongoing) + "</section>")
@@ -166,8 +163,7 @@ def orte(frame, events, ongoing):
         facts = " · ".join(x for x in [B.esc(addr), f'<a href="{B.esc(web)}">Website {B.EXT}</a>' if web else ""] if x)
         body = (f'<div class="pagehead"><h1>{B.esc(name)}</h1><p>{B.esc(text)}</p>'
                 f'<p class="facts">{facts}</p>' + _crumb(("Orte", "orte/"), (name, None)) + "</div>")
-        body += (f'<section class="block"><div class="shead"><h2>Programm</h2><span>{_n(len(evs), "kommender Anlass", "kommende Anlässe")}</span></div>'
-                 + _evlist(evs, "Zurzeit sind keine kommenden Anlässe gemeldet.") + "</section>")
+        body += _days(evs, "Zurzeit sind keine kommenden Anlässe gemeldet.")
         if lauf:
             body += '<section class="block"><div class="shead"><h2>Ausstellungen und Laufendes</h2></div>' + _lauf(lauf) + "</section>"
         body += '<section class="block"><p><a href="orte/">Alle Orte →</a> · <a href="agenda/">Ganze Agenda →</a></p></section>'

@@ -573,6 +573,14 @@
   // ---------- Start
   // Vorgerenderte Anlässe (Rubrikseiten), die inzwischen vorbei sind, ausblenden
   [].forEach.call(document.querySelectorAll('[data-end]'), function (el) { if (new Date(el.dataset.end) < new Date()) el.hidden = true });
+  // Vorgerenderte Tagesgruppen (Wochenende, Orte): Zahl anpassen, leere Tage ausblenden, dann ersten sichtbaren Tag öffnen
+  var dOpen = false;
+  [].forEach.call(document.querySelectorAll('main details.aday'), function (g) {
+    var n = g.querySelectorAll('details.ev:not([hidden])').length, s = g.querySelector('.dn strong');
+    if (!n) { if (g.open) dOpen = true; g.hidden = true; return }
+    if (s) s.textContent = n + (n === 1 ? ' Anlass' : ' Anlässe');
+    if (dOpen) { g.open = true; dOpen = false }
+  });
 
   // ---------- Englisch (/en/): Texte, die app.js nachlädt, mit demselben Wörterbuch wie der Build übersetzen
   var EN = document.documentElement.lang === 'en', I18 = null;

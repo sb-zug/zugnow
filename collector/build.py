@@ -108,6 +108,25 @@ def ev_row(e):
             + (f'<div class="pimg">{img(e["image"])}</div>' if e.get("image") else "") + "</div></details>")
 
 
+def day_groups(events, days=None, open_all=False):
+    """Anlässe nach Tagen, auf- und zuklappbar (gleiches Markup wie app.js dayGroup). Erster Tag offen, oder alle."""
+    groups = {}
+    for e in events:
+        groups.setdefault(dt(e["start"]).date(), []).append(e)
+    items = list(groups.items())[:days] if days else list(groups.items())
+    out = []
+    for i, (d, evs) in enumerate(items):
+        rel = "Heute" if d == TODAY else "Morgen" if d == TODAY + timedelta(days=1) else ""
+        pv = "".join(f'<span class="pv">{esc(e["title"])}</span>' for e in evs[:4])
+        op = open_all or i == 0 or len(items) <= 2
+        out.append(f'<details class="aday" data-day="{d.isoformat()}"{" open" if op else ""}><summary><div class="date" aria-label="{dlabel(d)}">'
+                   f'<span class="wd">{WD[d.weekday()]}</span><span class="d">{d.day}</span><span class="mo">{MO[d.month - 1]}</span></div>'
+                   f'<div class="dpv"><span class="pvs">{pv}</span></div><div class="dn">' + (f'<span class="rel">{rel}</span>' if rel else "")
+                   + f'<strong>{len(evs)} {"Anlass" if len(evs) == 1 else "Anlässe"}</strong></div>{CHEV}</summary><div class="dbody">'
+                   + "".join(ev_row(e).replace('<details class="ev"', '<details class="ev same"', 1) for e in evs) + "</div></details>")
+    return "".join(out)
+
+
 def news_row(n):
     mm = "mm" if "Medien" in (n.get("type") or "") else ""
     return (f'<a href="{esc(n["url"])}" class="{"img" if n.get("image") else ""}"><span class="d"><b class="{mm}">{esc(n.get("type") or "News")}</b>{dlabel(n["date"])}'
@@ -199,19 +218,7 @@ def build():
     # Agenda: Liste (erste 20 wie app.js), Wochenende, Laufend
     p = pages["agenda.html"]
     p = fill(p, "agCount", f'{len(events)} {"Anlass" if len(events) == 1 else "Anlässe"} in den nächsten 60 Tagen')
-    # Tage auf- und zuklappbar (wie app.js dayGroup): erste 14 Tage, erster Tag offen
-    groups = {}
-    for e in events:
-        groups.setdefault(dt(e["start"]).date(), []).append(e)
-    rows_html = []
-    for i, (d, evs) in enumerate(list(groups.items())[:14]):
-        rel = "Heute" if d == TODAY else "Morgen" if d == TODAY + timedelta(days=1) else ""
-        pv = "".join(f'<span class="pv">{esc(e["title"])}</span>' for e in evs[:4])
-        rows_html.append(f'<details class="aday" data-day="{d.isoformat()}"{" open" if i == 0 else ""}><summary><div class="date" aria-label="{dlabel(d)}">'
-                         f'<span class="wd">{WD[d.weekday()]}</span><span class="d">{d.day}</span><span class="mo">{MO[d.month - 1]}</span></div>'
-                         f'<div class="dpv"><span class="pvs">{pv}</span></div><div class="dn">' + (f'<span class="rel">{rel}</span>' if rel else "")
-                         + f'<strong>{len(evs)} {"Anlass" if len(evs) == 1 else "Anlässe"}</strong></div>{CHEV}</summary><div class="dbody">'
-                         + "".join(ev_row(e).replace('<details class="ev"', '<details class="ev same"', 1) for e in evs) + "</div></details>")
+    rows_html = [day_groups(events, days=14)]  # Tage auf- und zuklappbar (wie app.js dayGroup)
     p = fill(p, "agList", "".join(rows_html))
     wa, wb = weekend()
     wk = [e for e in events if wa <= dt(e["start"]).date() <= wb and not e.get("cancelled")]
