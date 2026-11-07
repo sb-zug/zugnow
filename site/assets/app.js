@@ -218,6 +218,11 @@
         '<span class="tn">' + t[1] + '</span><span class="tc">' + (n ? n + (n === 1 ? ' Meldung' : ' Meldungen') : 'aktuell keine') + '</span></a>';
     }).join('');
   }
+  // Mobil: Filter einklappbar (Agenda, News) – Knopf zeigt die aktive Auswahl
+  function fSum(t) {
+    var fb = $('fBtn'); if (!fb) return; $('fSum').textContent = t;
+    fb.onclick = function () { var o = fb.closest('.rphead').classList.toggle('fopen'); fb.setAttribute('aria-expanded', o) };
+  }
   function renderNewsPage() {
     var el = $('newsList'); if (!el) return;
     var h = location.hash.slice(1); if (NTOPICS.some(function (t) { return t[0] === h })) st.ntopic = h;
@@ -229,6 +234,7 @@
         return '<button type="button" class="chip" data-v="' + d[0] + '" aria-pressed="' + (st.ntopic === d[0]) + '">' + d[1] + '<span class="n">' + cnt(d[0]) + '</span></button>'
       }).join('');
       ch.onclick = function (ev) { var b = ev.target.closest('.chip'); if (!b) return; st.ntopic = b.dataset.v; history.replaceState(null, '', location.pathname + (st.ntopic === 'alle' ? '' : '#' + st.ntopic)); renderNewsPage() };
+      fSum(st.ntopic === 'alle' ? 'Alle Themen' : (NTOPICS.filter(function (d) { return d[0] === st.ntopic })[0] || [0, 'Alle Themen'])[1]);
     }
     el.innerHTML = D.news.filter(function (n) { return st.ntopic === 'alle' || n.topic === st.ntopic }).map(newsRow).join('') || '<p style="color:var(--soft);padding:18px 0">Keine Meldungen in dieser Kategorie.</p>';
   }
@@ -278,8 +284,7 @@
     var fb = $('fBtn'); if (!fb) return;
     function lab(defs, v) { return (defs.filter(function (d) { return d[0] === v })[0] || [])[1] }
     var on = [lab(TIMES, st.time)]; if (st.cat !== 'alle') on.push(lab(CATS, st.cat)); if (st.place !== 'alle') on.push(lab(PLACES, st.place));
-    $('fSum').textContent = on.join(' · ');
-    fb.onclick = function () { var o = $('agHead').classList.toggle('fopen'); fb.setAttribute('aria-expanded', o) };
+    fSum(on.join(' · '));
   }
 
   function icsDate(iso) { return new Date(iso).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '') }
