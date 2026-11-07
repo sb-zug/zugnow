@@ -425,9 +425,9 @@
    "count": 4
   },
   "EVP": {
-   "ok": true,
+   "ok": false,
    "source": "https://www.evp-zg.ch/aktuell",
-   "count": 1
+   "error": "TimeoutError: The read operation timed out"
   },
   "FDP": {
    "ok": true,

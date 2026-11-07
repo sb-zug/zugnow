@@ -1,16 +1,5 @@
 [
  {
-  "id": "38058938-34e6-46f1-920c-4ae51d689f82",
-  "date": "2026-11-05",
-  "label": "Gemeinderat",
-  "title": "12. Sitzung des Grossen Gemeinderats, Zug",
-  "office": "Stadt Zug - Stadtkanzlei",
-  "number": "RS-ZG60-0000000273",
-  "expires": null,
-  "url": "https://amtsblatt.zg.ch/#!/search/publications/detail/38058938-34e6-46f1-920c-4ae51d689f82",
-  "source": "amtsblatt.zg.ch"
- },
- {
   "id": "a49261ba-4374-4960-a0ed-868c6976d17b",
   "date": "2026-11-05",
   "label": "Gemeinderat",
@@ -19,6 +8,17 @@
   "number": "RS-ZG60-0000000274",
   "expires": null,
   "url": "https://amtsblatt.zg.ch/#!/search/publications/detail/a49261ba-4374-4960-a0ed-868c6976d17b",
+  "source": "amtsblatt.zg.ch"
+ },
+ {
+  "id": "38058938-34e6-46f1-920c-4ae51d689f82",
+  "date": "2026-11-05",
+  "label": "Gemeinderat",
+  "title": "12. Sitzung des Grossen Gemeinderats, Zug",
+  "office": "Stadt Zug - Stadtkanzlei",
+  "number": "RS-ZG60-0000000273",
+  "expires": null,
+  "url": "https://amtsblatt.zg.ch/#!/search/publications/detail/38058938-34e6-46f1-920c-4ae51d689f82",
   "source": "amtsblatt.zg.ch"
  },
  {
