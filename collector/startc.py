@@ -4,7 +4,8 @@ Strenges Kachelraster mit durchgezogenen Linien (CSS-Block «Startseite Raster (
 Baut auf der fertigen Startseite (Variante B) auf: Kopf, Infoleiste (inkl. Abstimmung) und Fuss bleiben,
 der Inhalt wird neu gesetzt: Hero (H1 + Top-Meldung), Agenda (Heute/Morgen/Wochenende), Jetzt mitreden,
 Wie sich Zug verändert (+ Wohnband), News, Aus dem Parlament. Alles beim Build (2× täglich) vorgerendert;
-Wetter, Sonnenuntergang und Anlässe heute füllt app.js wie gewohnt.
+Anlässe heute und das Wochenend-Wetter (nur im Reiter «Wochenende») füllt app.js.
+Infoleiste (seit 7.11.2026, ohne Wetter/Sonnenuntergang): Anlässe heute · Parlament · Abstimmung · Neu im Amtsblatt.
 Wird von build.py aufgerufen. Übernahme als Startseite: Ausgabe in build.py auf "index.html" umstellen.
 """
 import re
@@ -74,6 +75,7 @@ def _agenda(events):
         + "</div>" for i, (k, _, lst) in enumerate(tabs))
     return (f'<section class="rg r4 ragenda" aria-labelledby="rAg"><div class="rc rhead rtall"><h2 id="rAg">Agenda</h2>'
             f'<div class="rtabs" role="group" aria-label="Zeitraum">{btn}</div>'
+            '<p class="wkwx" hidden></p>'
             f'<a class="rmore" id="rAgMore" href="agenda/#heute">Alle {len(events)} Anlässe →</a></div>'
             f'<div class="rpanels">{panels}</div></section>')
 
@@ -134,6 +136,31 @@ def _news_parl(pool, politik):
             + "</section>")
 
 
+def _itile(href, strong, label):
+    return (f'<a class="iitem ilink" href="{B.esc(href)}"><span class="itx"><strong>{B.esc(strong)}</strong>'
+            f'<span>{B.esc(label)}</span></span></a>')
+
+
+def _infobar(pol_news, politik, amtlich):
+    """Vier Kacheln, die es nur hier gibt: Anlässe heute (live per app.js), nächste GGR-Sitzung,
+    nächste Abstimmung (Countdown per Script), Neues im Amtsblatt der letzten 7 Tage."""
+    tiles = ['<a class="iitem ilink" href="agenda/#heute"><span class="itx"><strong id="cntN">–</strong><span>heute</span></span></a>']
+    ns = SB.next_session(pol_news)
+    if ns:
+        d, n = ns
+        tiles.append(_itile(n["url"], f'{B.WDL[d.weekday()]} {d.day}.{d.month}.', "Parlament"))
+    nv = SB._iso(politik.get("nextVoteDate"))
+    if nv and nv >= B.TODAY:
+        tiles.append(_itile("politik/#pAbst", f'{B.WDL[nv.weekday()]} {nv.day}.{nv.month}.', "Abstimmung"))
+    recent = [a for a in amtlich if a.get("date") and (B.TODAY - SB._iso(a["date"])).days <= 7] if amtlich else []
+    bg = [a for a in recent if a.get("label") == "Baugesuch"]
+    if bg:
+        tiles.append(_itile("baugesuche/", f'{len(bg)} {"Baugesuch" if len(bg) == 1 else "Baugesuche"}', "Neu im Amtsblatt"))
+    elif recent:
+        tiles.append(_itile("amtlich/", f'{len(recent)} {"Publikation" if len(recent) == 1 else "Publikationen"}', "Neu im Amtsblatt"))
+    return '<div class="ibox">' + "".join(tiles) + "</div>"
+
+
 def _hero(slides):
     """Hero: H1 + Slider mit bis zu 3 Meldungen (Bild links, Text rechts, Punkte und Pfeile im Bild)."""
     h1 = ('<div class="rc rh1"><h1>Was läuft<br>in Zug<span class="dot">.</span></h1>'
@@ -165,7 +192,7 @@ def _hero(slides):
 
 TABS_JS = """<script>
 (function(){var g=document.querySelector('.ragenda');if(!g)return;g.addEventListener('click',function(ev){var b=ev.target.closest('.rtab');if(!b)return;
-g.querySelectorAll('.rtab').forEach(function(x){x.setAttribute('aria-pressed',x===b)});
+g.querySelectorAll('.rtab').forEach(function(x){x.setAttribute('aria-pressed',x===b)});g.dataset.t=b.dataset.t;
 g.querySelectorAll('.rpanel').forEach(function(p){p.hidden=p.dataset.p!==b.dataset.t});
 var m=document.getElementById('rAgMore');if(m)m.setAttribute('href','agenda/#'+b.dataset.t)})})();
 (function(){var r=document.querySelector('.rslider');if(!r)return;var S=r.querySelectorAll('.rslide'),n=S.length,c=0;if(n<2)return;
@@ -175,7 +202,7 @@ var f=S[c].querySelector('button[data-'+(b.dataset.to!=null?'to="'+c+'"]':'go="'
 r.addEventListener('keydown',function(e){if(e.key==='ArrowLeft'||e.key==='ArrowRight'){show(c+(e.key==='ArrowRight'?1:-1));e.preventDefault()}});
 var x=null;r.addEventListener('touchstart',function(e){x=e.touches[0].clientX},{passive:true});
 r.addEventListener('touchend',function(e){if(x==null)return;var d=e.changedTouches[0].clientX-x;if(Math.abs(d)>40)show(c+(d<0?1:-1));x=null})})();
-(function(){var a=document.querySelector('.v3 .ilink[href*="pAbst"] strong'),d=document.body.dataset.vote;if(!a||!d)return;
+(function(){var a=document.querySelector('.v3 .infobar .ilink[href*="pAbst"] strong'),d=document.body.dataset.vote;if(!a||!d)return;
 var t=new Date(),n=Math.round((Date.UTC(+d.slice(0,4),+d.slice(5,7)-1,+d.slice(8,10))-Date.UTC(t.getFullYear(),t.getMonth(),t.getDate()))/864e5);
 if(n>0){var s=document.createElement('em');s.className='rcd';s.textContent='in '+n+(n===1?' Tag':' Tagen');a.appendChild(s)}})();
 </script>"""
@@ -204,6 +231,7 @@ def _page(index_html, events, news, pol_news):
     p = p.replace('class="v2"', f'class="v2 v3 vhome" data-vote="{B.esc(politik.get("nextVoteDate") or "")}"', 1)
     p = p.replace("<head>\n", '<head>\n<base href="/">\n', 1)
     p = re.sub(r'<section class="intro".*?</section>\s*', "", p, count=1, flags=re.S)
+    p = re.sub(r'<div class="ibox">.*?</div></div></div>', lambda m: _infobar(pol_news, politik, B.load("amtlich", [])) + "</div></div>", p, count=1, flags=re.S)
     p = re.sub(r"<main\b.*?</main>", lambda m: main, p, count=1, flags=re.S)
     p = p.replace("</body>", TABS_JS + "\n</body>", 1)
     return p

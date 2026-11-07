@@ -60,8 +60,6 @@
       '<button type="button" class="sclose" id="sClose">Schliessen</button></div>' +
       '<p class="scount" id="sCount" aria-live="polite"></p><div class="sres" id="sRes"></div></div></div>' +
       '<div class="infobar"><div class="wrap"><div class="ibox">' +
-      '<div class="iitem" id="wx" hidden><span class="iic" id="wxI"></span><span class="itx"><strong id="wxT"></strong><span id="wxD"></span></span></div>' +
-      '<div class="iitem"><span class="iic">' + IC.sunset + '</span><span class="itx"><span>Sonnen&shy;untergang</span><span id="sunT">–</span></span></div>' +
       '<a class="iitem ilink" href="agenda/#heute"><span class="iic cal">' + IC.cal + '</span><span class="itx"><strong id="cntN">–</strong><span>heute</span></span>' +
       '<svg class="ichev" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>' +
       '</div></div></div>';
@@ -77,24 +75,26 @@
     var tk = todayKey(), n = D.events.filter(function (e) { return parts(e.start).key === tk && !e.cancelled && !over(e) }).length;
     var st = D.meta.sources || {}, bad = Object.keys(st).filter(function (k) { return !st[k].ok });
     $('srcState').innerHTML = bad.length ? '<span class="err">Quelle gestört: ' + esc(bad.join(', ')) + ' (letzter Stand wird angezeigt)</span>' : '';
+    wkWx();
     if (!$('cntN')) return; // Infoleiste nur auf der Startseite
     $('cntN').textContent = n + (n === 1 ? ' Anlass' : ' Anlässe');
-    $('sunT').textContent = sunset(new Date(), 47.166, 8.516) + ' Uhr';
-    fetch('https://api.open-meteo.com/v1/forecast?latitude=47.166&longitude=8.516&current=temperature_2m,weather_code,is_day&timezone=Europe%2FZurich')
-      .then(function (r) { return r.json() }).then(function (j) {
-        var c = j && j.current; if (!c || c.temperature_2m == null) return;
-        var w = wxOf(c.weather_code, c.is_day);
-        $('wxT').textContent = Math.round(c.temperature_2m) + ' °C'; $('wxD').textContent = w[1]; $('wxI').innerHTML = IC[w[0]]; $('wx').hidden = false;
-      }).catch(function () { });
   }
 
-  function sunset(date, lat, lon) { // NOAA-Näherung
-    var rad = Math.PI / 180, N = Math.floor((date - Date.UTC(date.getUTCFullYear(), 0, 0)) / 864e5);
-    var g = 2 * Math.PI / 365 * (N - 1), eq = 229.18 * (0.000075 + 0.001868 * Math.cos(g) - 0.032077 * Math.sin(g) - 0.014615 * Math.cos(2 * g) - 0.040849 * Math.sin(2 * g));
-    var dec = 0.006918 - 0.399912 * Math.cos(g) + 0.070257 * Math.sin(g) - 0.006758 * Math.cos(2 * g) + 0.000907 * Math.sin(2 * g) - 0.002697 * Math.cos(3 * g) + 0.00148 * Math.sin(3 * g);
-    var ha = Math.acos(Math.cos(90.833 * rad) / (Math.cos(lat * rad) * Math.cos(dec)) - Math.tan(lat * rad) * Math.tan(dec)) / rad;
-    var utcMin = 720 - 4 * (lon - ha) - eq;
-    return parts(new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()) + utcMin * 6e4).toISOString()).hm;
+  // Wetter nur dort, wo es bei der Entscheidung hilft: im Wochenend-Reiter und auf /wochenende/ (seit 7.11.2026)
+  function wkWx() {
+    var els = document.querySelectorAll('.wkwx'); if (!els.length) return;
+    var r = range('wochenende');
+    fetch('https://api.open-meteo.com/v1/forecast?latitude=47.166&longitude=8.516&daily=weather_code,temperature_2m_max,temperature_2m_min&forecast_days=8&timezone=Europe%2FZurich')
+      .then(function (x) { return x.json() }).then(function (j) {
+        var d = j && j.daily; if (!d || !d.time) return;
+        var h = d.time.map(function (t, i) { return [t, t, i] }).filter(function (x) { return x[0] >= r[0] && x[0] <= r[1] }).map(function (x) {
+          var i = x[2], w = wxOf(d.weather_code[i], 1), dw = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'][new Date(x[1] + 'T12:00:00').getDay()];
+          return '<span class="wkd" title="' + esc(w[1]) + '"><b>' + dw + '</b>' + IC[w[0]] + '<span>' + esc(w[1]) + '</span><span>' +
+            Math.round(d.temperature_2m_max[i]) + '° / ' + Math.round(d.temperature_2m_min[i]) + '°</span></span>';
+        }).join('');
+        if (!h) return;
+        els.forEach(function (el) { el.innerHTML = h; el.hidden = false });
+      }).catch(function () { });
   }
 
   // ---------- Bausteine
@@ -304,7 +304,6 @@
     rain: svg('<g transform="translate(0 -6)">' + CLOUD + '</g><g stroke="#4F8FE0" stroke-width="2.6" stroke-linecap="round"><path d="M17 37l-2 5M25 37l-2 5M33 37l-2 5"/></g>'),
     snow: svg('<g transform="translate(0 -6)">' + CLOUD + '</g><g fill="#8FB6EA"><circle cx="16" cy="40" r="2"/><circle cx="24" cy="43" r="2"/><circle cx="32" cy="40" r="2"/></g>'),
     storm: svg('<g transform="translate(0 -6)">' + CLOUD + '</g><path d="M25 32l-5 8h5l-2 6 7-9h-5l3-5z" fill="#F2B134"/>'),
-    sunset: svg('<g stroke="#F2B134" stroke-width="2.4" stroke-linecap="round"><path d="M24 8v5M10 15l3 3M38 15l-3 3M5 28h4M39 28h4"/></g><path d="M12 34a12 12 0 0 1 24 0z" fill="#F2B134"/><path d="M5 36h38" stroke="#E2603C" stroke-width="2.6" stroke-linecap="round"/>'),
     cal: '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M8.5 14v3M12 14v3M15.5 14v3"/></svg>'
   };
   var CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>';

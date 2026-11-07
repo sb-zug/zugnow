@@ -539,6 +539,9 @@
 "Schnee": "Snow",
 "Schneeschauer": "Snow showers",
 "Gewitter": "Thunderstorm",
+"Teilweise bewölkt": "Partly cloudy",
+"Nieselregen": "Drizzle",
+"Neu im Amtsblatt": "New in the Official Gazette",
 "Leichter Regen": "Light rain",
 "Starker Regen": "Heavy rain",
 "MO": "MON",
@@ -613,6 +616,14 @@
 [
 "(\\d+) Meldungen",
 "\\1 updates"
+],
+[
+"1 Baugesuch",
+"1 building application"
+],
+[
+"(\\d+) Baugesuche",
+"\\1 building applications"
 ],
 [
 "1 Publikationen?",

@@ -15,6 +15,7 @@ P = [
     [r"(\d+) Geschäfte & Vorhaben", r"\1 items & projects"],
     [r"(\d+) Parteimeldungen", r"\1 party posts"],
     [r"1 Meldungen?", "1 update"], [r"(\d+) Meldungen", r"\1 updates"],
+    [r"1 Baugesuch", "1 building application"], [r"(\d+) Baugesuche", r"\1 building applications"],
     [r"1 Publikationen?", "1 notice"], [r"(\d+) Publikationen", r"\1 notices"],
     [r"(\d+) Dossiers", r"\1 dossiers"],
     [r"(\d+) Vorhaben mit Wohnungen", r"\1 projects with housing"],
@@ -463,7 +464,8 @@ T = {
     # Wetter (app.js)
     "Klar": "Clear", "Sonnig": "Sunny", "Meist sonnig": "Mostly sunny", "Teils bewölkt": "Partly cloudy", "Bewölkt": "Cloudy",
     "Nebel": "Fog", "Niesel": "Drizzle", "Regen": "Rain", "Regenschauer": "Showers", "Schnee": "Snow", "Schneeschauer": "Snow showers",
-    "Gewitter": "Thunderstorm", "Leichter Regen": "Light rain", "Starker Regen": "Heavy rain",
+    "Gewitter": "Thunderstorm", "Teilweise bewölkt": "Partly cloudy", "Nieselregen": "Drizzle",
+    "Neu im Amtsblatt": "New in the Official Gazette", "Leichter Regen": "Light rain", "Starker Regen": "Heavy rain",
     # Wochentage / Monate in Kacheln
     "MO": "MON", "DI": "TUE", "MI": "WED", "DO": "THU", "FR": "FRI", "SA": "SAT", "SO": "SUN",
     "MÄR": "MAR", "MAI": "MAY", "OKT": "OCT", "DEZ": "DEC", "Mär": "Mar", "Mai": "May", "Okt": "Oct", "Dez": "Dec",

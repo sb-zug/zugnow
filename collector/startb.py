@@ -52,15 +52,9 @@ def mitreden_rows(projekte, pol_news, politik):
             lbl = "Auflage läuft" if live else ("Infoanlass" if "anlass" in m["text"] else "Auflage" if "Auflage" in m["text"] else "Mitwirkung")
             text = (f'Noch bis {b.day}.{b.month}. · ' if live else "") + m["text"]
             rows.append((B.TODAY if live else a, b if live else a, live, lbl, p["titel"], text, f'wandel/{p["slug"]}/'))
-    sess = []
-    for n in pol_news:
-        mm = SESS.search(n["title"])
-        if mm and "Sitzung" in n["title"]:
-            d = date(int(mm[3]), int(mm[2]), int(mm[1]))
-            if d >= B.TODAY:
-                sess.append((d, n))
-    if sess:
-        d, n = min(sess, key=lambda x: x[0])
+    ns = next_session(pol_news)
+    if ns:
+        d, n = ns
         rows.append((d, d, False, "Parlament", "Sitzung des Grossen Gemeinderats", "Öffentlich, ab 8 Uhr im Regierungsgebäude – oder im Livestream", n["url"]))
     nv = _iso(politik.get("nextVoteDate"))
     if nv and nv >= B.TODAY:
@@ -69,6 +63,18 @@ def mitreden_rows(projekte, pol_news, politik):
                      f'{k} {"Vorlage" if k == 1 else "Vorlagen"} · Unterlagen und Resultate' if k else "Vorlagen werden aufgeschaltet", "politik/#pAbst"))
     rows.sort(key=lambda r: r[0])
     return rows
+
+
+def next_session(pol_news):
+    """Nächste Sitzung des Grossen Gemeinderats aus den Stadt-News: (datum, meldung) oder None."""
+    sess = []
+    for n in pol_news:
+        mm = SESS.search(n["title"])
+        if mm and "Sitzung" in n["title"] and not n["title"].startswith("Geschäfte und Resultate"):
+            d = date(int(mm[3]), int(mm[2]), int(mm[1]))
+            if d >= B.TODAY:
+                sess.append((d, n))
+    return min(sess, key=lambda x: x[0]) if sess else None
 
 
 def soon(p):

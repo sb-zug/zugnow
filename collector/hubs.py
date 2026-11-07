@@ -136,6 +136,7 @@ def wochenende(frame, events, ongoing):
             f'<p>Was läuft am Wochenende in der Stadt Zug? {span}: {_n(len(evs), "Anlass", "Anlässe")} – Konzerte, Theater, '
             'Ausstellungen, Märkte, Sport und Angebote für Familien. Automatisch aus dem offiziellen Veranstaltungskalender '
             'und den Programmen der Kulturhäuser, zweimal täglich aktualisiert.</p>'
+            '<p class="wkwx" hidden></p>'  # Wetter fürs Wochenende, füllt app.js
             + _crumb(("Agenda", "agenda/"), ("Wochenende", None)) + "</div>")
     for d in sorted({B.dt(e["start"]).date() for e in evs}):
         day = [e for e in evs if B.dt(e["start"]).date() == d]
