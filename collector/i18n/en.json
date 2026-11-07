@@ -147,6 +147,10 @@
 "Alle Baugesuche der Stadt Zug →": "All building applications in the City of Zug →",
 "Baugesuche Stadt Zug": "Building applications City of Zug",
 "Baugesuche Stadt Zug – aktuelle Publikationen | zug.now": "Building applications City of Zug – current notices | zug.now",
+"Baugesuche Stadt Zug – aktuell im Amtsblatt | zug.now": "Building applications City of Zug – current notices | zug.now",
+"Kino Zug Seehof & Gotthard": "Cinema Zug Seehof & Gotthard",
+"Veranstaltungen Stadt Zug – Agenda heute & am Wochenende | zug.now": "Events in Zug – what's on today & this weekend | zug.now",
+"Alle Veranstaltungen und Events in der Stadt Zug: heute, am Wochenende und in den nächsten 60 Tagen – Konzerte, Theater, Familie, Märkte. Zweimal täglich aktualisiert.": "All events in the City of Zug: today, this weekend and over the next 60 days – concerts, theatre, family, markets. Updated twice a day.",
 "Die Stadt Zug publiziert neue Baugesuche im Amtsblatt des Kantons Zug. Während der Auflage können die Pläne eingesehen und Einsprachen erhoben werden. Hier steht jedes Baugesuch mit Adresse, solange die Auflage läuft – automatisch übernommen und zweimal täglich aktualisiert. Massgebend für Fristen und Auflageort ist die Publikation im Amtsblatt.": "The City of Zug publishes new building applications in the Official Gazette of the Canton of Zug. During the public inspection period the plans can be viewed and objections can be filed. Each application is listed here with its address for as long as the inspection period runs – taken automatically and updated twice a day. Deadlines and inspection venue are as stated in the Official Gazette.",
 "Karte": "Map",
 "Baugesuche in Auflage und grosse Vorhaben": "Building applications open for inspection and major projects",
@@ -732,6 +736,26 @@
 [
 "(.+) – Programm und Veranstaltungen \\| zug\\.now",
 "{{\\1}} – programme and events | zug.now"
+],
+[
+"(.+) – Programm (\\d{4}/\\d{2}) \\| zug\\.now",
+"{{\\1}} – programme \\2 | zug.now"
+],
+[
+"(.+): Programm",
+"{{\\1}}: programme"
+],
+[
+"Programm (.+?): (.+?) mit Datum und Zeit\\. Als Nächstes: (.+) am (\\d+\\.\\d+\\.) Zweimal täglich aktualisiert\\.",
+"{{\\1}} programme: {{\\2}} with date and time. Next: {{\\3}} on \\4 Updated twice a day."
+],
+[
+"Programm (.+?): (.+?) mit Datum und Zeit\\. Zweimal täglich aktualisiert\\.",
+"{{\\1}} programme: {{\\2}} with date and time. Updated twice a day."
+],
+[
+"Baugesuche der Stadt Zug aus dem Amtsblatt: (\\d+) Publikation(?:en)? in Auflage – mit Adresse, Karte und Einsprachefrist\\. Täglich aktualisiert\\.",
+"Building applications in the City of Zug from the Official Gazette: \\1 open for inspection – with address, map and objection period. Updated daily."
 ],
 [
 "(.+): alle kommenden Veranstaltungen \\((.+)\\) mit Datum, Zeit und Details\\. Automatisch aktualisiert\\.",

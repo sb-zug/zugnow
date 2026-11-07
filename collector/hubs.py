@@ -41,6 +41,16 @@ ORTE = [
      "Die Musikschule Zug lädt regelmässig zu Konzerten und Vorspielen ihrer Schülerinnen und Schüler ein."),
 ]
 
+# Suchtreffer-Titel (7.11.2026): gesucht wird «<Haus> zug programm», «zug kino» usw.
+SEO_NAME = {"kino": "Kino Zug Seehof & Gotthard"}
+
+
+def saison():
+    """Spielzeit: ab August die neue (2026/27), sonst die laufende."""
+    y = B.TODAY.year if B.TODAY.month >= 8 else B.TODAY.year - 1
+    return f"{y}/{(y + 1) % 100:02d}"
+
+
 FOOTER_COL = ('<div class="col"><span style="font-weight:600;color:var(--fg)">Rubriken</span>'
               '<span><a href="/wochenende/">Wochenende in Zug</a> · <a href="/orte/">Orte &amp; Kulturhäuser</a> · '
               '<a href="/baugesuche/">Baugesuche</a> · <a href="/wandel/">Wie sich Zug verändert</a> · <a href="/wohnen/">Günstig wohnen</a> · <a href="/politik/#pDos">Politische Dossiers</a></span>'
@@ -160,15 +170,18 @@ def orte(frame, events, ongoing):
         addr = "; ".join(l for l, _ in locs.most_common(2)) if inst in ("kino", "kunsthaus") else (locs.most_common(1)[0][0] if locs else "")
         idx = len(evs) + len(lauf) >= MIN_EVENTS
         facts = " · ".join(x for x in [B.esc(addr), f'<a href="{B.esc(web)}">Website {B.EXT}</a>' if web else ""] if x)
-        body = (f'<div class="pagehead"><h1>{B.esc(name)}</h1><p>{B.esc(text)}</p>'
+        body = (f'<div class="pagehead"><h1>{B.esc(name)}: Programm</h1><p>{B.esc(text)}</p>'
                 f'<p class="facts">{facts}</p>' + _crumb(("Orte", "orte/"), (name, None)) + "</div>")
         body += _days(evs, "Zurzeit sind keine kommenden Anlässe gemeldet.")
         if lauf:
             body += '<section class="block"><div class="shead"><h2>Ausstellungen und Laufendes</h2></div>' + _lauf(lauf) + "</section>"
         body += '<section class="block"><p><a href="orte/">Alle Orte →</a> · <a href="agenda/">Ganze Agenda →</a></p></section>'
+        nx = next((e for e in evs if not e.get("cancelled")), None)
+        desc = (f"Programm {name}: {_n(len(evs), 'Anlass', 'Anlässe')} mit Datum und Zeit."
+                + (f" Als Nächstes: {nx['title']} am {B.dt(nx['start']).day}.{B.dt(nx['start']).month}." if nx else "")
+                + " Zweimal täglich aktualisiert.")
         pages[f"orte/{slug}/index.html"] = _page(
-            frame, f"orte/{slug}/", f"{name} – Programm und Veranstaltungen | zug.now",
-            f"{name}: alle kommenden Veranstaltungen ({_n(len(evs), 'Anlass', 'Anlässe')}) mit Datum, Zeit und Details. Automatisch aktualisiert.",
+            frame, f"orte/{slug}/", f"{SEO_NAME.get(slug, name)} – Programm {saison()} | zug.now", desc,
             body, nav="agenda/", index=idx)
         nxt = f" · nächster am {B.dshort(B.dt(evs[0]['start']).date())}" if evs else ""
         cards.append(f'<a href="orte/{slug}/"><strong>{B.esc(name)}</strong><span>{_n(len(evs), "Anlass", "Anlässe")}{nxt}</span></a>')
@@ -244,8 +257,8 @@ def baugesuche(frame, amtlich, news):
                  + "".join(f'<a href="{B.esc(n["url"])}"><span class="d">{B.dlabel(n["date"])}</span><span class="t">{B.esc(n["title"])}</span></a>' for n in lists)
                  + "</div></section>")
     body += '<section class="block"><p><a href="wandel/">Wie sich Zug verändert: alle grossen Vorhaben →</a> · <a href="amtlich/">Alle amtlichen Publikationen →</a></p></section>'
-    page = _page(frame, "baugesuche/", "Baugesuche Stadt Zug – aktuelle Publikationen | zug.now",
-                 f"Aktuelle Baugesuche der Stadt Zug aus dem Amtsblatt: {_n(len(bg), 'Publikation', 'Publikationen')} mit Adresse und Auflagefrist, täglich aktualisiert.",
+    page = _page(frame, "baugesuche/", "Baugesuche Stadt Zug – aktuell im Amtsblatt | zug.now",
+                 f"Baugesuche der Stadt Zug aus dem Amtsblatt: {_n(len(bg), 'Publikation', 'Publikationen')} in Auflage – mit Adresse, Karte und Einsprachefrist. Täglich aktualisiert.",
                  body, nav="amtlich/", index=len(bg) + len(lists) >= 1)
     if pts["b"]:
         page = (page.replace("</head>", '<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">\n</head>', 1)

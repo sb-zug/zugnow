@@ -4,6 +4,11 @@ Jede Seite enthält Datum, Zeit, Ort, Beschreibung, Bild, Link zur Quelle, Kalen
 (termin.ics) und strukturierte Daten (schema.org/Event) für Google.
 Anlässe ohne nennenswerte Beschreibung erhalten noindex (dünne Seite) und fehlen in der Sitemap.
 Wird von build.py aufgerufen: zuerst assign() (setzt e["page"]), am Schluss pages().
+
+Vorbei (7.11.2026): Vergangene oder aus dem Kalender verschwundene Anlässe behalten ihre Seite noch
+KEEP_DAYS Tage (Hinweis «vorbei» + kommende Anlässe am selben Ort, noindex) statt sofort 404.
+Fehlt ein noch kommender Anlass (z. B. Quelle kurz ausgefallen), bleibt seine normale Seite bis zum Datum stehen.
+Gespeichert in site/data/agenda_past.json (wird mit den Daten committet).
 """
 import hashlib
 import json
@@ -14,6 +19,9 @@ from datetime import timedelta
 import build as B
 import hubs as H
 
+KEEP_DAYS = 30  # so lange bleibt die Seite eines vergangenen Anlasses stehen
+PAST = B.SRC / "data" / "agenda_past.json"
+SLIM = ("id", "title", "start", "end", "allday", "rhythm", "cancelled", "place", "location", "institution", "catLabel", "url", "source", "image", "page")
 MIN_TEXT = 60  # Zeichen Beschreibung, ab denen eine Seite indexiert wird
 WDAY = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"]
 MONTH = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"]
@@ -39,6 +47,24 @@ def assign(events):
             slug = f"{base}-{hashlib.sha1(e['id'].encode()).hexdigest()[:6]}"
         used.add(slug)
         e["page"] = f"agenda/{slug}/"
+
+
+def archive(events):
+    """Merkt sich alle aktuellen Anlässe und liefert die vergangenen/verschwundenen der letzten KEEP_DAYS Tage."""
+    try:
+        old = json.loads(PAST.read_text(encoding="utf-8"))
+    except Exception:
+        old = {}
+    cur = {e["page"] for e in events}
+    limit = B.TODAY - timedelta(days=KEEP_DAYS)
+    keep = {k: v for k, v in old.items() if k not in cur and B.dt(v.get("end") or v["start"]).date() >= limit}
+    for e in events:
+        keep[e["page"]] = {k: e.get(k) for k in SLIM} | {"teaser": (e.get("teaser") or "")[:300], "text": (e.get("text") or "")[:2000]}
+    try:
+        PAST.write_text(json.dumps(keep, ensure_ascii=False, sort_keys=True), encoding="utf-8")
+    except Exception as x:
+        print("Archiv nicht gespeichert:", x)
+    return [v for k, v in keep.items() if k not in cur]
 
 
 def dlong(d):
@@ -79,6 +105,10 @@ def jsonld(e):
         data["description"] = text_of(e)[:500]
     if e.get("image"):
         data["image"] = [e["image"]]
+    ort = ORT_SLUG.get(e.get("institution"))
+    web = next((o[3] for o in H.ORTE if o[1] == e.get("institution")), "")
+    if ort:  # Veranstalter nur, wenn sicher bekannt (Plattformen wie Eventfrog sind keine Veranstalter)
+        data["organizer"] = {"@type": "Organization", "name": ort[1], **({"url": web} if web else {})}
     if e.get("url"):
         data["sameAs"] = e["url"]
     return json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
@@ -103,6 +133,68 @@ def ics(e):
              f"LOCATION:{esc(e.get('location'))}", f"DESCRIPTION:{esc((e.get('teaser') or '') + chr(10) + chr(10) + H.SITE + e['page'])}",
              f"URL:{H.SITE}{e['page']}", "END:VEVENT", "END:VCALENDAR"]
     return "\r\n".join(lines) + "\r\n"
+
+
+def where(e):
+    """Ort für den Titel – «Zug» kommt genau einmal vor (wichtiger Suchbegriff), z. B. «Lounge Gallery, Zug»."""
+    pl = (e.get("place") or "").strip()
+    if "zug" in pl.lower():
+        return pl
+    if "zug" in e["title"].lower():
+        return pl
+    return f"{pl}, Zug" if pl else "Zug"
+
+
+def snippet(e, d, when, txt):
+    """Suchtreffer (7.11.2026): Titel mit Wochentag, Datum und Ort; Beschreibung beginnt kurz mit Zeit und Ort,
+    dann der Text; bleibt Platz, folgt der Mehrwert von zug.now (Kalender, weitere Anlässe)."""
+    wd = B.WDL[d.weekday()]
+    pl = where(e)
+    title = f'{e["title"]} – {wd} {d.day}.{d.month}.{d.year}' + (f", {pl}" if pl else "")
+    if len(title) > 62 and pl and "zug" not in e["title"].lower():  # langer Ort → nur «Zug»
+        title = f'{e["title"]} – {wd} {d.day}.{d.month}.{d.year}, Zug'
+    elif len(title) > 62:
+        title = f'{e["title"]} – {wd} {d.day}.{d.month}.{d.year}'
+    zeit = "" if e.get("allday") else f", {B.hm(e['start'])} Uhr"
+    head = f'{wd} {d.day}. {MONTH[d.month - 1]} {d.year}{zeit} · {e.get("place") or "Zug"}. '
+    tail = " Mit Kalendereintrag und weiteren Anlässen am selben Tag."
+    room = 158 - len(head)
+    body = (txt[:room - 2].rsplit(" ", 1)[0].rstrip(".,;:–- ") + " …") if len(txt) > room else txt
+    if body and not body.endswith((".", "…", "!", "?")):
+        body += "."
+    desc = head + body + (tail if len(head + body + tail) <= 160 else "")
+    return f"{title} | zug.now", re.sub(r"\s+", " ", desc).strip()
+
+
+def past_page(frame, e, upcoming):
+    """Seite eines vergangenen Anlasses: noindex, Hinweis «vorbei», kommende Anlässe am selben Ort."""
+    d = B.dt(e["start"]).date()
+    when = dlong(d) + ("" if e.get("allday") else " · " + B.hm(e["start"]) + " Uhr")
+    same = [x for x in upcoming if (e.get("institution") and x.get("institution") == e.get("institution"))
+            or (e.get("place") and x.get("place") == e.get("place"))]
+    more, label = (same, f'Demnächst: {e.get("place")}') if same else (upcoming, "Demnächst in Zug")
+    ort = ORT_SLUG.get(e.get("institution"))
+    src = re.sub(r"^www\.", "", e.get("source") or "Veranstalter")
+    note = f"Dieser Anlass hat am {d.day}.{d.month}.{d.year} stattgefunden."
+    body = (
+        '<div class="pagehead evhead">'
+        + H._crumb(("Agenda", "agenda/"), (f"{d.day}.{d.month}.{d.year}", None))
+        + '<span class="tag off" style="align-self:flex-start">Vorbei</span>'
+        + f'<h1>{B.esc(e["title"])}</h1><p class="evwhen">{B.esc(when)} · {B.esc(e.get("place"))}</p></div>'
+        + f'<section class="block"><p>{note}</p>'
+        + (f'<p><a href="{B.esc(e.get("url"))}">Zum Anlass auf {B.esc(src)} →</a></p>' if e.get("url") else "") + "</section>"
+    )
+    if more:
+        body += (f'<section class="block"><div class="shead"><h2>{B.esc(label)}</h2><a href="agenda/">Ganze Agenda →</a></div><div class="amtlist">'
+                 + "".join(f'<a href="{x["page"]}"><span class="d">{B.dshort(B.dt(x["start"]).date())}</span>'
+                           f'<span class="t">{B.esc(x["title"])}</span><span class="o">{B.esc(x.get("place"))} · {B.esc(x.get("catLabel"))}</span></a>'
+                           for x in more[:8]) + "</div></section>")
+    links = (([f'<a href="orte/{ort[0]}/">Programm {B.esc(ort[1])} →</a>'] if ort else [])
+             + ['<a href="wochenende/">Wochenende in Zug →</a>', '<a href="agenda/">Ganze Agenda →</a>'])
+    body += f'<section class="block"><p>{" · ".join(links)}</p></section>'
+    return H._page(frame, e["page"], f'{e["title"]} – {d.day}.{d.month}.{d.year} (vorbei) | zug.now',
+                   f'{when} · {e.get("place") or "Zug"}. Vorbei – kommende Anlässe in Zug auf zug.now.',
+                   body, nav="agenda/", index=False, image=e.get("image"))
 
 
 def page(frame, e, same_day):
@@ -146,9 +238,8 @@ def page(frame, e, same_day):
     if wa <= d <= wb:
         links.insert(0, '<a href="wochenende/">Alles am Wochenende →</a>')
     body += f'<section class="block"><p>{" · ".join(links)}</p></section>'
-    title = f'{e["title"]} – {d.day}.{d.month}.{d.year}, {e.get("place") or "Zug"}'
-    desc = (txt[:150].rsplit(" ", 1)[0] + " …") if len(txt) > 155 else (txt or f'{when} in {e.get("place") or "Zug"}.')
-    html = H._page(frame, e["page"], f"{title} | zug.now", f"{when} · {desc}", body, nav="agenda/", index=idx, image=e.get("image"))
+    title, desc = snippet(e, d, when, txt)
+    html = H._page(frame, e["page"], title, desc, body, nav="agenda/", index=idx, image=e.get("image"))
     html = html.replace("</head>", f'<script type="application/ld+json">{jsonld(e)}</script>\n</head>', 1)
     if idx:
         _indexed.append(e["page"])
@@ -164,6 +255,14 @@ def pages(agenda_html, events):
     for e in events:
         out[e["page"] + "index.html"] = page(frame, e, by_day[B.dt(e["start"]).date()])
         out[e["page"] + "termin.ics"] = ics(e)
-    # /agenda/ selbst → Agenda-Seite
-    print(f"Einzelseiten: {len(events)} Anlässe, davon {len(_indexed)} indexierbar")
+    upcoming = [e for e in events if not e.get("cancelled")]
+    past = archive(events)
+    for e in past:
+        if B.dt(e.get("end") or e["start"]).date() >= B.TODAY:  # kommt noch, fehlt nur in den Daten
+            out[e["page"] + "index.html"] = page(frame, e, by_day.get(B.dt(e["start"]).date(), []))
+            out[e["page"] + "termin.ics"] = ics(e)
+        else:
+            out[e["page"] + "index.html"] = past_page(frame, e, upcoming)
+    gone = sum(1 for e in past if B.dt(e.get("end") or e["start"]).date() < B.TODAY)
+    print(f"Einzelseiten: {len(events)} Anlässe, davon {len(_indexed)} indexierbar; {gone} vorbei (noindex), {len(past) - gone} aus dem Archiv")
     return out
