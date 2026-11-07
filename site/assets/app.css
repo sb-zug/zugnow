@@ -1143,3 +1143,7 @@ html[lang="en"] .v3 header nav a.lang::before{content:"EN  |  "}
 @media (max-width:900px){.rspan2{grid-column:1/-1}}
 /* Mobil: 4 Navigationspunkte über die ganze Breite verteilt (seit «Amtlich» weg, 7.11.2026) */
 @media (max-width:720px){.v3 header nav{justify-content:space-between}}
+/* Kontakt & Impressum (7.11.2026) */
+.prose{max-width:68ch;font-size:16px;line-height:1.6;color:var(--muted)}
+.prose p{margin:0 0 12px}.prose ul{margin:0 0 12px;padding-left:20px}.prose li{margin:2px 0}
+.prose a{color:var(--brand)}

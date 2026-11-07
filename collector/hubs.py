@@ -71,7 +71,34 @@ FOOTER_COL = ('<div class="col"><span style="font-weight:600;color:var(--fg)">Ru
               '<a href="/amtlich/">Amtsblatt</a> · <a href="/baugesuche/">Baugesuche</a> · <a href="/wandel/">Wie sich Zug verändert</a> · <a href="/wohnen/">Günstig wohnen</a> · <a href="/politik/#pDos">Politische Dossiers</a></span>'
               '<span>' + " · ".join(f'<a href="/orte/{o[0]}/">{o[2]}</a>' for o in ORTE[:5]) + '</span></div>')
 
+# Kontakt im Fuss jeder Seite (7.11.2026) – ohne Namen des Betreibers
+FOOTER_COL += ('<div class="col"><span style="font-weight:600;color:var(--fg)">Kontakt</span>'
+               '<span><a href="/kontakt/">Kontakt &amp; Datenschutz</a> · <a href="mailto:hallo@zug.now">hallo@zug.now</a></span>'
+               '<span>Unabhängiges Projekt, kein Angebot der Stadt Zug.</span></div>')
+
 _index = set()  # Seiten, die in die Sitemap gehören
+
+
+def kontakt(frame):
+    """Kontakt, Quellen, Datenschutz kurz (7.11.2026). Bewusst ohne Namen des Betreibers."""
+    sec = lambda h, inner: f'<section class="block"><div class="shead"><h2>{h}</h2></div><div class="prose">{inner}</div></section>'
+    body = ('<div class="pagehead"><h1>Kontakt</h1>'
+            '<p>zug.now ist ein unabhängiges Projekt und kein Angebot der Stadt Zug. Die Seite bündelt automatisch öffentliche Informationen; '
+            'massgebend sind immer die verlinkten Originalquellen.</p>' + _crumb(("Kontakt", None)) + "</div>")
+    body += sec("Kontakt", '<p>Fragen, Hinweise, Fehler oder ein fehlender Anlass? Schreib uns: '
+                '<a href="mailto:hallo@zug.now">hallo@zug.now</a></p>')
+    body += sec("Quellen und Bilder", '<p>Meldungen, Anlässe und Publikationen stammen von stadtzug.ch, veranstaltungen.zug.ch, amtsblatt.zg.ch, '
+                'den Programmen der Kulturhäuser, kinozug.ch und eventfrog.ch. Jeder Eintrag verlinkt auf das Original. '
+                'Bilder werden von den Quellen verlinkt, nicht kopiert; die Rechte liegen bei den jeweiligen Urhebern. '
+                'Wer einen Eintrag oder ein Bild entfernt haben möchte, meldet sich bitte per E-Mail.</p>')
+    body += sec("Datenschutz", '<p>zug.now setzt keine Cookies und verwendet kein Tracking und keine Werbung. '
+                'Beim Aufruf der Seite werden technisch nötige Daten (z. B. IP-Adresse, Zeitpunkt, Browser) an folgende Dienste übermittelt:</p>'
+                '<ul><li>GitHub Pages (Hosting, GitHub Inc., USA)</li><li>Google Fonts (Schriften, Google LLC, USA)</li>'
+                '<li>Open-Meteo (Wetter, Schweiz)</li><li>swisstopo (Karten, Bund)</li><li>unpkg und CARTO (Kartenbibliothek und -kacheln)</li></ul>'
+                '<p>Wer per E-Mail schreibt, dessen Angaben werden nur zur Beantwortung verwendet. Auskunft und Löschung: '
+                '<a href="mailto:hallo@zug.now">hallo@zug.now</a></p>')
+    return _page(frame, "kontakt/", "Kontakt | zug.now",
+                 "Kontakt und Datenschutz von zug.now – einem unabhängigen Projekt, kein Angebot der Stadt Zug.", body)
 
 
 def _frame(agenda_html):
@@ -333,6 +360,7 @@ def build_hubs(agenda_html, events, ongoing, amtlich, all_news):
     pages = {"wochenende/index.html": wochenende(frame, events, ongoing, nav),
              "baugesuche/index.html": baugesuche(frame, amtlich, all_news)}
     pages.update(orte(frame, events, ongoing))
+    pages["kontakt/index.html"] = kontakt(frame)
     pages.update(mpages)
     print("Rubriken:", ", ".join(k.replace("index.html", "") + ("" if k.replace("index.html", "") in _index else " (noindex)") for k in pages))
     return pages
