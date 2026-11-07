@@ -7,7 +7,7 @@
   var CATS = [['alle', 'Alle'], ['kinder', 'Kinder & Familie'], ['kultur', 'Kultur & Musik'], ['maerkte', 'Märkte & Feste'], ['treff', 'Treffpunkte'], ['sport', 'Sport & Natur'], ['weitere', 'Weitere']];
   var TIMES = [['alle', 'Alle Termine'], ['heute', 'Heute'], ['morgen', 'Morgen'], ['wochenende', 'Wochenende'], ['woche', 'Diese Woche']];
   var PLACES = [['alle', 'Alle Orte'], ['bibliothek', 'Bibliothek Zug'], ['kunsthaus', 'Kunsthaus Zug'], ['burg', 'Museum Burg Zug'], ['musikschule', 'Musikschule'], ['theatercasino', 'Theater Casino'], ['galvanik', 'Galvanik'], ['kino', 'Kino']];
-  var PAGES = [['/', 'start', 'Start'], ['agenda/', 'agenda', 'Agenda'], ['news/', 'news', 'News'], ['amtlich/', 'amtlich', 'Amtlich'], ['politik/', 'politik', 'Politik'], ['wandel/', 'wandel', 'Wandel']];
+  var PAGES = [['/', 'start', 'Start'], ['agenda/', 'agenda', 'Agenda'], ['news/', 'news', 'News'], ['politik/', 'politik', 'Politik'], ['wandel/', 'wandel', 'Wandel']];
   var page = document.body.dataset.page || 'start';
   var D = {};
 
@@ -53,7 +53,7 @@
     if ($('sBtn')) return; // Kopf und Fuss stehen bereits im HTML
     $('hdr').innerHTML =
       '<header><div class="wrap"><a class="logo" href="/" aria-label="zug.now Startseite">zug<span class="dot">.</span><span class="now">now</span></a>' +
-      '<nav aria-label="Hauptnavigation">' + PAGES.map(function (p) { return '<a href="' + p[0] + '"' + (p[1] === page ? ' aria-current="page"' : '') + '>' + p[2] + '</a>' }).join('') + '</nav>' +
+      '<nav aria-label="Hauptnavigation">' + PAGES.map(function (p) { return '<a href="' + p[0] + '"' + (p[1] === (page === 'amtlich' ? 'news' : page) ? ' aria-current="page"' : '') + '>' + p[2] + '</a>' }).join('') + '</nav>' +
       '<button type="button" class="sbtn" id="sBtn" aria-expanded="false" aria-controls="sPanel" aria-label="Suchen">' + LUPE + '</button></div></header>' +
       '<div class="search" id="sPanel" role="search" hidden><div class="wrap"><label class="vh" for="sIn">Suche in News, Agenda und Amtlichem</label>' +
       '<div class="sfield">' + LUPE + '<input id="sIn" type="search" placeholder="News, Anlässe, Amtliches durchsuchen" autocomplete="off" enterkeyhint="search">' +
@@ -161,7 +161,7 @@
 
   function newsRow(n) {
     var mm = /Medien/.test(n.type || '');
-    return '<a href="' + esc(n.url) + '" class="' + (n.image ? 'img' : '') + '"><span class="d"><b class="' + (mm ? 'mm' : '') + '">' + esc(n.type || 'News') + '</b>' + dLabel(n.date) + (n.topicLabel ? '<i class="ntop">' + esc(n.topicLabel) + '</i>' : '') + '</span>' +
+    return '<a href="' + esc(n.url) + '" class="' + (n.image ? 'img' : '') + '"><span class="d"><b class="' + (mm ? 'mm' : n.amt ? 'ab' : '') + '">' + esc(n.type || 'News') + '</b>' + dLabel(n.date) + (n.topicLabel ? '<i class="ntop">' + esc(n.topicLabel) + '</i>' : '') + '</span>' +
       '<span class="c"><span class="t">' + esc(n.title) + '</span><span class="l">' + esc(n.lead) + '</span></span>' +
       (n.image ? '<span class="i">' + img(n.image) + '</span>' : '') + '</a>';
   }
@@ -210,21 +210,63 @@
     var fb = $('fBtn'); if (!fb) return; $('fSum').textContent = t;
     fb.onclick = function () { var o = fb.closest('.rphead').classList.toggle('fopen'); fb.setAttribute('aria-expanded', o) };
   }
+  // News + Amtsblatt in einer Liste (seit 7.11.2026); Quelle und Thema als Filter
+  var NSRC = [['alle', 'Alle'], ['stadt', 'Mitteilungen der Stadt'], ['amtsblatt', 'Amtsblatt']];
+  function amtTopic(a) { return a.label === 'Baugesuch' ? 'bauen' : /Abstimmung|Wahl|Gemeinderat/.test((a.label || '') + ' ' + a.title) ? 'politik' : 'weitere' }
+  function newsAll() {
+    var bg = D.amtlich.some(function (a) { return a.label === 'Baugesuch' });
+    var n = D.news.filter(function (x) { return !(bg && /^Baugesuche vom/.test(x.title)) }); // stehen einzeln aus dem Amtsblatt drin
+    function nk(t) { return String(t || '').toLowerCase().replace(/, zug$/, '').replace(/[^a-z0-9äöü]+/g, ' ').trim() }
+    var nt = {}; n.forEach(function (x) { nt[nk(x.title)] = x.topic });
+    var a = D.amtlich.map(function (x) {
+      var dup = nk(x.title) in nt, t = dup && nt[nk(x.title)] ? nt[nk(x.title)] : amtTopic(x);
+      return { amt: 1, dup: dup, url: x.url, date: x.date, type: 'Amtsblatt · ' + (x.label || 'Publikation'), title: x.title, topic: t, topicLabel: (NTOPICS.filter(function (d) { return d[0] === t })[0] || [])[1],
+        lead: [x.expires ? 'einsehbar bis ' + dLabel(x.expires) : '', x.office || ''].filter(Boolean).join(' · ') };
+    });
+    return n.concat(a).sort(function (x, y) { return x.date < y.date ? 1 : x.date > y.date ? -1 : 0 });
+  }
+  // In «Alle»: Baugesuche eines Tages als eine Zeile (sonst fluten sie die Liste), einzeln unter «Amtsblatt»
+  function bgGroup(list) {
+    var out = [], byDay = {};
+    list.forEach(function (n) {
+      if (!(n.amt && /Baugesuch$/.test(n.type))) { out.push(n); return }
+      var g = byDay[n.date];
+      if (!g) { g = byDay[n.date] = { amt: 1, grp: [], url: 'baugesuche/', date: n.date, type: 'Amtsblatt · Baugesuche', topic: n.topic, topicLabel: n.topicLabel }; out.push(g) }
+      g.grp.push(n);
+    });
+    return out.map(function (g) {
+      if (!g.grp) return g;
+      if (g.grp.length === 1) return g.grp[0];
+      g.title = g.grp.length + ' neue Baugesuche'; g.lead = g.grp.map(function (x) { return x.title.replace(/, Zug$/, '') }).join(' · '); return g;
+    });
+  }
   function renderNewsPage() {
     var el = $('newsList'); if (!el) return;
-    var h = location.hash.slice(1); if (NTOPICS.some(function (t) { return t[0] === h })) st.ntopic = h;
-    st.ntopic = st.ntopic || 'alle';
-    function cnt(v) { return D.news.filter(function (n) { return v === 'alle' || n.topic === v }).length }
-    var ch = $('topicChips');
-    if (ch) {
-      ch.innerHTML = NTOPICS.filter(function (d) { return d[0] === 'alle' || cnt(d[0]) }).map(function (d) {
-        return '<button type="button" class="chip" data-v="' + d[0] + '" aria-pressed="' + (st.ntopic === d[0]) + '">' + d[1] + '<span class="n">' + cnt(d[0]) + '</span></button>'
+    var h = location.hash.slice(1);
+    if (NTOPICS.some(function (t) { return t[0] === h })) st.ntopic = h;
+    if (NSRC.some(function (t) { return t[0] === h })) st.nsrc = h;
+    st.ntopic = st.ntopic || 'alle'; st.nsrc = st.nsrc || 'alle';
+    var all = newsAll();
+    function okS(n, v) { return v === 'alle' || (v === 'amtsblatt') === !!n.amt }
+    function okT(n, v) { return v === 'alle' || n.topic === v }
+    function chips(id, defs, key, ok) {
+      var c = $(id); if (!c) return;
+      function cnt(v) { return all.filter(function (n) { return ok(n, v) && (key === 'nsrc' ? okT(n, st.ntopic) : okS(n, st.nsrc)) }).length }
+      c.innerHTML = defs.filter(function (d) { return d[0] === 'alle' || cnt(d[0]) || st[key] === d[0] }).map(function (d) {
+        return '<button type="button" class="chip" data-v="' + d[0] + '" aria-pressed="' + (st[key] === d[0]) + '">' + d[1] + '<span class="n">' + cnt(d[0]) + '</span></button>'
       }).join('');
-      ch.onclick = function (ev) { var b = ev.target.closest('.chip'); if (!b) return; st.ntopic = b.dataset.v; history.replaceState(null, '', location.pathname + (st.ntopic === 'alle' ? '' : '#' + st.ntopic)); renderNewsPage() };
-      fSum(st.ntopic === 'alle' ? 'Alle Themen' : (NTOPICS.filter(function (d) { return d[0] === st.ntopic })[0] || [0, 'Alle Themen'])[1]);
+      c.onclick = function (ev) { var b = ev.target.closest('.chip'); if (!b) return; st[key] = b.dataset.v; var hv = st.nsrc !== 'alle' ? st.nsrc : st.ntopic; history.replaceState(null, '', location.pathname + (hv === 'alle' ? '' : '#' + hv)); renderNewsPage() };
     }
-    el.innerHTML = D.news.filter(function (n) { return st.ntopic === 'alle' || n.topic === st.ntopic }).map(newsRow).join('') || '<p style="color:var(--soft);padding:18px 0">Keine Meldungen in dieser Kategorie.</p>';
+    chips('srcChips', NSRC, 'nsrc', okS);
+    chips('topicChips', NTOPICS, 'ntopic', okT);
+    var list = all.filter(function (n) { return okS(n, st.nsrc) && okT(n, st.ntopic) });
+    if (st.nsrc === 'alle') list = bgGroup(list.filter(function (n) { return !n.dup })); // gleiche Meldung von Stadt und Amtsblatt nur einmal
+    var on = []; if (st.nsrc !== 'alle') on.push((NSRC.filter(function (d) { return d[0] === st.nsrc })[0] || [])[1]); if (st.ntopic !== 'alle') on.push((NTOPICS.filter(function (d) { return d[0] === st.ntopic })[0] || [])[1]);
+    fSum(on.length ? on.concat(String(list.length)).join(' · ') : 'Alle Meldungen');
+    if ($('abLink')) $('abLink').hidden = st.nsrc !== 'amtsblatt';
+    el.innerHTML = list.map(newsRow).join('') || '<p style="color:var(--soft);padding:18px 40px">Keine Meldungen für diese Auswahl.</p>';
   }
+
 
   function laufItems() {
     var seen = {}, items = [];
@@ -565,7 +607,7 @@
         group('Agenda', ev.slice(0, 6).map(function (x) { var e = x.e, p = parts(e.start);
           return row(e.ongoing ? 'agenda/#laufend' : evHref(e), e.ongoing ? 'Laufend' : dShort(p.key) + ' ' + (e.allday ? '' : p.hm), e.title, e.place) }), ev.length > 6 ? ['agenda/', 'Ganze Agenda →'] : null) +
         group('News', nw.slice(0, 5).map(function (x) { return row(x.e.url, esc(x.e.type) + ' · ' + dLabel(x.e.date), x.e.title, '') }), nw.length > 5 ? ['news/', 'Alle News →'] : null) +
-        group('Amtlich', am.slice(0, 5).map(function (x) { return row(x.e.url, esc(x.e.label) + ' · ' + dLabel(x.e.date), x.e.title, '') }), am.length > 5 ? ['amtlich/', 'Alle Publikationen →'] : null);
+        group('Amtsblatt', am.slice(0, 5).map(function (x) { return row(x.e.url, esc(x.e.label) + ' · ' + dLabel(x.e.date), x.e.title, '') }), am.length > 5 ? ['amtlich/', 'Alle Publikationen →'] : null);
     }
     searchInit.run = run;
   }

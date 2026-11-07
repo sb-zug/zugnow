@@ -66,7 +66,7 @@ P = [
     [r"(\d+) Treffer für «(.+)»", r"\1 results for «\2»"],
     [r"Keine Treffer für «(.+)»\. Versuche einen anderen Begriff\.", r"No results for «\1». Try another term."],
     [r"Weitere (\d+) anzeigen", r"Show \1 more"],
-    [r"Weitere (\d+) Tage anzeigen", r"Show \1 more days"],
+    [r"Weitere (\d+) Tage anzeigen", r"Show \1 more days"], [r"(\d+) neue Baugesuche", r"\1 new building applications"],
     [r"1 Vorlage", "1 bill"], [r"(\d+) Vorlagen", r"\1 bills"],
     [r"(\d+) Vorstösse", r"\1 motions"],
     [r"(\d+) Vorstösse · (.+)", r"\1 motions · \2"],
@@ -139,7 +139,7 @@ T = {
     "Quelle: eventfrog.ch": "Source: eventfrog.ch", "Quelle: galvanik-zug.ch": "Source: galvanik-zug.ch",
     "Quelle: kinozug.ch": "Source: kinozug.ch", "Quelle: theatercasino.ch": "Source: theatercasino.ch",
     "Quelle: veranstaltungen.zug.ch": "Source: veranstaltungen.zug.ch",
-    "Keine Anlässe für diese Auswahl.": "No events for this selection.", "Filter": "Filter", "Mit Wetter und zum Teilen: Wochenende in Zug →": "With weather and easy to share: Weekend in Zug →", "Alles am Wochenende →": "Everything this weekend →", "Alle Anlässe in der Stadt Zug, zweimal täglich aktualisiert.": "All events in the City of Zug, updated twice a day.", "Alle Themen": "All topics",
+    "Keine Anlässe für diese Auswahl.": "No events for this selection.", "Filter": "Filter", "Alle Meldungen": "All news", "Quelle": "Source", "Mitteilungen der Stadt": "City announcements", "Amtsblatt": "Official Gazette", "Amtsblatt Stadt Zug": "Official Gazette, City of Zug", "Amtsblatt Stadt Zug – zug.now": "Official Gazette, City of Zug – zug.now", "Keine Meldungen für diese Auswahl.": "No news for this selection.", "Suche in News, Agenda und Amtsblatt": "Search news, events and Official Gazette", "Mitteilungen der Stadt Zug und Publikationen aus dem Amtsblatt. Jede Meldung mit Link zum Original.": "Announcements of the City of Zug and notices from the Official Gazette. Every item links to the original.", "Hinweise zum Amtsblatt und alle Publikationen: Amtsblatt Stadt Zug →": "Notes and all notices: Official Gazette, City of Zug →", "Zusammen mit den Mitteilungen der Stadt: News →": "Together with the city's announcements: News →", "Amtsblatt · Baugesuch": "Official Gazette · Building application", "Baugesuche": "Building applications", "Amtsblatt · Publikation": "Official Gazette · Notice", "Amtsblatt · Gemeinderat": "Official Gazette · Parliament", "Mit Wetter und zum Teilen: Wochenende in Zug →": "With weather and easy to share: Weekend in Zug →", "Alles am Wochenende →": "Everything this weekend →", "Alle Anlässe in der Stadt Zug, zweimal täglich aktualisiert.": "All events in the City of Zug, updated twice a day.", "Alle Themen": "All topics",
     "Weitere 20 anzeigen": "Show 20 more",
     # ── News ──
     "News Stadt Zug": "News from the City of Zug", "News Stadt Zug – zug.now": "News from the City of Zug – zug.now",

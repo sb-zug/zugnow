@@ -128,11 +128,51 @@ def day_groups(events, days=None, open_all=False):
 
 
 def news_row(n):
-    mm = "mm" if "Medien" in (n.get("type") or "") else ""
+    mm = "mm" if "Medien" in (n.get("type") or "") else "ab" if n.get("amt") else ""
     return (f'<a href="{esc(n["url"])}" class="{"img" if n.get("image") else ""}"><span class="d"><b class="{mm}">{esc(n.get("type") or "News")}</b>{dlabel(n["date"])}'
             + (f'<i class="ntop">{esc(n["topicLabel"])}</i>' if n.get("topicLabel") else "") + "</span>"
             f'<span class="c"><span class="t">{esc(n["title"])}</span><span class="l">{esc(n.get("lead"))}</span></span>'
             + (f'<span class="i">{img(n["image"])}</span>' if n.get("image") else "") + "</a>")
+
+
+AMT_TOPIC = {"bauen": "Bauen & Planung", "politik": "Politik & Verwaltung", "weitere": "Weitere"}
+
+
+def news_all(news, amtlich):
+    """News + Amtsblatt in einer Liste (wie app.js newsAll, seit 7.11.2026)."""
+    bg = any(a.get("label") == "Baugesuch" for a in amtlich)
+    out = [n for n in news if not (bg and (n.get("title") or "").startswith("Baugesuche vom"))]
+    nk = lambda t: re.sub(r"[^a-z0-9äöü]+", " ", re.sub(r", zug$", "", (t or "").lower())).strip()
+    nt = {nk(n["title"]): n.get("topic") for n in out}
+    for a in amtlich:
+        if nk(a["title"]) in nt:  # gleiche Meldung von Stadt und Amtsblatt: in «Alle» nur einmal
+            continue
+        t = ("bauen" if a.get("label") == "Baugesuch" else
+             "politik" if re.search("Abstimmung|Wahl|Gemeinderat", (a.get("label") or "") + " " + (a.get("title") or "")) else "weitere")
+        lead = " · ".join(x for x in [f'einsehbar bis {dlabel(a["expires"])}' if a.get("expires") else "", a.get("office") or ""] if x)
+        out.append({"amt": 1, "url": a["url"], "date": a["date"], "type": "Amtsblatt · " + (a.get("label") or "Publikation"),
+                    "title": a["title"], "topic": t, "topicLabel": AMT_TOPIC[t], "lead": lead})
+    out = sorted(out, key=lambda n: n["date"], reverse=True)
+    # Ansicht «Alle»: Baugesuche eines Tages als eine Zeile (wie app.js bgGroup)
+    res, grp = [], {}
+    for n in out:
+        if n.get("amt") and n["type"].endswith("Baugesuch"):
+            if n["date"] not in grp:
+                grp[n["date"]] = []
+                res.append(("G", n["date"]))
+            grp[n["date"]].append(n)
+        else:
+            res.append(n)
+    final = []
+    for r in res:
+        if isinstance(r, tuple):
+            g = grp[r[1]]
+            final.append(g[0] if len(g) == 1 else {"amt": 1, "url": "baugesuche/", "date": r[1], "type": "Amtsblatt · Baugesuche",
+                         "title": f"{len(g)} neue Baugesuche", "topic": "bauen", "topicLabel": AMT_TOPIC["bauen"],
+                         "lead": " · ".join(re.sub(r", Zug$", "", x["title"]) for x in g)})
+        else:
+            final.append(r)
+    return final
 
 
 def topic_of(n):
@@ -238,7 +278,7 @@ def build():
     pages["agenda.html"] = p
 
     # News, Amtlich
-    pages["news.html"] = fill(pages["news.html"], "newsList", "".join(news_row(n) for n in news))
+    pages["news.html"] = fill(pages["news.html"], "newsList", "".join(news_row(n) for n in news_all(news, amtlich)))
     pages["amtlich.html"] = fill(pages["amtlich.html"], "amtList", "".join(
         f'<a href="{esc(a["url"])}"><span class="d">{dlabel(a["date"])}</span><span class="t"><span class="lbl" style="display:block;margin-bottom:2px">{esc(a.get("label"))}</span>{esc(a["title"])}</span>'
         f'<span class="o">{esc(a.get("office"))}' + (f' · einsehbar bis {dlabel(a["expires"])}' if a.get("expires") else "") + "</span></a>" for a in amtlich))

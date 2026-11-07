@@ -53,7 +53,7 @@ def saison():
 
 FOOTER_COL = ('<div class="col"><span style="font-weight:600;color:var(--fg)">Rubriken</span>'
               '<span><a href="/wochenende/">Wochenende in Zug</a> · <a href="/orte/">Orte &amp; Kulturhäuser</a> · '
-              '<a href="/baugesuche/">Baugesuche</a> · <a href="/wandel/">Wie sich Zug verändert</a> · <a href="/wohnen/">Günstig wohnen</a> · <a href="/politik/#pDos">Politische Dossiers</a></span>'
+              '<a href="/amtlich/">Amtsblatt</a> · <a href="/baugesuche/">Baugesuche</a> · <a href="/wandel/">Wie sich Zug verändert</a> · <a href="/wohnen/">Günstig wohnen</a> · <a href="/politik/#pDos">Politische Dossiers</a></span>'
               '<span>' + " · ".join(f'<a href="/orte/{o[0]}/">{o[2]}</a>' for o in ORTE[:5]) + '</span></div>')
 
 _index = set()  # Seiten, die in die Sitemap gehören
@@ -245,7 +245,7 @@ def baugesuche(frame, amtlich, news):
             '<p>Die Stadt Zug publiziert neue Baugesuche im Amtsblatt des Kantons Zug. Während der Auflage können die Pläne '
             'eingesehen und Einsprachen erhoben werden. Hier steht jedes Baugesuch mit Adresse, solange die Auflage läuft – automatisch '
             'übernommen und zweimal täglich aktualisiert. Massgebend für Fristen und Auflageort ist die Publikation im Amtsblatt.</p>'
-            + _crumb(("Amtlich", "amtlich/"), ("Baugesuche", None)) + "</div>"
+            + _crumb(("Amtsblatt", "amtlich/"), ("Baugesuche", None)) + "</div>"
             + ('<section class="block"><div class="shead"><h2>Karte</h2><span>Baugesuche in Auflage und grosse Vorhaben</span></div>'
                '<div id="bgmap" class="wmap bgmap" role="img" aria-label="Karte der Baugesuche in der Stadt Zug"></div>'
                '<p class="wlegend"><span><i class="lg-plan"></i>Baugesuch in Auflage</span><span><i class="lg-ring"></i>Grosses Vorhaben · Dossier</span></p>'
@@ -259,7 +259,7 @@ def baugesuche(frame, amtlich, news):
     body += '<section class="block"><p><a href="wandel/">Wie sich Zug verändert: alle grossen Vorhaben →</a> · <a href="amtlich/">Alle amtlichen Publikationen →</a></p></section>'
     page = _page(frame, "baugesuche/", "Baugesuche Stadt Zug – aktuell im Amtsblatt | zug.now",
                  f"Baugesuche der Stadt Zug aus dem Amtsblatt: {_n(len(bg), 'Publikation', 'Publikationen')} in Auflage – mit Adresse, Karte und Einsprachefrist. Täglich aktualisiert.",
-                 body, nav="amtlich/", index=len(bg) + len(lists) >= 1)
+                 body, nav="news/", index=len(bg) + len(lists) >= 1)
     if pts["b"]:
         page = (page.replace("</head>", '<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">\n</head>', 1)
                 .replace("</body>", BG_MAP_JS + "\n</body>", 1))
