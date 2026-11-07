@@ -751,31 +751,31 @@
 ],
 [
 "Montag, (.+)",
-"Monday, \\1"
+"Monday, {{\\1}}"
 ],
 [
 "Dienstag, (.+)",
-"Tuesday, \\1"
+"Tuesday, {{\\1}}"
 ],
 [
 "Mittwoch, (.+)",
-"Wednesday, \\1"
+"Wednesday, {{\\1}}"
 ],
 [
 "Donnerstag, (.+)",
-"Thursday, \\1"
+"Thursday, {{\\1}}"
 ],
 [
 "Freitag, (.+)",
-"Friday, \\1"
+"Friday, {{\\1}}"
 ],
 [
 "Samstag, (.+)",
-"Saturday, \\1"
+"Saturday, {{\\1}}"
 ],
 [
 "Sonntag, (.+)",
-"Sunday, \\1"
+"Sunday, {{\\1}}"
 ],
 [
 "Aktuelle Baugesuche der Stadt Zug aus dem Amtsblatt: (\\d+) Publikationen mit Adresse und Auflagefrist, täglich aktualisiert\\.",
@@ -824,6 +824,10 @@
 [
 "Weitere (\\d+) anzeigen",
 "Show \\1 more"
+],
+[
+"Weitere (\\d+) Tage anzeigen",
+"Show \\1 more days"
 ],
 [
 "1 Vorlage",

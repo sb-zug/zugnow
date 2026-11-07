@@ -199,12 +199,21 @@ def build():
     # Agenda: Liste (erste 20 wie app.js), Wochenende, Laufend
     p = pages["agenda.html"]
     p = fill(p, "agCount", f'{len(events)} {"Anlass" if len(events) == 1 else "Anlässe"} in den nächsten 60 Tagen')
-    rows_html, last = [], None
-    for e in events[:20]:  # Raster: Datum pro Tag nur in der ersten Zeile
-        d = dt(e["start"]).date()
-        r = ev_row(e)
-        rows_html.append(r.replace('<details class="ev"', '<details class="ev same"', 1) if d == last else r)
-        last = d
+    WDF = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"]
+    MOF = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"]
+    # Tage auf- und zuklappbar (wie app.js dayGroup): erste 14 Tage, erster Tag offen
+    groups = {}
+    for e in events:
+        groups.setdefault(dt(e["start"]).date(), []).append(e)
+    rows_html = []
+    for i, (d, evs) in enumerate(list(groups.items())[:14]):
+        rel = "Heute" if d == TODAY else "Morgen" if d == TODAY + timedelta(days=1) else ""
+        pv = "".join(f'<span class="pv">{esc(e["title"])}</span>' for e in evs[:4])
+        rows_html.append(f'<details class="aday" data-day="{d.isoformat()}"{" open" if i == 0 else ""}><summary><div class="date" aria-label="{dlabel(d)}">'
+                         f'<span class="wd">{WD[d.weekday()]}</span><span class="d">{d.day}</span><span class="mo">{MO[d.month - 1]}</span></div>'
+                         f'<div class="dpv"><span class="dfull">{WDF[d.weekday()]}, {d.day}. {MOF[d.month - 1]} {d.year}</span><span class="pvs">{pv}</span></div><div class="dn">' + (f'<span class="rel">{rel}</span>' if rel else "")
+                         + f'<strong>{len(evs)} {"Anlass" if len(evs) == 1 else "Anlässe"}</strong></div>{CHEV}</summary><div class="dbody">'
+                         + "".join(ev_row(e).replace('<details class="ev"', '<details class="ev same"', 1) for e in evs) + "</div></details>")
     p = fill(p, "agList", "".join(rows_html))
     wa, wb = weekend()
     wk = [e for e in events if wa <= dt(e["start"]).date() <= wb and not e.get("cancelled")]
@@ -286,7 +295,7 @@ def build():
     import i18n
     written = {PATHS.get(n, n): (OUT / PATHS.get(n, n)).read_text(encoding="utf-8") for n in pages if n.endswith(".html")}
     i18n.build_en(written)
-    print(f"Vorgerendert: {len(events)} Anlässe ({min(20, len(events))} in der Liste), {len(news)} News, {len(amtlich)} Amtlich, "
+    print(f"Vorgerendert: {len(events)} Anlässe ({min(14, len({dt(e['start']).date() for e in events}))} Tage in der Liste), {len(news)} News, {len(amtlich)} Amtlich, "
           f"{len(rows)} Politik-Meldungen → {OUT.relative_to(ROOT)}/")
 
 

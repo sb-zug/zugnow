@@ -255,14 +255,14 @@
   }
 
   // ---------- Agenda-Seite
-  var st = { time: 'alle', cat: 'alle', place: 'alle', limit: 20 };
+  var st = { time: 'alle', cat: 'alle', place: 'alle', days: 14, open: {} };
   function filtered() { return D.events.filter(function (e) { return inTime(e, st.time) && (st.cat === 'alle' || e.cat === st.cat) && (st.place === 'alle' || e.institution === st.place) }) }
   function chipRow(id, defs, key, count) {
     var el = $(id);
     el.innerHTML = defs.filter(function (d) { return d[0] === 'alle' || count(d[0]) || st[key] === d[0] }).map(function (d) {
       return '<button type="button" class="chip" data-v="' + d[0] + '" aria-pressed="' + (st[key] === d[0]) + '">' + d[1] + '<span class="n">' + count(d[0]) + '</span></button>'
     }).join('');
-    el.onclick = function (ev) { var b = ev.target.closest('.chip'); if (!b) return; st[key] = b.dataset.v; st.limit = 20; renderFilters(); renderList() };
+    el.onclick = function (ev) { var b = ev.target.closest('.chip'); if (!b) return; st[key] = b.dataset.v; st.days = DAYS; st.open = {}; renderFilters(); renderList() };
   }
   function renderFilters() {
     chipRow('timeChips', TIMES, 'time', function (v) { return D.events.filter(function (e) { return inTime(e, v) && (st.cat === 'alle' || e.cat === st.cat) && (st.place === 'alle' || e.institution === st.place) }).length });
@@ -320,15 +320,25 @@
       '</div>' + (e.image ? '<div class="pimg">' + img(e.image) + '</div>' : '') + '</div></details>';
   }
 
-  // Raster: Datum pro Tag nur in der ersten Zeile
-  function sameDay(el) { var last = ''; [].forEach.call(el.querySelectorAll('details.ev'), function (d) { var k = (d.querySelector('.date') || {}).getAttribute ? d.querySelector('.date').getAttribute('aria-label') : ''; d.classList.toggle('same', k === last); last = k }) }
+  // Agenda nach Tagen gruppiert, Tage auf- und zuklappbar (7.11.2026)
+  var DAYS = 14, WDF = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'], MOF = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+  function dayOpen(k, i, n) { return k in st.open ? st.open[k] : (i === 0 || n <= 2) }
+  function dayGroup(k, evs, i, n) {
+    var p = k.split('-'), tk = todayKey(), rel = k === tk ? 'Heute' : k === addDays(tk, 1) ? 'Morgen' : '';
+    var pv = evs.slice(0, 4).map(function (e) { return '<span class="pv">' + esc(e.title) + '</span>' }).join('');
+    return '<details class="aday" data-day="' + k + '"' + (dayOpen(k, i, n) ? ' open' : '') + '><summary><div class="date" aria-label="' + dLabel(k) + '"><span class="wd">' + WD[dowOf(k)] + '</span><span class="d">' + (+p[2]) + '</span><span class="mo">' + MO[+p[1] - 1] + '</span></div>' +
+      '<div class="dpv"><span class="dfull">' + WDF[dowOf(k)] + ', ' + (+p[2]) + '. ' + MOF[+p[1] - 1] + ' ' + p[0] + '</span><span class="pvs">' + pv + '</span></div><div class="dn">' + (rel ? '<span class="rel">' + rel + '</span>' : '') + '<strong>' + evs.length + (evs.length === 1 ? ' Anlass' : ' Anlässe') + '</strong></div>' + CHEV + '</summary>' +
+      '<div class="dbody">' + evs.map(evRow).join('').replace(/<details class="ev"/g, '<details class="ev same"') + '</div></details>';
+  }
+  function byDay(list) { var g = [], m = {}; list.forEach(function (e) { var k = parts(e.start).key; if (!m[k]) { m[k] = []; g.push([k, m[k]]) } m[k].push(e) }); return g }
   function renderList() {
     var list = filtered(), lbl = { alle: 'in den nächsten 60 Tagen', heute: 'heute', morgen: 'morgen', wochenende: 'am Wochenende', woche: 'diese Woche' }[st.time];
     $('agCount').textContent = list.length + (list.length === 1 ? ' Anlass ' : ' Anlässe ') + lbl;
-    $('agList').innerHTML = list.slice(0, st.limit).map(evRow).join('') || '<p style="color:var(--soft);padding:18px 40px">Keine Anlässe für diese Auswahl.</p>';
-    sameDay($('agList'));
-    var m = $('more'); m.hidden = list.length <= st.limit; m.textContent = 'Weitere ' + Math.min(20, list.length - st.limit) + ' anzeigen';
-    m.onclick = function () { st.limit += 20; renderList() };
+    var g = byDay(list), el = $('agList');
+    el.innerHTML = g.slice(0, st.days).map(function (x, i) { return dayGroup(x[0], x[1], i, g.length) }).join('') || '<p style="color:var(--soft);padding:18px 40px">Keine Anlässe für diese Auswahl.</p>';
+    if (!el._tg) { el._tg = 1; el.addEventListener('toggle', function (ev) { var d = ev.target; if (d.classList && d.classList.contains('aday')) st.open[d.dataset.day] = d.open }, true) }
+    var m = $('more'), rest = g.length - st.days; m.hidden = rest <= 0; m.textContent = 'Weitere ' + Math.min(DAYS, rest) + ' Tage anzeigen';
+    m.onclick = function () { st.days += DAYS; renderList() };
   }
 
   function agendaFromHash() {
@@ -338,8 +348,9 @@
     return null;
   }
   function openEvent(id) {
-    var i = filtered().findIndex(function (e) { return e.id === id }); if (i < 0) return;
-    st.limit = Math.max(st.limit, Math.ceil((i + 1) / 20) * 20); renderList();
+    var ev = filtered().filter(function (e) { return e.id === id })[0]; if (!ev) return;
+    var k = parts(ev.start).key, i = byDay(filtered()).findIndex(function (x) { return x[0] === k });
+    st.days = Math.max(st.days, Math.ceil((i + 1) / DAYS) * DAYS); st.open[k] = true; renderList();
     var el = $('ev-' + id); if (el) { el.open = true; el.scrollIntoView({ block: 'start' }) }
   }
 
