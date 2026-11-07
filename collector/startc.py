@@ -144,9 +144,9 @@ def _infobar(pol_news, politik, amtlich):
     recent = [a for a in amtlich if a.get("date") and (B.TODAY - SB._iso(a["date"])).days <= 7] if amtlich else []
     bg = [a for a in recent if a.get("label") == "Baugesuch"]
     if bg:
-        tiles.append(_itile("baugesuche/", f'{len(bg)} {"Baugesuch" if len(bg) == 1 else "Baugesuche"}', "Neu im Amtsblatt"))
+        tiles.append(_itile("news/#amtsblatt", f'{len(bg)} {"Baugesuch" if len(bg) == 1 else "Baugesuche"}', "Neu im Amtsblatt"))
     elif recent:
-        tiles.append(_itile("amtlich/", f'{len(recent)} {"Publikation" if len(recent) == 1 else "Publikationen"}', "Neu im Amtsblatt"))
+        tiles.append(_itile("news/#amtsblatt", f'{len(recent)} {"Publikation" if len(recent) == 1 else "Publikationen"}', "Neu im Amtsblatt"))
     return '<div class="ibox">' + "".join(tiles) + "</div>"
 
 
