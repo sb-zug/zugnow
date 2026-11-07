@@ -150,11 +150,12 @@ def snippet(e, d, when, txt):
     dann der Text; bleibt Platz, folgt der Mehrwert von zug.now (Kalender, weitere Anlässe)."""
     wd = B.WDL[d.weekday()]
     pl = where(e)
-    title = f'{e["title"]} – {wd} {d.day}.{d.month}.{d.year}' + (f", {pl}" if pl else "")
+    stamp = f"{wd} {d.day}.{d.month}.{d.year}" + (f", {B.hm(e['start'])}" if e.get("_dup") and not e.get("allday") else "")
+    title = f'{e["title"]} – {stamp}' + (f", {pl}" if pl else "")
     if len(title) > 62 and pl and "zug" not in e["title"].lower():  # langer Ort → nur «Zug»
-        title = f'{e["title"]} – {wd} {d.day}.{d.month}.{d.year}, Zug'
+        title = f'{e["title"]} – {stamp}, Zug'
     elif len(title) > 62:
-        title = f'{e["title"]} – {wd} {d.day}.{d.month}.{d.year}'
+        title = f'{e["title"]} – {stamp}'
     zeit = "" if e.get("allday") else f", {B.hm(e['start'])} Uhr"
     head = f'{wd} {d.day}. {MONTH[d.month - 1]} {d.year}{zeit} · {e.get("place") or "Zug"}. '
     tail = " Mit Kalendereintrag und weiteren Anlässen am selben Tag."
@@ -234,7 +235,7 @@ def page(frame, e, same_day):
                            f'<span class="d">{"ganztags" if x.get("allday") else B.hm(x["start"])}</span>'
                            f'<span class="t">{B.esc(x["title"])}</span><span class="o">{B.esc(x.get("place"))} · {B.esc(x.get("catLabel"))}</span></a>' for x in more)
                  + "</div></section>")
-    links = ['<a href="agenda/">Ganze Agenda →</a>']
+    links = [f'<a href="{H.month_slug(d)}">Alle Anlässe im {H.month_name(d)} →</a>', '<a href="agenda/">Ganze Agenda →</a>']
     if wa <= d <= wb:
         links.insert(0, '<a href="wochenende/">Alles am Wochenende →</a>')
     body += f'<section class="block"><p>{" · ".join(links)}</p></section>'
@@ -252,6 +253,12 @@ def pages(agenda_html, events):
     for e in events:
         by_day.setdefault(B.dt(e["start"]).date(), []).append(e)
     out = {}
+    seen = {}
+    for e in events:  # gleicher Titel am selben Tag → Uhrzeit in den Titel (keine doppelten Titel)
+        seen.setdefault((e["title"], B.dt(e["start"]).date()), []).append(e)
+    for grp in seen.values():
+        for e in grp:
+            e["_dup"] = len(grp) > 1
     for e in events:
         out[e["page"] + "index.html"] = page(frame, e, by_day[B.dt(e["start"]).date()])
         out[e["page"] + "termin.ics"] = ics(e)

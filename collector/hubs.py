@@ -11,6 +11,7 @@ Seiten mit weniger als MIN_EVENTS Einträgen erhalten noindex und fehlen in der 
 import json
 import re
 from collections import Counter
+from datetime import date
 
 import build as B
 
@@ -43,6 +44,20 @@ ORTE = [
 
 # Suchtreffer-Titel (7.11.2026): gesucht wird «<Haus> zug programm», «zug kino» usw.
 SEO_NAME = {"kino": "Kino Zug Seehof & Gotthard"}
+
+
+MONATE = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"]
+MONTHS_START = (2026, 11)  # erster Monat von zug.now – ältere «Vorbei»-Seiten gibt es nicht
+
+
+def month_slug(d):
+    """date → 'agenda/dezember-2026/' (Adresse bleibt für immer gleich)."""
+    m = MONATE[d.month - 1].lower().replace("ä", "ae")
+    return f"agenda/{m}-{d.year}/"
+
+
+def month_name(d):
+    return f"{MONATE[d.month - 1]} {d.year}"
 
 
 def saison():
@@ -142,7 +157,7 @@ def _n(n, one, many):
     return f"{n} {one if n == 1 else many}"
 
 
-def wochenende(frame, events, ongoing):
+def wochenende(frame, events, ongoing, nav=""):
     wa, wb = B.weekend()
     evs = [e for e in events if wa <= B.dt(e["start"]).date() <= wb]
     span = f"{B.dshort(wa)} – {B.dshort(wb)}" if wa != wb else B.dshort(wa)
@@ -155,7 +170,7 @@ def wochenende(frame, events, ongoing):
     if ongoing:
         body += ('<section class="block"><div class="shead"><h2>Ausstellungen und Laufendes</h2>'
                  '<span>Auch am Wochenende offen</span></div>' + _lauf(ongoing) + "</section>")
-    body += '<section class="block"><p><a href="agenda/">Ganze Agenda mit Filtern →</a></p></section>'
+    body += '<section class="block"><p><a href="agenda/">Ganze Agenda mit Filtern →</a>' + (f" · <span>Nach Monat:</span> {nav}" if nav else "") + "</p></section>"
     return _page(frame, "wochenende/", "Wochenende in Zug – was läuft? | zug.now",
                  f"Was läuft am Wochenende in der Stadt Zug: {_n(len(evs), 'Anlass', 'Anlässe')} am {span} – Konzerte, Theater, Ausstellungen und mehr, täglich aktualisiert.",
                  body, nav="agenda/", index=len(evs) >= MIN_EVENTS)
@@ -194,6 +209,52 @@ def orte(frame, events, ongoing):
                                      "Theater Casino, Galvanik, Kunsthaus, Burg, Bibliothek und Kinos in Zug: alle Programme an einem Ort.",
                                      body, nav="agenda/")
     return pages
+
+
+def months(frame, events):
+    """Monatsseiten (7.11.2026): jeder Monat mit Anlässen automatisch; vergangene Monate «Vorbei» (noindex).
+    Verlinkt aus Fuss, Wochenende, Orte-Übersicht und jeder Anlass-Seite."""
+    global FOOTER_COL
+    pages, by = {}, {}
+    for e in events:
+        d = B.dt(e["start"]).date()
+        by.setdefault((d.year, d.month), []).append(e)
+    cur = (B.TODAY.year, B.TODAY.month)
+    live = sorted(k for k in by if k >= cur)
+    nav = " · ".join(f'<a href="{month_slug(date(y, m, 1))}">{month_name(date(y, m, 1))}</a>' for y, m in live)
+    for y, m in live:
+        evs, d1 = by[(y, m)], date(y, m, 1)
+        name = month_name(d1)
+        cats = Counter(e.get("catLabel") for e in evs if e.get("catLabel")).most_common(4)
+        mix = " · ".join(f"<span>{B.esc(c)}</span> ({n})" for c, n in cats)
+        body = (f'<div class="pagehead"><h1>Veranstaltungen in Zug im {name}</h1>'
+                f'<p>Was läuft im {name} in der Stadt Zug? {_n(len(evs), "Anlass", "Anlässe")} – Konzerte, Theater, Märkte, Familie und mehr. '
+                'Automatisch aus dem offiziellen Veranstaltungskalender und den Programmen der Kulturhäuser, zweimal täglich aktualisiert.</p>'
+                f'<p class="facts"><span>Schwerpunkte:</span> {mix}</p><p class="facts"><span>Monate:</span> {nav}</p>'
+                + _crumb(("Agenda", "agenda/"), (name, None)) + "</div>")
+        body += _days(evs, "Für diesen Monat sind noch keine Anlässe gemeldet.")
+        body += '<section class="block"><p><a href="wochenende/">Wochenende in Zug →</a> · <a href="agenda/">Ganze Agenda mit Filtern →</a></p></section>'
+        pages[month_slug(d1) + "index.html"] = _page(
+            frame, month_slug(d1), f"Veranstaltungen in Zug im {name} – Agenda | zug.now",
+            f"Was läuft im {name} in der Stadt Zug: {_n(len(evs), 'Anlass', 'Anlässe')} – Konzerte, Theater, Märkte, Familie. Mit Datum, Zeit und Ort, zweimal täglich aktualisiert.",
+            body, nav="agenda/", index=len(evs) >= MIN_EVENTS)
+    # vergangene Monate: Seite bleibt, verweist auf die aktuellen
+    agenda_a = '<a href="agenda/">Agenda</a>'
+    y, m = MONTHS_START
+    while (y, m) < cur:
+        d1 = date(y, m, 1)
+        if (y, m) not in live:
+            body = (f'<div class="pagehead"><h1>Veranstaltungen in Zug im {month_name(d1)}</h1>'
+                    f'<p>Der {month_name(d1)} ist vorbei. Was jetzt läuft: {nav or agenda_a}</p>'
+                    + _crumb(("Agenda", "agenda/"), (month_name(d1), None)) + "</div>"
+                    '<section class="block"><p><a href="agenda/">Ganze Agenda →</a> · <a href="wochenende/">Wochenende in Zug →</a></p></section>')
+            pages[month_slug(d1) + "index.html"] = _page(frame, month_slug(d1), f"Veranstaltungen in Zug im {month_name(d1)} (vorbei) | zug.now",
+                                                         f"Der {month_name(d1)} ist vorbei – aktuelle Veranstaltungen in Zug auf zug.now.", body, nav="agenda/", index=False)
+        y, m = (y + 1, 1) if m == 12 else (y, m + 1)
+    if nav:
+        absnav = nav.replace(' href="', ' href="/')
+        FOOTER_COL = FOOTER_COL.replace("</div>", f"<span><span>Veranstaltungen:</span> {absnav}</span></div>", 1)
+    return pages, nav
 
 
 BG_MAP_JS = """<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
@@ -268,9 +329,11 @@ def baugesuche(frame, amtlich, news):
 
 def build_hubs(agenda_html, events, ongoing, amtlich, all_news):
     frame = _frame(agenda_html)
-    pages = {"wochenende/index.html": wochenende(frame, events, ongoing),
+    mpages, nav = months(frame, events)
+    pages = {"wochenende/index.html": wochenende(frame, events, ongoing, nav),
              "baugesuche/index.html": baugesuche(frame, amtlich, all_news)}
     pages.update(orte(frame, events, ongoing))
+    pages.update(mpages)
     print("Rubriken:", ", ".join(k.replace("index.html", "") + ("" if k.replace("index.html", "") in _index else " (noindex)") for k in pages))
     return pages
 

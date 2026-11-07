@@ -60,3 +60,6 @@ jobs:
           path: _site
       - id: deploy
         uses: actions/deploy-pages@v4
+
+      - name: Neue Seiten an Bing melden (IndexNow)
+        run: python collector/indexnow.py || true

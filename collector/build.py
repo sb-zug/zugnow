@@ -335,6 +335,8 @@ def build():
     import i18n
     written = {PATHS.get(n, n): (OUT / PATHS.get(n, n)).read_text(encoding="utf-8") for n in pages if n.endswith(".html")}
     i18n.build_en(written)
+    import seo
+    seo.finish(pages["agenda.html"])
     print(f"Vorgerendert: {len(events)} Anlässe ({min(14, len({dt(e['start']).date() for e in events}))} Tage in der Liste), {len(news)} News, {len(amtlich)} Amtlich, "
           f"{len(rows)} Politik-Meldungen → {OUT.relative_to(ROOT)}/")
 

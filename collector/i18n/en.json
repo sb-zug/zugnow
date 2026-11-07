@@ -162,6 +162,12 @@
 "Baugesuche Stadt Zug – aktuelle Publikationen | zug.now": "Building applications City of Zug – current notices | zug.now",
 "Baugesuche Stadt Zug – aktuell im Amtsblatt | zug.now": "Building applications City of Zug – current notices | zug.now",
 "Kino Zug Seehof & Gotthard": "Cinema Zug Seehof & Gotthard",
+"Schwerpunkte:": "Highlights:",
+"Monate:": "Months:",
+"Nach Monat:": "By month:",
+"Veranstaltungen:": "Events:",
+"Für diesen Monat sind noch keine Anlässe gemeldet.": "No events have been announced for this month yet.",
+"Konzerte, Theater, Märkte, Familie und mehr.": "concerts, theatre, markets, family and more.",
 "Veranstaltungen Stadt Zug – Agenda heute & am Wochenende | zug.now": "Events in Zug – what's on today & this weekend | zug.now",
 "Alle Veranstaltungen und Events in der Stadt Zug: heute, am Wochenende und in den nächsten 60 Tagen – Konzerte, Theater, Familie, Märkte. Zweimal täglich aktualisiert.": "All events in the City of Zug: today, this weekend and over the next 60 days – concerts, theatre, family, markets. Updated twice a day.",
 "Die Stadt Zug publiziert neue Baugesuche im Amtsblatt des Kantons Zug. Während der Auflage können die Pläne eingesehen und Einsprachen erhoben werden. Hier steht jedes Baugesuch mit Adresse, solange die Auflage läuft – automatisch übernommen und zweimal täglich aktualisiert. Massgebend für Fristen und Auflageort ist die Publikation im Amtsblatt.": "The City of Zug publishes new building applications in the Official Gazette of the Canton of Zug. During the public inspection period the plans can be viewed and objections can be filed. Each application is listed here with its address for as long as the inspection period runs – taken automatically and updated twice a day. Deadlines and inspection venue are as stated in the Official Gazette.",
@@ -753,6 +759,34 @@
 [
 "(.+) – Programm (\\d{4}/\\d{2}) \\| zug\\.now",
 "{{\\1}} – programme \\2 | zug.now"
+],
+[
+"Veranstaltungen in Zug im (.+) – Agenda \\| zug\\.now",
+"Events in Zug in {{\\1}} – what's on | zug.now"
+],
+[
+"Veranstaltungen in Zug im (.+) \\(vorbei\\) \\| zug\\.now",
+"Events in Zug in {{\\1}} (past) | zug.now"
+],
+[
+"Veranstaltungen in Zug im (.+)",
+"Events in Zug in {{\\1}}"
+],
+[
+"Was läuft im (.+?) in der Stadt Zug: (.+?) – Konzerte, Theater, Märkte, Familie\\. Mit Datum, Zeit und Ort, zweimal täglich aktualisiert\\.",
+"What's on in {{\\1}} in the City of Zug: {{\\2}} – concerts, theatre, markets, family. With date, time and venue, updated twice a day."
+],
+[
+"Was läuft im (.+?) in der Stadt Zug\\? (.+?) – Konzerte, Theater, Märkte, Familie und mehr\\. Automatisch aus dem offiziellen Veranstaltungskalender und den Programmen der Kulturhäuser, zweimal täglich aktualisiert\\.",
+"What's on in {{\\1}} in the City of Zug? {{\\2}} – concerts, theatre, markets, family and more. Taken automatically from the official events calendar and the programmes of the cultural venues, updated twice a day."
+],
+[
+"Der (.+) ist vorbei – aktuelle Veranstaltungen in Zug auf zug\\.now\\.",
+"{{\\1}} is over – current events in Zug on zug.now."
+],
+[
+"Der (.+) ist vorbei\\. Was jetzt läuft:",
+"{{\\1}} is over. What's on now:"
 ],
 [
 "(.+): Programm",
