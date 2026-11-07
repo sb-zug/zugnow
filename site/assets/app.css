@@ -1141,3 +1141,5 @@ html[lang="en"] .v3 header nav a.lang::before{content:"EN  |  "}
 /* News + Amtsblatt (7.11.2026): Amtsblatt-Einträge dunkel markiert */
 .nlist .d b.ab,.rlist .nlist .d b.ab{color:var(--fg)}
 @media (max-width:900px){.rspan2{grid-column:1/-1}}
+/* Mobil: 4 Navigationspunkte über die ganze Breite verteilt (seit «Amtlich» weg, 7.11.2026) */
+@media (max-width:720px){.v3 header nav{justify-content:space-between}}
