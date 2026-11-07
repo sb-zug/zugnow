@@ -67,7 +67,7 @@
   "hall": "Seehof 1",
   "cinema": "Kino Seehof",
   "notes": [],
-  "ticket": "https://ticketonline.kinozug.ch/KinoZug/Show/332737",
+  "ticket": null,
   "url": "https://kinozug.ch/de/programm/filmdetail?EventId=132703",
   "image": "https://progi.kinozug.ch/image.php?ImageId=161223",
   "duration": "107 Min.",
@@ -84,7 +84,7 @@
   "hall": "Gotthard",
   "cinema": "Kino Gotthard",
   "notes": [],
-  "ticket": "https://ticketonline.kinozug.ch/KinoZug/Show/332777",
+  "ticket": null,
   "url": "https://kinozug.ch/de/programm/filmdetail?EventId=132368",
   "image": "https://progi.kinozug.ch/image.php?ImageId=160252",
   "duration": "96 Min.",
@@ -103,7 +103,7 @@
   "notes": [
    "U25-Vorstellung: Nur CHF 10.- für unter 25-jährige (nur vor Ort erhältlich)"
   ],
-  "ticket": "https://ticketonline.kinozug.ch/KinoZug/Show/332762",
+  "ticket": null,
   "url": "https://kinozug.ch/de/programm/filmdetail?EventId=132711",
   "image": "https://progi.kinozug.ch/image.php?ImageId=161255",
   "duration": "130 Min.",

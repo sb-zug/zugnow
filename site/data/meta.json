@@ -2,54 +2,54 @@
  "sources": {
   "news": {
    "ok": true,
-   "updated": "2026-11-07T16:27+01:00",
+   "updated": "2026-11-07T18:43+01:00",
    "count": 10
   },
   "agenda": {
    "ok": true,
-   "updated": "2026-11-07T16:27+01:00",
-   "count": 316
+   "updated": "2026-11-07T18:43+01:00",
+   "count": 315
   },
   "amtlich": {
    "ok": true,
-   "updated": "2026-11-07T16:27+01:00",
+   "updated": "2026-11-07T18:43+01:00",
    "count": 10
   },
   "theatercasino": {
    "ok": true,
-   "updated": "2026-11-07T16:27+01:00",
+   "updated": "2026-11-07T18:43+01:00",
    "count": 24
   },
   "galvanik": {
    "ok": true,
-   "updated": "2026-11-07T16:27+01:00",
+   "updated": "2026-11-07T18:43+01:00",
    "count": 12
   },
   "wab": {
    "ok": true,
-   "updated": "2026-11-07T16:27+01:00",
+   "updated": "2026-11-07T18:43+01:00",
    "count": 2
   },
   "politik": {
    "ok": true,
-   "updated": "2026-11-07T16:27+01:00",
+   "updated": "2026-11-07T18:43+01:00",
    "count": 10
   },
   "kino": {
    "ok": true,
-   "updated": "2026-11-07T16:27+01:00",
+   "updated": "2026-11-07T18:43+01:00",
    "count": 43
   },
   "eventfrog": {
    "ok": true,
-   "updated": "2026-11-07T16:27+01:00",
-   "count": 135
+   "updated": "2026-11-07T18:43+01:00",
+   "count": 134
   },
   "ratsinfo": {
    "ok": true,
-   "updated": "2026-11-07T16:27+01:00",
+   "updated": "2026-11-07T18:43+01:00",
    "count": 205
   }
  },
- "generated": "2026-11-07T16:27+01:00"
+ "generated": "2026-11-07T18:43+01:00"
 }
