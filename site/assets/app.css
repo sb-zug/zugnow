@@ -1064,7 +1064,7 @@ html[lang="en"] .v3 header nav a.lang::before{content:"EN  |  "}
 .rlist .dn{grid-column:4;display:flex;flex-direction:column;justify-content:center;gap:2px;padding-right:64px}
 .rlist .dn strong{font:700 18px/1.2 var(--rf)}
 .rlist .dn .rel{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--brand)}
-.rlist details.aday>summary:hover strong{color:var(--brand)}
+@media (hover:hover){.rlist details.aday>summary:hover strong{color:var(--brand)}}
 .rlist .dbody{border-top:1px solid var(--rl)}
 .rlist .dbody details.ev:first-child>summary>.evmain,.rlist .dbody details.ev:first-child>summary>.evside{box-shadow:none}
 @media (max-width:900px){
@@ -1083,4 +1083,27 @@ html[lang="en"] .v3 header nav a.lang::before{content:"EN  |  "}
 @media (min-width:901px){.rlist .aday[open] .dn{grid-column:2/span 3}}
 /* Agenda: Tageszeilen hinterlegt, Anlässe weiss (7.11.2026) */
 .rlist details.aday>summary>*:not(svg){background:var(--tint-2)}
-.rlist details.aday>summary:hover>*:not(svg){background:var(--tint)}
+@media (hover:hover){.rlist details.aday>summary:hover>*:not(svg){background:var(--tint)}}
+/* Agenda mobil kompakter (7.11.2026): Tageszeile einzeilig, Anlässe volle Breite */
+@media (max-width:900px){
+  .rlist details.aday>summary{grid-template-columns:auto minmax(0,1fr);gap:0;background:var(--tint-2)}
+  .rlist details.aday>summary>*{padding:14px 20px}
+  .rlist .aday>summary>.date{grid-row:auto;flex-direction:row;align-items:baseline;gap:6px;padding:14px 0 14px 20px}
+  .rlist .aday>summary>.date .d{font-size:24px}
+  .rlist .dn{grid-column:2;grid-row:1;padding:14px 52px 14px 14px;align-self:center}
+  .rlist .dn strong{font-size:16px}
+  .rlist .dpv{grid-column:1/-1;grid-row:2;padding:0 52px 14px 20px;font-size:14px}
+  .rlist details.aday>summary>svg{top:16px}
+  .rlist details.aday:not([open])>summary>.date,.rlist details.aday:not([open])>summary>.dn{padding-bottom:4px}
+  .rlist .dbody details.ev>summary{grid-template-columns:minmax(0,1fr)}
+  .rlist .dbody details.ev>summary>.date{display:none}
+  .rlist .dbody .evmain{grid-column:1;padding:14px 52px 4px 20px;box-shadow:none!important}
+  .rlist .dbody .evmain .ttl{font-size:18px}
+  .rlist .dbody .evside{grid-column:1;flex-direction:row;flex-wrap:wrap;align-items:baseline;gap:4px 12px;padding:0 20px 14px;box-shadow:none!important}
+  .rlist .dbody details.ev{border-top:1px solid var(--rl)}
+  .rlist .dbody details.ev:first-child{border-top:0}
+  .rlist .dbody details.ev>summary>svg{top:14px}
+  .rlist .dbody .panel,.rlist .dbody .panel.withimg{grid-template-columns:minmax(0,1fr)}
+  .rlist .dbody .panel::before,.rlist .dbody .panel::after{display:none}
+  .rlist .dbody .panel>div:first-child,.rlist .dbody .panel>.pimg{grid-column:1;padding:4px 20px 20px}
+}
